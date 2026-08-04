@@ -5,20 +5,16 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #1a1a1a;
+    background-color: #ffffff;
     font-family: 'Arial', sans-serif;
     overflow: hidden;
 }
 
-.game_container {
-    width: 95vw;
-    height: 80vh;
-    position: relative;
-}
-
 #game_canvas {
-    border: 2px solid #444;
-    background-color: #222;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 95vh;
+    position: relative;
+    border: 5px solid #06ccfd;
+    background-color: #ffffff;
     cursor: default;
 }

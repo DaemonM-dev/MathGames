@@ -1,7 +1,7 @@
 const GAME_WIDTH = 960;
 const GAME_HEIGHT = 540;
 
-const GAME = {
+const Game = {
     canvas: null,
     ctx: null,
     running: false,
@@ -11,25 +11,33 @@ const GAME = {
 };
 
 function Init(){
-    GAME.canvas = document.getElementById("game_canvas");
-    GAME.ctx = GAME.canvas.getContext('2d');
+    Game.canvas = document.getElementById("game_canvas");
+    Game.ctx = Game.canvas.getContext('2d');
 
-    GAME.running = true;
+    Game.running = true;
     requestAnimationFrame(GameLoop);
 }
 
 function GameLoop(timeStamp){
     if(!GAME.running){return;}
 
-    const deltaTime = (timeStamp - GAME.lastTime) / 1000; // Calculating Delta Time
-    GAME.lastTime = timeStamp;
+    window.addEventListener('resize', ResizeCanvas, false);
+
+    const deltaTime = (timeStamp - Game.lastTime) / 1000; // Calculating Delta Time in seconds
+    Game.lastTime = timeStamp;
 
     Update(deltaTime);
 
-    GAME.ctx.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height); // Clear canvas before drawing
+    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height); // Clear canvas before drawing
     Draw();
 
     requestAnimationFrame(GameLoop); // Restart game loop
+}
+
+function ResizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    console.log("Canvas resized");
 }
 
 function Update(deltaTime){
@@ -37,10 +45,6 @@ function Update(deltaTime){
 }
 
 function Draw(){
-    GAME.ctx.strokeStyle = '#df2020';
-    GAME.ctx.lineWidth = 5;
-    GAME.ctx.strokeRect(0, 0, GAME.canvas.width, GAME.canvas.height);
-    
     console.log("Draw called");
 }
 
