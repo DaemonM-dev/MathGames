@@ -19,9 +19,7 @@ function Init(){
 }
 
 function GameLoop(timeStamp){
-    if(!GAME.running){return;}
-
-    window.addEventListener('resize', ResizeCanvas, false);
+    if(!Game.running){return;}
 
     const deltaTime = (timeStamp - Game.lastTime) / 1000; // Calculating Delta Time in seconds
     Game.lastTime = timeStamp;
@@ -35,9 +33,20 @@ function GameLoop(timeStamp){
 }
 
 function ResizeCanvas(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    console.log("Canvas resized");
+
+    const displayWidth = window.innerWidth;
+    const displayHeight = window.innerHeight;
+
+    if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) 
+    {
+        Game.canvas.width = displayWidth;
+        Game.canvas.height = displayHeight;
+
+        Game.scaleX = displayWidth / GAME_WIDTH;
+        Game.scaleY = displayHeight / GAME_HEIGHT;
+
+        console.log("Canvas resized:", displayWidth, "x", displayHeight); 
+    }
 }
 
 function Update(deltaTime){
@@ -49,3 +58,4 @@ function Draw(){
 }
 
 window.addEventListener('load', Init);
+window.addEventListener('resize', ResizeCanvas);
