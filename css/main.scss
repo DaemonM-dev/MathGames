@@ -10,9 +10,13 @@ body {
     overflow: hidden;
 }
 
-#game_canvas {
+.game_container {
     width: 95vw;
     height: 80vh;
+    position: relative;
+}
+
+#game_canvas {
     border: 2px solid #444;
     background-color: #222;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
