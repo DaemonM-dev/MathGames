@@ -1,7 +1,7 @@
-const GAME_WIDTH = 960;
-const GAME_HEIGHT = 540;
+import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
+import { Draw } from './renderer.js';
 
-const Game = {
+export const Game = {
     canvas: null,
     ctx: null,
     running: false,
@@ -10,8 +10,8 @@ const Game = {
     scaleY: 1
 };
 
-function Init(){
-    Game.canvas = document.getElementById("game_canvas");
+export function Init(){
+    Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
 
     Game.running = true;
@@ -25,37 +25,11 @@ function GameLoop(timeStamp){
     Game.lastTime = timeStamp;
 
     Update(deltaTime);
-
-    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height); // Clear canvas before drawing
     Draw();
 
     requestAnimationFrame(GameLoop); // Restart game loop
 }
 
-function ResizeCanvas(){
-
-    const displayWidth = window.innerWidth;
-    const displayHeight = window.innerHeight;
-
-    if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) 
-    {
-        Game.canvas.width = displayWidth;
-        Game.canvas.height = displayHeight;
-
-        Game.scaleX = displayWidth / GAME_WIDTH;
-        Game.scaleY = displayHeight / GAME_HEIGHT;
-
-        console.log("Canvas resized:", displayWidth, "x", displayHeight); 
-    }
-}
-
 function Update(deltaTime){
     console.log("Update called");
 }
-
-function Draw(){
-    console.log("Draw called");
-}
-
-window.addEventListener('load', Init);
-window.addEventListener('resize', ResizeCanvas);
