@@ -21,8 +21,8 @@ function Init(){
 function GameLoop(timeStamp){
     if(!GAME.running){return;}
 
-    const deltaTime = (timestamp - GAME.lastTime) / 1000; // Calculating Delta Time
-    GAME.lastTime = timestamp;
+    const deltaTime = (timeStamp - GAME.lastTime) / 1000; // Calculating Delta Time
+    GAME.lastTime = timeStamp;
 
     Update(deltaTime);
 
@@ -33,11 +33,15 @@ function GameLoop(timeStamp){
 }
 
 function Update(deltaTime){
-
+    console.log("Update called");
 }
 
 function Draw(){
-
+    GAME.ctx.strokeStyle = '#df2020';
+    GAME.ctx.lineWidth = 5;
+    GAME.ctx.strokeRect(0, 0, GAME.canvas.width, GAME.canvas.height);
+    
+    console.log("Draw called");
 }
 
 window.addEventListener('load', Init);
