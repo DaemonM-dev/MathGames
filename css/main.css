@@ -14,7 +14,6 @@ body {
     width: 100vw;
     height: 95vh;
     position: relative;
-    border: 5px solid #06ccfd;
     background-color: #ffffff;
     cursor: default;
 }

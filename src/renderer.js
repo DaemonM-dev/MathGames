@@ -1,5 +1,6 @@
 import { GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 import { Game } from './game.js';
+import { Draw_UI } from './ui/ui_elements.js';
 
 export function ResizeCanvas(){
 
@@ -21,8 +22,7 @@ export function ResizeCanvas(){
 export function Draw(){
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height); // Clear canvas before drawing
 
-    Game.ctx.fillStyle = 'red';
-    Game.ctx.fillRect(100 * Game.scaleX, 100 * Game.scaleY, 200 * Game.scaleX, 150 * Game.scaleY);
+    Draw_UI();
 
     console.log("Draw called");
 }
