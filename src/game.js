@@ -11,13 +11,22 @@ export const Game = {
     scaleY: 1
 };
 
+let backgroundLoaded = false;
 const background = new Image();
+
+background.onload = () => {
+    backgroundLoaded = true;
+    console.log("Background loaded successfully.");
+}
+
 background.src = '../assets/shelf.png';
 
 export function Init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
 
+    background.src = '../assets/shelf.png';
+    
     SetUpInputs();
     ResizeCanvas();
     Init_UI();
@@ -51,8 +60,14 @@ function Update(deltaTime){
 function Draw(){
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
 
-    Game.ctx.drawImage(background, 0, 0, Game.canvas.width, Game.canvas.height);
-    Draw_UI();
+    if(backgroundLoaded){
+        Game.ctx.drawImage(background, 0, 0, Game.canvas.width, Game.canvas.height);
+        Draw_UI();
+    }
+    else{
+        Game.ctx.fillStyle = "#000";
+        Game.ctx.fillText("Loading background...", 10, 30);
+    }
     
 }
 
