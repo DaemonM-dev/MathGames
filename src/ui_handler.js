@@ -23,7 +23,7 @@ export function HandleMouseUp(){
     
 }
 export function HandleMouseClick(){
-    mousePressed = true;
+    if(!mousePressed){mousePressed = true;}
     console.log("Mouse click registered");
 }
 
