@@ -19,8 +19,6 @@ background.onload = () => {
     console.log("Background loaded successfully.");
 }
 
-background.src = '../assets/shelf.png';
-
 export function Init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
