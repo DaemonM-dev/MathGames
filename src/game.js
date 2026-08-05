@@ -1,5 +1,6 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
-import { Draw } from './renderer.js';
+import { Init_UI, Update_UI, Draw_UI } from './ui_handler.js';
+import { HandleMouseDown, HandleMouseUp, HandleMouseClick } from './ui_handler.js';
 
 export const Game = {
     canvas: null,
@@ -14,8 +15,18 @@ export function Init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
 
+    SetUpInputs();
+    ResizeCanvas();
+    Init_UI();
+
     Game.running = true;
     requestAnimationFrame(GameLoop);
+}
+
+function SetUpInputs(){
+    Game.canvas.addEventListener('mousedown', HandleMouseDown);
+    Game.canvas.addEventListener('mouseup', HandleMouseUp);
+    Game.canvas.addEventListener('click', HandleMouseClick);
 }
 
 function GameLoop(timeStamp){
@@ -31,5 +42,28 @@ function GameLoop(timeStamp){
 }
 
 function Update(deltaTime){
-    console.log("Update called");
+    Update_UI(deltaTime);
+}
+
+function Draw(){
+    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
+    Draw_UI();
+    
+}
+
+export function ResizeCanvas(){
+
+    const displayWidth = window.innerWidth;
+    const displayHeight = window.innerHeight;
+
+    if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) 
+    {
+        Game.canvas.width = displayWidth;
+        Game.canvas.height = displayHeight;
+
+        Game.scaleX = displayWidth / GAME_WIDTH;
+        Game.scaleY = displayHeight / GAME_HEIGHT;
+
+        console.log("Canvas resized:", displayWidth, "x", displayHeight); 
+    }
 }

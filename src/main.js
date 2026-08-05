@@ -1,5 +1,4 @@
-import { Init } from './game.js';
-import { ResizeCanvas } from './renderer.js';
+import { ResizeCanvas, Init } from './game.js';
 
 window.addEventListener('load', Init);
 window.addEventListener('resize', ResizeCanvas);
