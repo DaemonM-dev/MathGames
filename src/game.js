@@ -23,7 +23,7 @@ export function Init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
 
-    background.src = '../assets/shelf.png';
+    background.src = '/MathGames/assets/shelf.png';
     
     SetUpInputs();
     ResizeCanvas();
