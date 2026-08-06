@@ -15,11 +15,11 @@ export function initUI(){
     initSpeechBubble();
 
     // Initialize gameplay element boxes
-    topBox = new BoxBubble(new Vector2i(200,200), new Vector2i(200,200), 15, '#ffffff');
+    topBox = new BoxBubble(new Vector2i(1100,50), new Vector2i(350,100), 15, '#ffffff');
     console.log("Top box created:", topBox);
-    middleBox = new BoxBubble(new Vector2i(500,500), new Vector2i(200,200), 15, '#ffffff');
+    middleBox = new BoxBubble(new Vector2i(1100,150), new Vector2i(350,400), 15, '#ffffff');
     console.log("Middle box created:", middleBox);
-    bottomBox = new BoxBubble(new Vector2i(800,350), new Vector2i(200,200), 15, '#ffffff');
+    bottomBox = new BoxBubble(new Vector2i(1100,550), new Vector2i(350,100), 15, '#ffffff');
     console.log("Bottom box created:", bottomBox);
 }
 
@@ -33,11 +33,11 @@ export function updateUI(deltaTime){
 
 export function drawUI(){
     if (dialogueBox) { dialogueBox.draw(Game.ctx); }
-    /*
+    
     if(topBox){ topBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     if(middleBox){ middleBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     if(bottomBox){ bottomBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
-    */
+    
 }
 
 export function handleMouseDown(){
@@ -65,8 +65,8 @@ function initSpeechBubble(){
     console.log("Dialogue box created:", dialogueBox);
 }
 function createMessages(){
-    dialogueBox.addMessage("Hello there!");
-    dialogueBox.addMessage("Welcome to my game!");
-    dialogueBox.addMessage("This is a speech bubble with multiple messages.");
-    dialogueBox.addMessage("Messages will cycle automatically.");
+    dialogueBox.addMessage("Hello there! Click to cycle through text...");
+    dialogueBox.addMessage("Where is the food? Click to find out..");
+    dialogueBox.addMessage("Ah, the food hasn't been added yet..");
+    dialogueBox.addMessage("Try resizing the window!");
 }
