@@ -2,13 +2,22 @@ import { Vector2i } from '../constants.js';
 
 export class SpeechBubble
 {
-    constructor(x = 0, y = 0, width = 0, height = 0, radius = 0)
-    {
-        this.pos = new Vector2i(x, y);
-        this.size = new Vector2i(width, height);
-        this.radius = radius;
+    constructor(){
+        this.pos = null;
+        this.size = null;
+        this.radius = 0;
         this.messages = [];
         this.currentMessageIndex = 0;
+    }
+
+    init(pos, size, radius){
+        this.pos = pos;
+        this.size = size;
+        this.radius = radius;
+    }
+
+    update(deltaTime, scale){
+        const newSize = new Vector2i(this.size.x * scale.x, this.size.y * scale.y);
     }
 
     addMessage(message){
