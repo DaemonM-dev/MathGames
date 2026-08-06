@@ -29,13 +29,17 @@ export class SpeechBubble
 
     draw(ctx, scaleX, scaleY)
     {
-
         const scaled = new Vector2i(this.size.x * scaleX, this.size.y * scaleY);
-    
+        
+        this.drawBubble(ctx, scaled, scaleX, scaleY);
+        this.drawText(ctx, scaled, scaleX, scaleY);
+    }
+
+    drawBubble(ctx, scaled, scaleX, scaleY)
+    {
         ctx.fillStyle = '#f0b155';
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 7 * Math.min(scaleX, scaleY);
-        ctx.font = '24px Arial';
 
         const x = (ctx.canvas.width - scaled.x) / 2;
         const y = ctx.canvas.height - scaled.y - ctx.lineWidth;
@@ -44,17 +48,44 @@ export class SpeechBubble
         ctx.roundRect(x, y, scaled.x, scaled.y, this.radius * Math.min(scaleX, scaleY));
         ctx.fill();
         ctx.stroke();
+    }
 
+    drawText(ctx, scaled, scaleX, scaleY)
+    {
         const message = this.messages[this.currentMessageIndex];
-
-        // Scale the font to the canvas size
         const scaledFontSize = 24 * Math.min(scaleX, scaleY);
         ctx.font = `${scaledFontSize}px Arial`;
 
-        const textX = x + 40 * scaleX;
-        const textY = y + 40 * scaleY;
+        // Cache calculations that don't change per call
+        const maxWidth = scaled.x - 80 * scaleX;
+        const lineHeight = scaledFontSize * 1.2;
+        const startX = (ctx.canvas.width - scaled.x) / 2 + 40 * scaleX;
+        const startY = ctx.canvas.height - scaled.y - ctx.lineWidth + 40 * scaleY;
         
-        ctx.fillStyle = 'black';
-        ctx.fillText(message, textX, textY);
+        // Text wrapping logic
+        const words = message.split(' ');
+        const lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+            const word = words[i];
+            const testLine = currentLine + ' ' + word;
+            const testWidth = ctx.measureText(testLine).width;
+            
+            if (testWidth > maxWidth) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = testLine;
+            }
+        }
+        lines.push(currentLine);
+
+        // Draw text line by line
+        for (let i = 0; i < lines.length; i++) {
+            const textY = startY + (i * lineHeight);
+            ctx.fillStyle = 'black';
+            ctx.fillText(lines[i], startX, textY);
+        }
     }
 }

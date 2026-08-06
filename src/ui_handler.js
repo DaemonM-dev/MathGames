@@ -1,4 +1,5 @@
 import {Game} from './game.js'
+import {Vector2i} from './constants.js'
 import { SpeechBubble } from './ui_elements/speech_bubbles.js';
 
 let dialogueBox = null;
@@ -28,7 +29,17 @@ export function handleMouseClick(){
 }
 
 function initSpeechBubble(){
-    dialogueBox = new SpeechBubble(0, 0, 500, 125, 15);
+
+    const newSize = new Vector2i(500, 125);
+
+    const xPos = (Game.canvas.width - newSize.x) / 2;
+    const yPos = Game.canvas.height - newSize.y;
+
+    const newRadius = 15;
+    dialogueBox = new SpeechBubble(xPos, yPos, newSize.x, newSize.y, newRadius);
+
+    console.log("Speech bubble position:", xPos, yPos);
+    console.log("Speech bubble position:", newSize.x, newSize.y);
 
     dialogueBox.addMessage("Hello there!");
     dialogueBox.addMessage("Welcome to my game!");
