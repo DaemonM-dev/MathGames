@@ -1,5 +1,5 @@
 import { Game } from './game.js'
-import { Vector2i } from './constants.js'
+import { Vector2i, Vector2f } from './constants.js'
 import { SpeechBubble } from './ui_elements/speech_bubbles.js';
 import { BoxBubble } from './ui_elements/box_bubble.js'
 
@@ -12,33 +12,38 @@ let mousePressed = false;
 
 export function initUI(){
     // Initialize dialogue box
-    const size = new Vector2i(500, 125);
+    const size = new Vector2i(400, 125);
     const position = new Vector2i((Game.canvas.width - size.x) / 2, Game.canvas.height - size.y);
+    const scale = new Vector2f(Game.scaleX, Game.scaleY);
     dialogueBox = new SpeechBubble();
-    dialogueBox.init(position, size, 15);
+    dialogueBox.init(position, size, 15, scale, 7);
     createMessages();
-    console.log("Dialogue box created:", topBox);
+    console.log("Dialogue box created:", dialogueBox);
 
     // Initialize gameplay element boxes
     topBox = new BoxBubble(new Vector2i(200,200), new Vector2i(200,200), 15, '#ffffff');
     console.log("Top box created:", topBox);
     middleBox = new BoxBubble(new Vector2i(500,500), new Vector2i(200,200), 15, '#ffffff');
-    console.log("Middle box created:", topBox);
+    console.log("Middle box created:", middleBox);
     bottomBox = new BoxBubble(new Vector2i(800,350), new Vector2i(200,200), 15, '#ffffff');
-    console.log("Bottom box created:");
+    console.log("Bottom box created:", bottomBox);
 }
 
 export function updateUI(deltaTime){
-    if (dialogueBox && mousePressed) { dialogueBox.nextMessage(); mousePressed = false; }
+    if (dialogueBox)
+    {
+        if(mousePressed){dialogueBox.nextMessage(); mousePressed = false;}
+        dialogueBox.update(deltaTime, new Vector2f(Game.scaleX, Game.scaleY));
+    }
 }
 
 export function drawUI(){
-    
-    if (dialogueBox) { dialogueBox.draw(Game.ctx, Game.scaleX, Game.scaleY); }
-
+    if (dialogueBox) { dialogueBox.draw(Game.ctx); }
+    /*
     if(topBox){ topBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     if(middleBox){ middleBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     if(bottomBox){ bottomBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
+    */
 }
 
 export function handleMouseDown(){

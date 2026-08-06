@@ -7,8 +7,8 @@ export const Game = {
     ctx: null,
     running: false,
     lastTime: 0,
-    scaleX: 1,
-    scaleY: 1
+    scaleX: 1.0,
+    scaleY: 1.0
 };
 
 let backgroundLoaded = false;
@@ -26,7 +26,6 @@ export function init(){
     background.src = './assets/shelf.png';
     
     setUpInputs();
-    resizeCanvas();
     initUI();
 
     Game.running = true;

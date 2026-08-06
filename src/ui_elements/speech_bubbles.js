@@ -1,23 +1,57 @@
-import { Vector2i } from '../constants.js';
+import { Game } from '../game.js'
+import { Vector2i, Vector2f } from '../constants.js';
 
 export class SpeechBubble
 {
     constructor(){
         this.pos = null;
+        this.initialSize = null;
         this.size = null;
+        this.scale = null;
+        this.initialRadius = 0;
         this.radius = 0;
         this.messages = [];
         this.currentMessageIndex = 0;
+        this.initialLineWidth = 0;
+        this.lineWidth = 0;
     }
 
-    init(pos, size, radius){
+    init(pos, size, radius, scale, lineWidth){
         this.pos = pos;
-        this.size = size;
+        this.initialSize = size; // Store original size once
+        this.size = size; // Copy the size
+        this.initialRadius = radius;
         this.radius = radius;
+        this.scale = scale; // Store current scale
+        this.initialLineWidth = lineWidth;
+        this.lineWidth = lineWidth;
     }
 
     update(deltaTime, scale){
-        const newSize = new Vector2i(this.size.x * scale.x, this.size.y * scale.y);
+        this.scaleBubble(scale);
+    }
+
+    scaleBubble(scale){
+        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
+            this.scale = scale;
+
+            this.size = { x: this.initialSize.x * this.scale.x, y: this.initialSize.y * this.scale.y };
+            this.pos = { x: (Game.canvas.width - this.size.x) / 2, y: Game.canvas.height - this.size.y};
+
+            this.radius = this.initialRadius * Math.min(this.scale.x, this.scale.y);
+            this.lineWidth = this.initialLineWidth * Math.min(this.scale.x, this.scale.y);
+
+            console.log("SpeechBox Updated");
+            console.log("New Scale: ", this.scale);
+            console.log("New Size: ", this.size);
+            console.log("New Position: ", this.pos);
+            console.log("New Radius: ", this.radius);
+        }
+    }
+
+    draw(ctx){
+        this.drawBubble(ctx);
+        this.drawText(ctx);
     }
 
     addMessage(message){
@@ -36,40 +70,28 @@ export class SpeechBubble
         }
     }
 
-    draw(ctx, scaleX, scaleY)
-    {
-        const scaled = new Vector2i(this.size.x * scaleX, this.size.y * scaleY);
-        
-        this.drawBubble(ctx, scaled, scaleX, scaleY);
-        this.drawText(ctx, scaled, scaleX, scaleY);
-    }
-
-    drawBubble(ctx, scaled, scaleX, scaleY)
-    {
+    drawBubble(ctx){
         ctx.fillStyle = '#f0b155';
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 7 * Math.min(scaleX, scaleY);
-
-        const x = (ctx.canvas.width - scaled.x) / 2;
-        const y = ctx.canvas.height - scaled.y - ctx.lineWidth;
+        ctx.lineWidth = this.lineWidth;
 
         ctx.beginPath();
-        ctx.roundRect(x, y, scaled.x, scaled.y, this.radius * Math.min(scaleX, scaleY));
+        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
         ctx.fill();
         ctx.stroke();
     }
 
-    drawText(ctx, scaled, scaleX, scaleY)
+    drawText(ctx)
     {
         const message = this.messages[this.currentMessageIndex];
-        const scaledFontSize = 24 * Math.min(scaleX, scaleY);
+        const scaledFontSize = 24 * Math.min(this.scale.x, this.scale.y);
         ctx.font = `${scaledFontSize}px Arial`;
 
         // Cache calculations that don't change per call
-        const maxWidth = scaled.x - 80 * scaleX;
+        const maxWidth = this.size.x - 80 * this.scale.x;
         const lineHeight = scaledFontSize * 1.2;
-        const startX = (ctx.canvas.width - scaled.x) / 2 + 40 * scaleX;
-        const startY = ctx.canvas.height - scaled.y - ctx.lineWidth + 40 * scaleY;
+        const startX = (ctx.canvas.width - this.size.x) / 2 + 40 * this.scale.x;
+        const startY = ctx.canvas.height - this.size.y - ctx.lineWidth + 40 * this.scale.y;
         
         // Text wrapping logic
         const words = message.split(' ');

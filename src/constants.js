@@ -8,3 +8,10 @@ export class Vector2i {
         this.y = y;
     }
 }
+
+export class Vector2f {
+    constructor(x = 0.0, y = 0.0) {
+        this.x = x;
+        this.y = y;
+    }
+}
