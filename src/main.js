@@ -1,4 +1,4 @@
-import { ResizeCanvas, Init } from './game.js';
+import { init, resizeCanvas } from './game.js';
 
-window.addEventListener('load', Init);
-window.addEventListener('resize', ResizeCanvas);
+window.addEventListener('load', init);
+window.addEventListener('resize', resizeCanvas);

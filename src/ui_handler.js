@@ -4,30 +4,30 @@ import { SpeechBubble } from './ui_elements/speech_bubbles.js';
 let dialogueBox = null;
 let mousePressed = false;
 
-export function Init_UI(){
-    InitSpeechBubble();
+export function initUI(){
+    initSpeechBubble();
 }
 
-export function Update_UI(deltaTime){
-    UpdateSpeechBubble(deltaTime);
+export function updateUI(deltaTime){
+    updateSpeechBubble(deltaTime);
 }
 
-export function Draw_UI(){
-    DrawSpeechBubble();
+export function drawUI(){
+    drawSpeechBubble();
 }
 
-export function HandleMouseDown(){
+export function handleMouseDown(){
     
 }
-export function HandleMouseUp(){
+export function handleMouseUp(){
     
 }
-export function HandleMouseClick(){
+export function handleMouseClick(){
     if(!mousePressed){mousePressed = true;}
     console.log("Mouse click registered");
 }
 
-function InitSpeechBubble(){
+function initSpeechBubble(){
     dialogueBox = new SpeechBubble(0, 0, 500, 125, 15);
 
     dialogueBox.addMessage("Hello there!");
@@ -36,16 +36,16 @@ function InitSpeechBubble(){
     dialogueBox.addMessage("Messages will cycle automatically.");
 }
 
-function UpdateSpeechBubble(deltaTime){
+function updateSpeechBubble(deltaTime){
     if (dialogueBox && mousePressed) {
         dialogueBox.nextMessage();
         mousePressed = false; // Reset after handling
     }
 }
 
-function DrawSpeechBubble(){
+function drawSpeechBubble(){
    if (dialogueBox) {
-        dialogueBox.Draw(Game.ctx, Game.scaleX, Game.scaleY);
+        dialogueBox.draw(Game.ctx, Game.scaleX, Game.scaleY);
     }
 }
 

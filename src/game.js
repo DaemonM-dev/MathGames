@@ -1,6 +1,6 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
-import { Init_UI, Update_UI, Draw_UI } from './ui_handler.js';
-import { HandleMouseDown, HandleMouseUp, HandleMouseClick } from './ui_handler.js';
+import { initUI, updateUI, drawUI } from './ui_handler.js';
+import { handleMouseDown, handleMouseUp, handleMouseClick } from './ui_handler.js';
 
 export const Game = {
     canvas: null,
@@ -19,48 +19,50 @@ background.onload = () => {
     console.log("Background loaded successfully.");
 }
 
-export function Init(){
+export function init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
-
-    background.src = '/MathGames/assets/shelf.png';
     
-    SetUpInputs();
-    ResizeCanvas();
-    Init_UI();
+    background.src = './assets/shelf.png';
+    
+    setUpInputs();
+    resizeCanvas();
+    initUI();
 
     Game.running = true;
-    requestAnimationFrame(GameLoop);
+    requestAnimationFrame(gameLoop);
+    console.log("Game Initialized");
 }
 
-function SetUpInputs(){
-    Game.canvas.addEventListener('mousedown', HandleMouseDown);
-    Game.canvas.addEventListener('mouseup', HandleMouseUp);
-    Game.canvas.addEventListener('click', HandleMouseClick);
+function setUpInputs(){
+    Game.canvas.addEventListener('mousedown', handleMouseDown);
+    Game.canvas.addEventListener('mouseup', handleMouseUp);
+    Game.canvas.addEventListener('click', handleMouseClick);
+    console.log("Inputs Initialized");
 }
 
-function GameLoop(timeStamp){
+function gameLoop(timeStamp){
     if(!Game.running){return;}
 
     const deltaTime = (timeStamp - Game.lastTime) / 1000; // Calculating Delta Time in seconds
     Game.lastTime = timeStamp;
 
-    Update(deltaTime);
-    Draw();
+    update(deltaTime);
+    draw();
 
-    requestAnimationFrame(GameLoop); // Restart game loop
+    requestAnimationFrame(gameLoop); // Restart game loop
 }
 
-function Update(deltaTime){
-    Update_UI(deltaTime);
+function update(deltaTime){
+    updateUI(deltaTime);
 }
 
-function Draw(){
+function draw(){
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
 
     if(backgroundLoaded){
         Game.ctx.drawImage(background, 0, 0, Game.canvas.width, Game.canvas.height);
-        Draw_UI();
+        drawUI();
     }
     else{
         Game.ctx.fillStyle = "#000";
@@ -69,7 +71,7 @@ function Draw(){
     
 }
 
-export function ResizeCanvas(){
+export function resizeCanvas(){
 
     const displayWidth = window.innerWidth;
     const displayHeight = window.innerHeight;
