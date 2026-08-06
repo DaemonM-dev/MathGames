@@ -1,5 +1,5 @@
 import { Game } from './game.js'
-import { Vector2i, Vector2f } from './constants.js'
+import { Vector2i } from './constants.js'
 import { SpeechBubble } from './ui_elements/speech_bubbles.js';
 import { BoxBubble } from './ui_elements/box_bubble.js'
 
@@ -12,13 +12,7 @@ let mousePressed = false;
 
 export function initUI(){
     // Initialize dialogue box
-    const size = new Vector2i(400, 125);
-    const position = new Vector2i((Game.canvas.width - size.x) / 2, Game.canvas.height - size.y);
-    const scale = new Vector2f(Game.scaleX, Game.scaleY);
-    dialogueBox = new SpeechBubble();
-    dialogueBox.init(position, size, 15, scale, 7);
-    createMessages();
-    console.log("Dialogue box created:", dialogueBox);
+    initSpeechBubble();
 
     // Initialize gameplay element boxes
     topBox = new BoxBubble(new Vector2i(200,200), new Vector2i(200,200), 15, '#ffffff');
@@ -33,7 +27,7 @@ export function updateUI(deltaTime){
     if (dialogueBox)
     {
         if(mousePressed){dialogueBox.nextMessage(); mousePressed = false;}
-        dialogueBox.update(deltaTime, new Vector2f(Game.scaleX, Game.scaleY));
+        dialogueBox.update(deltaTime, new Vector2i(Game.scaleX, Game.scaleY));
     }
 }
 
@@ -57,6 +51,19 @@ export function handleMouseClick(){
     console.log("Mouse click registered");
 }
 
+function initSpeechBubble(){
+    const size = new Vector2i(400, 125);
+    const position = new Vector2i((Game.canvas.width - size.x) / 2, Game.canvas.height - size.y);
+    const scale = new Vector2i(Game.scaleX, Game.scaleY);
+    const radius = 15;
+    const lineWidth = 7;
+    const fontSize = 24;
+    dialogueBox = new SpeechBubble();
+    dialogueBox.init(position, size, radius, scale, lineWidth, fontSize);
+
+    createMessages();
+    console.log("Dialogue box created:", dialogueBox);
+}
 function createMessages(){
     dialogueBox.addMessage("Hello there!");
     dialogueBox.addMessage("Welcome to my game!");

@@ -1,5 +1,5 @@
 import { Game } from '../game.js'
-import { Vector2i, Vector2f } from '../constants.js';
+import { Vector2i } from '../constants.js';
 
 export class SpeechBubble
 {
@@ -16,7 +16,7 @@ export class SpeechBubble
         this.lineWidth = 0;
     }
 
-    init(pos, size, radius, scale, lineWidth){
+    init(pos, size, radius, scale, lineWidth, fontSize){
         this.pos = pos;
         this.initialSize = size; // Store original size once
         this.size = size; // Copy the size
@@ -25,28 +25,35 @@ export class SpeechBubble
         this.scale = scale; // Store current scale
         this.initialLineWidth = lineWidth;
         this.lineWidth = lineWidth;
+        this.initialFontSize = fontSize;
+        this.fontSize = fontSize;
+
+        this.scaleBubble(scale);
+        this.scaleText(scale);
     }
 
     update(deltaTime, scale){
-        this.scaleBubble(scale);
+        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
+            this.scale = scale;
+            this.scaleBubble(scale);
+            this.scaleText(scale);
+        }
     }
 
     scaleBubble(scale){
-        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
-            this.scale = scale;
+        this.size = { x: this.initialSize.x * this.scale.x, y: this.initialSize.y * this.scale.y };
+        this.pos = { x: (Game.canvas.width - this.size.x) / 2, y: Game.canvas.height - this.size.y - (this.lineWidth/2)};
 
-            this.size = { x: this.initialSize.x * this.scale.x, y: this.initialSize.y * this.scale.y };
-            this.pos = { x: (Game.canvas.width - this.size.x) / 2, y: Game.canvas.height - this.size.y};
+        this.radius = this.initialRadius * Math.min(this.scale.x, this.scale.y);
+        this.lineWidth = this.initialLineWidth * Math.min(this.scale.x, this.scale.y);
 
-            this.radius = this.initialRadius * Math.min(this.scale.x, this.scale.y);
-            this.lineWidth = this.initialLineWidth * Math.min(this.scale.x, this.scale.y);
+        console.log("SpeechBox Updated");
+        console.log("New Scale: ", this.scale, "New Size: ", this.size);
+        console.log("New Position: ", this.pos, "New Radius: ", this.radius);
+    }
 
-            console.log("SpeechBox Updated");
-            console.log("New Scale: ", this.scale);
-            console.log("New Size: ", this.size);
-            console.log("New Position: ", this.pos);
-            console.log("New Radius: ", this.radius);
-        }
+    scaleText(scale){
+        this.fontSize = this.initialFontSize * Math.min(this.scale.x, this.scale.y);
     }
 
     draw(ctx){
@@ -84,12 +91,11 @@ export class SpeechBubble
     drawText(ctx)
     {
         const message = this.messages[this.currentMessageIndex];
-        const scaledFontSize = 24 * Math.min(this.scale.x, this.scale.y);
-        ctx.font = `${scaledFontSize}px Arial`;
+        ctx.font = `${this.fontSize}px Arial`;
 
         // Cache calculations that don't change per call
         const maxWidth = this.size.x - 80 * this.scale.x;
-        const lineHeight = scaledFontSize * 1.2;
+        const lineHeight = this.fontSize * 1.2;
         const startX = (ctx.canvas.width - this.size.x) / 2 + 40 * this.scale.x;
         const startY = ctx.canvas.height - this.size.y - ctx.lineWidth + 40 * this.scale.y;
         
