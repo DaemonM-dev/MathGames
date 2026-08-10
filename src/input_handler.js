@@ -1,46 +1,53 @@
 import { Game } from './game.js';
-import { GAME_WIDTH, GAME_HEIGHT, Vector2i } from './constants.js';
+import { GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 
 export class InputHandler{
     constructor(){
-        this.mousePos = null;
+        this.mousePos = {x: 0.0, y: 0.0};
         this.mouseClicked = false;
         this.mouseDown = false;
     }
 
     initInputs(){
-        Game.canvas.addEventListener('mousedown', this.setMouseDown.bind(this));
-        Game.canvas.addEventListener('mouseup', this.setMouseUp.bind(this));
-        Game.canvas.addEventListener('click', this.setMouseClick.bind(this));
-        Game.canvas.addEventListener('mousemove', this.updateMousePos.bind(this));
+        Game.canvas.addEventListener('mousedown', (event) => {
+            if(!this.mouseDown){
+                this.mouseDown = true;
+                console.log("Mouse Down Input");
+            }
+        });
+        
+        Game.canvas.addEventListener('mouseup', (event) => {
+            if(this.mouseDown){
+                this.mouseDown = false;
+                console.log("Mouse Up Input");
+            }
+            if(this.mouseClicked){this.mouseClicked = false;}
+        });
+        
+        Game.canvas.addEventListener('click', (event) => {
+            if(!this.mouseClicked){
+                this.mouseClicked = true;
+                console.log("Mouse Click Input");
+            }
+        });
+        
+        Game.canvas.addEventListener('mousemove', (event) => {
+            const screen = Game.canvas.getBoundingClientRect();
+            this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
+        });
+        
         console.log("Inputs Initialized");
     }
 
-    update(deltaTime){
-
-    }
-
-    setMouseDown(){
-        if(!this.mouseDown){this.mouseDown = true;console.log("Mouse Down Input");}
-    }
     getMouseDown(){
         return this.mouseDown;
     }
-    setMouseUp(){
-        if(this.mouseDown){this.mouseDown = false;console.log("Mouse Up Input");}
-    }
-    setMouseClick(){
-        if(!this.mouseClicked){this.mouseClicked = true;console.log("Mouse Click Input");}
-    }
-    resetMouseClick(){
-        if(this.mouseClicked){this.mouseClicked = false;}
-    }
-    getMouseClick(){
-        return this.mouseClicked;
-    }
-    updateMousePos(event){
-        const screen = Game.canvas.getBoundingClientRect();
-        this.mousePos = new Vector2i( event.clientX - screen.left, event.clientY - screen.top);
-    }
 
+    getMouseClicked(){
+        if (this.mouseClicked) {
+            this.mouseClicked = false;
+            return true;
+        }
+        return false;
+    }
 }
