@@ -9,9 +9,10 @@ export class InputHandler{
     }
 
     initInputs(){
-        Game.canvas.addEventListener('mousedown', this.setMouseDown);
-        Game.canvas.addEventListener('mouseup', this.setMouseUp);
-        Game.canvas.addEventListener('click', this.setMouseClick);
+        Game.canvas.addEventListener('mousedown', this.setMouseDown.bind(this));
+        Game.canvas.addEventListener('mouseup', this.setMouseUp.bind(this));
+        Game.canvas.addEventListener('click', this.setMouseClick.bind(this));
+        Game.canvas.addEventListener('mousemove', this.updateMousePos.bind(this));
         console.log("Inputs Initialized");
     }
 
@@ -31,11 +32,15 @@ export class InputHandler{
     setMouseClick(){
         if(!this.mouseClicked){this.mouseClicked = true;console.log("Mouse Click Input");}
     }
-    re_setMouseClick(){
+    resetMouseClick(){
         if(this.mouseClicked){this.mouseClicked = false;}
     }
     getMouseClick(){
         return this.mouseClicked;
+    }
+    updateMousePos(event){
+        const screen = Game.canvas.getBoundingClientRect();
+        this.mousePos = new Vector2i( event.clientX - screen.left, event.clientY - screen.top);
     }
 
 }

@@ -26,7 +26,7 @@ export function initUI(){
 export function updateUI(deltaTime, input){
     if (dialogueBox)
     {
-        if(input.getMouseClick){dialogueBox.nextMessage();}
+        if(input.getMouseClick()){dialogueBox.nextMessage();input.resetMouseClick();}
         dialogueBox.update(deltaTime, new Vector2i(Game.scaleX, Game.scaleY));
     }
 }
