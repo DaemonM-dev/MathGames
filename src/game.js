@@ -25,7 +25,7 @@ export function init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
     
-    background.src = './assets/shelf.png';
+    background.src = './assets/isolated_png/Cake_Case.png';
 
     resizeCanvas();
     initUI();
