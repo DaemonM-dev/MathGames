@@ -1,5 +1,5 @@
-import { Game } from '../game.js'
-import { Vector2i } from '../constants.js';
+import { Game } from './game.js'
+import { Vector2i } from './constants.js';
 
 export class SpeechBubble
 {

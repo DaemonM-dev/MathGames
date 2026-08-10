@@ -1,7 +1,7 @@
-import { Game } from './game.js'
-import { Vector2i } from './constants.js'
-import { SpeechBubble } from './ui_elements/speech_bubbles.js';
-import { BoxBubble } from './ui_elements/box_bubble.js'
+import { Game } from './game.js';
+import { Vector2i } from './constants.js';
+import { SpeechBubble } from './speech_bubbles.js';
+import { BoxBubble } from './box_bubble.js';
 
 let dialogueBox = null;
 let topBox = null;
@@ -23,10 +23,10 @@ export function initUI(){
     console.log("Bottom box created:", bottomBox);
 }
 
-export function updateUI(deltaTime){
+export function updateUI(deltaTime, input){
     if (dialogueBox)
     {
-        if(mousePressed){dialogueBox.nextMessage(); mousePressed = false;}
+        if(input.getMouseClick){dialogueBox.nextMessage();}
         dialogueBox.update(deltaTime, new Vector2i(Game.scaleX, Game.scaleY));
     }
 }
@@ -38,17 +38,6 @@ export function drawUI(){
     if(middleBox){ middleBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     if(bottomBox){ bottomBox.draw(Game.ctx,Game.scaleX, Game.scaleY); }
     
-}
-
-export function handleMouseDown(){
-    
-}
-export function handleMouseUp(){
-    
-}
-export function handleMouseClick(){
-    if(!mousePressed){mousePressed = true;}
-    console.log("Mouse click registered");
 }
 
 function initSpeechBubble(){

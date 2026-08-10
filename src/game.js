@@ -1,6 +1,7 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 import { initUI, updateUI, drawUI } from './ui_handler.js';
-import { handleMouseDown, handleMouseUp, handleMouseClick } from './ui_handler.js';
+import { InputHandler } from './input_handler.js';
+
 
 export const Game = {
     canvas: null,
@@ -8,7 +9,8 @@ export const Game = {
     running: false,
     lastTime: 0,
     scaleX: 1,
-    scaleY: 1
+    scaleY: 1,
+    input: null
 };
 
 let backgroundLoaded = false;
@@ -24,21 +26,16 @@ export function init(){
     Game.ctx = Game.canvas.getContext('2d');
     
     background.src = './assets/shelf.png';
-    
-    setUpInputs();
+
     resizeCanvas();
     initUI();
+
+    Game.input = new InputHandler();
+    Game.input.initInputs();
 
     Game.running = true;
     requestAnimationFrame(gameLoop);
     console.log("Game Initialized");
-}
-
-function setUpInputs(){
-    Game.canvas.addEventListener('mousedown', handleMouseDown);
-    Game.canvas.addEventListener('mouseup', handleMouseUp);
-    Game.canvas.addEventListener('click', handleMouseClick);
-    console.log("Inputs Initialized");
 }
 
 function gameLoop(timeStamp){
@@ -54,7 +51,7 @@ function gameLoop(timeStamp){
 }
 
 function update(deltaTime){
-    updateUI(deltaTime);
+    updateUI(deltaTime, Game.input);
 }
 
 function draw(){

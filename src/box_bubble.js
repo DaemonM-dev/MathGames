@@ -1,4 +1,4 @@
-import {Vector2i} from '../constants.js';
+import {Vector2i} from './constants.js';
 
 export class BoxBubble{
     constructor(pos = null, size = null, radius = 0, color = ''){
