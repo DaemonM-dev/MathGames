@@ -62,5 +62,13 @@ export class AssetHandler{
         this.addAsset('boy', 'assets/Boy.png');
         this.addAsset('girl', 'assets/Girl.png');
         this.addAsset('girl_left', 'assets/Girl_mirrored.png');
+
+        this.addAsset('choc_cake', 'assets/choc_cake.png');
+        this.addAsset('fruit_cake', 'assets/fruit_cake.png');
+        this.addAsset('fruit', 'assets/fruit.png');
+        this.addAsset('mint_cake', 'assets/mint_cake.png');
+        this.addAsset('onigiri', 'assets/onigiri.png');
+        this.addAsset('salad', 'assets/salad.png');
+        this.addAsset('tofu', 'assets/tofu.png');
     }
 }
