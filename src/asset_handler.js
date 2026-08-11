@@ -61,5 +61,6 @@ export class AssetHandler{
         this.addAsset('background', 'assets/Cake_Case.png');
         this.addAsset('boy', 'assets/Boy.png');
         this.addAsset('girl', 'assets/Girl.png');
+        this.addAsset('girl_left', 'assets/Girl_mirrored.png');
     }
 }
