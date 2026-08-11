@@ -4,37 +4,43 @@ import { TextBubble } from './text_bubble.js'
 
 export class UiHandler{
     constructor(){
-        this.scale = {x: 1.0, y: 1.0};
         this.background = null;
         this.textBubble = null;
     }
     
-    initUI(ctx, assets, scale){
-        this.scale = scale;
+    initUI(scale, assets, ctx){
         this.background = assets.getAsset('background');
-        this.initTextBubble(ctx);
+        this.initTextBubble(scale, ctx);
     }
 
-    updateUI(ctx, scale, deltaTime){
-        if (this.scale.x !== scale.x || this.scale.y !== scale.y) {
-            this.scale = scale;
-        }
+    updateUI(scale, ctx, deltaTime){
+        this.textBubble.update(scale, ctx, deltaTime);
     }
 
     drawUI(ctx){
         ctx.drawImage(this.background, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        this.textBubble.draw(ctx);
+        if(this.textBubble){this.textBubble.draw(ctx);}
     }
 
-    initTextBubble(ctx){
-        const size = {x:400 * this.scale.x , y:125 * this.scale.y};
-        const pos = {x: (ctx.canvas.width / 2) - (size.x / 2),
-                          y: ctx.canvas.height - size.y};
+    resizeUI(scale){
+        if(this.scale.x !== scale.x || this.scale.y !== scale.y){
+            console.log("Old Scale for UI: ", this.scale);
+            this.scale = scale;
+            console.log("New Scale for UI: ", this.scale);
+        }
+    }
+
+    initTextBubble(newScale, ctx){
+        const size = {x:400 , y:125};
+        const lineWidth = 7 * Math.max(newScale.x, newScale.y);
+        const pos = {x: (ctx.canvas.width / 2) - ((size.x * newScale.x) / 2),
+                     y: lineWidth / 2};
         const radius = 15;
-        const lineWidth = 7 * Math.max(this.scale.x, this.scale.y);
         const fontSize = 24;
         const color = '#f0b155';
+        const scale = {x: newScale.x, y: newScale.y};
 
-        this.textBubble = new TextBubble(size, pos, radius, lineWidth, fontSize, color);
+        this.textBubble = new TextBubble(pos, size, radius, lineWidth,
+                                         fontSize, color, scale);
     }
 }

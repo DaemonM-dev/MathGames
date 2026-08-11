@@ -49,11 +49,11 @@ function update(deltaTime){
     if(!Game.assetsLoaded){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
-            Game.ui.initUI(Game.ctx, Game.assets, Game.scale);
+            Game.ui.initUI(Game.scale, Game.assets, Game.ctx);
             console.log("Assets loaded");
         }
     } else{
-        Game.ui.updateUI(Game.ctx, Game.scale, deltaTime);
+        Game.ui.updateUI(Game.scale, Game.ctx, deltaTime);
     }
 }
 
@@ -85,7 +85,9 @@ export function resizeCanvas(){
 
         screenCenter = {x: displayWidth / 2, y: displayHeight / 2};
 
+        /*
         console.log("Canvas resized:", displayWidth, "x", displayHeight); 
+        */
     }
 }
 
