@@ -23,7 +23,7 @@ export class UiHandler{
     }
 
     drawUI(ctx){
-        ctx.drawImage(this.background, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(this.background, 0, 0, ctx.canvas.width / 2, ctx.canvas.height / 2);
         if(this.boy){this.boy.draw(ctx)};
         if(this.girl){this.girl.draw(ctx)};
         if(this.textBubble){this.textBubble.draw(ctx);}
@@ -38,10 +38,10 @@ export class UiHandler{
     }
 
     initTextBubble(newScale, ctx){
-        const size = {x:500 , y:225};
-        const lineWidth = 7 * Math.max(newScale.x, newScale.y);
-        const pos = {x: (ctx.canvas.width / 2) - ((size.x * newScale.x) / 2),
-                     y: lineWidth / 2};
+        const size = {x:500 / 3 , y:225 / 4};
+        const lineWidth = 3 * Math.min(newScale.x, newScale.y);
+        const pos = {x: (ctx.canvas.width / 4) - ((size.x * newScale.x) / 2),
+                     y: ctx.canvas.height - size.y - (lineWidth / 2)};
         const radius = 15;
         const fontSize = 24;
         const color = '#f0b155';
@@ -52,14 +52,12 @@ export class UiHandler{
     }
 
     initCharacters(newScale, assets, ctx){
-        let size = {x:417 , y:567.25};
+        let size = {x:(417 / 2) * 0.7 , y:(567.25 / 2) * 0.7};
         let position = {x: 0,y: ctx.canvas.height - size.y};
-
         this.boy = new Character(assets.getAsset('boy'), position, size);
 
-        size = {x:588 * 0.7, y:743 * 0.7};
-        position = {x: ctx.canvas.width - size.x, y: ctx.canvas.height - size.y};
-
+        size = {x:(588 / 2) * 0.5, y:(743 / 2) * 0.5};
+        position = {x: (ctx.canvas.width / 2) - size.x, y: ctx.canvas.height - size.y};
         this.girl = new Character(assets.getAsset('girl_left'), position, size);
     }
 }

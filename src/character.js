@@ -6,11 +6,7 @@ export class Character{
         this.cachedSize = size;
     }
 
-    update(scale, ctx, deltaTime){
-        this.maintainPosAndScale(scale,ctx);
-    }
-
-    updateBoy(scale, ctx){
+    updateBoy(scale, ctx, deltaTime){
         let newSize = {
             x: this.cachedSize.x,
             y: this.cachedSize.y
@@ -26,7 +22,7 @@ export class Character{
         console.log("new boy size: ", this.size)
     }
 
-    updateGirl(scale, ctx){
+    updateGirl(scale, ctx, deltaTime){
         let newSize = {
             x: this.cachedSize.x,
             y: this.cachedSize.y
@@ -36,7 +32,7 @@ export class Character{
         newSize.y = newSize.y * scale.y;
 
         this.size = newSize;
-        this.pos.x = ctx.canvas.width - this.size.x;
+        this.pos.x = (ctx.canvas.width / 2) - this.size.x;
         this.pos.y = ctx.canvas.height - this.size.y;
 
         console.log("new girl pos: ", this.pos);

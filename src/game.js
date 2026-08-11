@@ -65,7 +65,12 @@ function draw(){
         Game.ctx.font = `40px Arial`;
         Game.ctx.fillText("Loading...", screenCenter.x - 40, screenCenter.y);
     } else{
+        Game.ctx.fillStyle = "#9bd7b5";
+        Game.ctx.fillRect(0,Game.ctx.canvas.height - (Game.ctx.canvas.height / 2),
+        Game.ctx.canvas.width / 2, Game.ctx.canvas.height / 2)
         Game.ui.drawUI(Game.ctx);
+        Game.ctx.strokeRect(0, 0, Game.ctx.canvas.width / 2, Game.ctx.canvas.height / 2);
+        Game.ctx.strokeRect(0, Game.ctx.canvas.height - (Game.ctx.canvas.height / 2), Game.ctx.canvas.width / 2, Game.ctx.canvas.height / 2);
     }
     
 }

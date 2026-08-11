@@ -39,9 +39,8 @@ export class TextBubble{
         this.radius = this.cachedRadius * Math.min(scale.x, scale.y);
         this.lineWidth = this.cachedLW * Math.min(scale.x, scale.y);
 
-        this.pos = {x: (ctx.canvas.width / 2) - (this.size.x / 2),
-                     y: this.lineWidth / 2};
-
+        this.pos = {x: (ctx.canvas.width / 4) - (this.size.x / 2),
+                    y: ctx.canvas.height - this.size.y - (this.lineWidth / 2)};
     }
 
 }
