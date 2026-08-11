@@ -49,7 +49,7 @@ function update(deltaTime){
     if(!Game.assetsLoaded){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
-            Game.ui.initUI(Game.assets, Game.scale);
+            Game.ui.initUI(Game.ctx, Game.assets, Game.scale);
             console.log("Assets loaded");
         }
     } else{
