@@ -50,7 +50,8 @@ function update(deltaTime){
     if(!Game.assetsLoaded){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
-            Game.ui.initUI(Game.assets);
+            resizeCanvas();
+            Game.ui.initUI(Game.assets, Game.ctx);
             console.log("Assets loaded");
         }
     } else{
