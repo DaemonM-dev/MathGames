@@ -38,6 +38,7 @@ export class InputHandler{
         Game.canvas.addEventListener('mousemove', (event) => {
             const screen = Game.canvas.getBoundingClientRect();
             this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
+            console.log("Mouse Position: ", this.mousePos);
         });
         
         console.log("Inputs Initialized");

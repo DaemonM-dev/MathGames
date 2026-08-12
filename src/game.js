@@ -50,14 +50,12 @@ function update(deltaTime){
     if(!Game.assetsLoaded){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
-            Game.ui.initUI(Game.scale, Game.assets, Game.ctx);
+            Game.ui.initUI(Game.assets);
             console.log("Assets loaded");
         }
     } else{
-        Game.ui.updateUIscale(Game.scale, Game.ctx, deltaTime);
         Game.activeCommand = Game.input.getActiveCommand();
-
-        Game.ui.interact(Game.activeCommand, Game.input.mousePos);
+        Game.ui.updateUI(Game.scale, deltaTime);
     }
 }
 

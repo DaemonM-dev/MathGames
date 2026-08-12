@@ -58,15 +58,14 @@ export class AssetHandler{
     }
 
     createAssetEntries(){
-        this.addAsset('background', 'assets/Cake_Case.png');
-        this.addAsset('boy', 'assets/Boy.png');
-        this.addAsset('girl', 'assets/Girl.png');
-        this.addAsset('girl_left', 'assets/Girl_mirrored.png');
-
-        this.addAsset('choc_cake', 'assets/choc_cake.png');
-        this.addAsset('fruit_cake', 'assets/fruit_cake.png');
-        this.addAsset('fruit', 'assets/fruit.png');
-        this.addAsset('mint_cake', 'assets/mint_cake.png');
+        this.addAsset('background', 'assets/background.png');
+        this.addAsset('boy', 'assets/boy.png');
+        this.addAsset('girl', 'assets/girl.png');
+        this.addAsset('chocolatecake', 'assets/chocolatecake.png');
+        this.addAsset('cupcakes', 'assets/cupcakes.png');
+        this.addAsset('fruitbowl', 'assets/fruitbowl.png');
+        this.addAsset('fruitcake', 'assets/fruitcake.png');
+        this.addAsset('mintcake', 'assets/mintcake.png');
         this.addAsset('onigiri', 'assets/onigiri.png');
         this.addAsset('salad', 'assets/salad.png');
         this.addAsset('tofu', 'assets/tofu.png');
