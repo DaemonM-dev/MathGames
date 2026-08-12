@@ -51,6 +51,7 @@ function update(deltaTime){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
             resizeCanvas();
+            Game.ui.updateUIScale(Game.scale);
             Game.ui.initUI(Game.assets, Game.ctx);
             console.log("Assets loaded");
         }

@@ -14,23 +14,22 @@ export class UiHandler{
     initUI(assets, ctx){
         this.background = assets.getAsset('background');
 
-        let imgSize = {x: 300 / 2, y: 300 / 2};
-
+        let imgSize = {x: (300 / 1.75) * this.scale.x, y: (300 / 1.75) * this.scale.y};
         this.foods.push(
-            new FoodItem(assets.getAsset('chocolatecake'), imgSize, { x: 235, y: 130 }, 15),
-            new FoodItem(assets.getAsset('cupcakes'), imgSize, { x: 465, y: 145 }, 15),
-            new FoodItem(assets.getAsset('fruitbowl'), imgSize, { x: 695, y: 140 }, 15),
-            new FoodItem(assets.getAsset('fruitcake'), imgSize, { x: 915, y: 135 }, 15),
-            new FoodItem(assets.getAsset('mintcake'), imgSize, { x: 235, y: 360 }, 15),
-            new FoodItem(assets.getAsset('onigiri'), imgSize, { x: 465, y: 375 }, 15),
-            new FoodItem(assets.getAsset('salad'), imgSize, { x: 695, y: 375 }, 15),
-            new FoodItem(assets.getAsset('tofu'), imgSize, { x: 920, y: 385 }, 15)
+            new FoodItem(assets.getAsset('chocolatecake'), imgSize, { x: 255, y: 155 }, 15),
+            new FoodItem(assets.getAsset('cupcakes'), imgSize, { x: 470, y: 165 }, 15),
+            new FoodItem(assets.getAsset('fruitbowl'), imgSize, { x: 700, y: 160 }, 15),
+            new FoodItem(assets.getAsset('fruitcake'), imgSize, { x: 925, y: 155 }, 15),
+            new FoodItem(assets.getAsset('mintcake'), imgSize, { x: 255, y: 380 }, 15),
+            new FoodItem(assets.getAsset('onigiri'), imgSize, { x: 475, y: 395 }, 15),
+            new FoodItem(assets.getAsset('salad'), imgSize, { x: 700, y: 390 }, 15),
+            new FoodItem(assets.getAsset('tofu'), imgSize, { x: 930, y: 410 }, 15)
         );
 
-        imgSize = {x: 450 / 1.5, y: 600 / 1.5 };
+        imgSize = {x: 450 * this.scale.x, y: 600 * this.scale.y };
 
-        const boyPos = { x: 0.0, y: ctx.canvas.height - imgSize.y};
-        const girlPos = { x: this.background.width - imgSize.x - 10, y:ctx.canvas.height };
+        const boyPos = { x: 0.0, y: ctx.canvas.height - 205};
+        const girlPos = { x: this.background.width - imgSize.x, y:ctx.canvas.height - 205};
 
         this.characters.push(
             new Character(assets.getAsset('boy'), imgSize, boyPos),
@@ -39,10 +38,19 @@ export class UiHandler{
     }
 
     updateUI(scale, deltaTime){
-        if(scale.x !== this.scale.x || scale.y != this.scale.y){this.scale = {...scale};}
+        this.updateUIScale(scale);
     }
 
     drawUI(ctx){
+
+        ctx.fillStyle = "purple";
+        ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+
+        ctx.fillStyle = "white";
+        ctx.fillRect(this.background.width * this.scale.x, 0, ctx.canvas.width - (this.background.width * this.scale.x),
+            ctx.canvas.height
+        )
+
         ctx.drawImage(this.background,0,0, this.background.width * this.scale.x, this.background.height * this.scale.y);
 
         this.drawBorders(ctx);
@@ -63,5 +71,9 @@ export class UiHandler{
 
         ctx.fillRect(vertPos.x * this.scale.x, vertPos.y * this.scale.y, vertSize.x * this.scale.x, vertSize.y);
         ctx.fillRect(horizPos.x * this.scale.x, horizPos.y * this.scale.y, horizSize.x * this.scale.x, horizSize.y * this.scale.y);
+    }
+
+    updateUIScale(scale){
+        if(scale.x !== this.scale.x || scale.y != this.scale.y){this.scale = {...scale};}
     }
 }
