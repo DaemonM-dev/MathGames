@@ -1,6 +1,6 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 import { AssetHandler } from './asset_handler.js';
-import { InputHandler } from './input_handler.js';
+import { InputHandler, Command } from './input_handler.js';
 import { UiHandler }    from './ui_handler.js';
 
 let screenCenter = {x: 0, y: 0};
@@ -14,7 +14,8 @@ export const Game = {
     assetsLoaded: false,
     assets: new AssetHandler(),
     input: new InputHandler(),
-    ui: new UiHandler()
+    ui: new UiHandler(),
+    activeCommand: Command.NONE
 };
 
 export function init(){
@@ -53,6 +54,7 @@ function update(deltaTime){
             console.log("Assets loaded");
         }
     } else{
+        Game.activeCommand = Game.input.getActiveCommand();
         Game.ui.updateUI(Game.scale, Game.ctx, deltaTime);
     }
 }

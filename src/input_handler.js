@@ -1,33 +1,38 @@
 import { Game } from './game.js';
 import { GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 
+export const Command = {
+    NONE: 'none',
+    MOUSE_CLICK: 'mouse_click',
+    MOUSE_DOWN: 'mouse_down',
+    MOUSE_UP: 'mouse_up'
+}
+
 export class InputHandler{
     constructor(){
         this.mousePos = {x: 0.0, y: 0.0};
-        this.mouseClicked = false;
-        this.mouseDown = false;
+        this.activeCommand = Command.NONE;
     }
 
     initInputs(){
         Game.canvas.addEventListener('mousedown', (event) => {
-            if(!this.mouseDown){
-                this.mouseDown = true;
+            if(this.activeCommand !== Command.MOUSE_DOWN){
+                this.activeCommand = Command.MOUSE_DOWN;
                 console.log("Mouse Down Input");
             }
         });
         
-        Game.canvas.addEventListener('mouseup', (event) => {
-            if(this.mouseDown){
-                this.mouseDown = false;
-                console.log("Mouse Up Input");
-            }
-            if(this.mouseClicked){this.mouseClicked = false;}
-        });
-        
         Game.canvas.addEventListener('click', (event) => {
-            if(!this.mouseClicked){
-                this.mouseClicked = true;
+            if(this.activeComand !== Command.MOUSE_CLICK){
+                this.activeCommand = Command.MOUSE_CLICK;
                 console.log("Mouse Click Input");
+            }
+        });
+
+        Game.canvas.addEventListener('mouseup', (event) => {
+            if(this.activeComand !== Command.MOUSE_UP){
+                this.activeCommand = Command.MOUSE_UP;
+                console.log("Mouse Up Input");
             }
         });
         
@@ -39,15 +44,13 @@ export class InputHandler{
         console.log("Inputs Initialized");
     }
 
-    getMouseDown(){
-        return this.mouseDown;
+    getActiveCommand(){
+        const command = this.activeCommand;
+        this.activeCommand = null;
+        return command;
     }
 
-    getMouseClicked(){
-        if (this.mouseClicked) {
-            this.mouseClicked = false;
-            return true;
-        }
-        return false;
+    getMousePosition(){
+        return this.mousePos;
     }
 }

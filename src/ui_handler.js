@@ -12,6 +12,7 @@ export class UiHandler{
 
 
         this.foods = [];
+        this.foodSelected = false;
     }
     
     initUI(scale, assets, ctx){
