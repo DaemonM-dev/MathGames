@@ -12,7 +12,6 @@ export class UiHandler{
         this.girl = null;
 
         this.foods = [];
-        this.foodSelected = null;
     }
     
     initUI(scale, assets, ctx){
@@ -31,13 +30,35 @@ export class UiHandler{
     }
 
     interact(command, mousePos){
-        if(command === Command.MOUSE_CLICK){
-           if(this.foods.forEach(food => food.checkForSelected())){return;}
-           else{this.foods.forEach(food => food.checkForCollision(mousePos));}
+        if (command === Command.MOUSE_CLICK) {
+            let clickedOnFood = false;
+            for (let i = 0; i < this.foods.length; i++) {
+                const food = this.foods[i];
+                if (food.checkForCollision(mousePos)) {
+                    clickedOnFood = true;
+                    
+                    // Toggle selection: if already selected, deselect it
+                    if (food.selected) {
+                        food.toggleSelected();
+                    } else {
+                        // Deselect all other foods and select this one
+                        this.foods.forEach(f => f.selected = false);
+                        food.toggleSelected();
+                    }
+                    break; // Only process the first hit
+                }
+            }
+            if (!clickedOnFood) {
+                this.foods.forEach(food => food.selected = false);
+            }
         }
 
-        this.foods.forEach(food => food.move(mousePos));
-
+        // Move selected food to mouse position (if any)
+        this.foods.forEach(food => {
+            if (food.selected) {
+                food.move(mousePos);
+            }
+        });
     }
 
     drawUI(ctx){

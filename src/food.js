@@ -24,19 +24,21 @@ export class FoodItem{
         ctx.drawImage(this.texture, this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 
-    checkForSelected(){
-        if(this.selected){return true;}
-        return false;
-    }
     checkForCollision(mousePos){
         if(mousePos.x >= this.pos.x && 
         mousePos.x <= this.pos.x + this.size.x &&
         mousePos.y >= this.pos.y &&
         mousePos.y <= this.pos.y + this.size.y){
-            if(this.selected){this.selected = false;}
-            else{this.selected = true;
-            console.log("Food Selected: ", this.name);}
+           return true;
         }
+        return false;
+    }
+
+    toggleSelected(){
+        this.selected = !this.selected;
+
+        if(this.selected){console.log("Item Selected");}
+        else{console.log("Item De-selected");}
     }
 
     move(mousePos){
