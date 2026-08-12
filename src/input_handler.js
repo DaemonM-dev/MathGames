@@ -18,21 +18,20 @@ export class InputHandler{
         Game.canvas.addEventListener('mousedown', (event) => {
             if(this.activeCommand !== Command.MOUSE_DOWN){
                 this.activeCommand = Command.MOUSE_DOWN;
-                console.log("Mouse Down Input");
             }
         });
+        
         
         Game.canvas.addEventListener('click', (event) => {
             if(this.activeComand !== Command.MOUSE_CLICK){
                 this.activeCommand = Command.MOUSE_CLICK;
-                console.log("Mouse Click Input");
             }
         });
-
+        
+       
         Game.canvas.addEventListener('mouseup', (event) => {
             if(this.activeComand !== Command.MOUSE_UP){
                 this.activeCommand = Command.MOUSE_UP;
-                console.log("Mouse Up Input");
             }
         });
         
@@ -46,11 +45,9 @@ export class InputHandler{
 
     getActiveCommand(){
         const command = this.activeCommand;
-        this.activeCommand = null;
+        if(this.activeCommand === Command.MOUSE_CLICK){
+            this.activeCommand = Command.NONE;
+        }
         return command;
-    }
-
-    getMousePosition(){
-        return this.mousePos;
     }
 }

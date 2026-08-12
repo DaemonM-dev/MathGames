@@ -1,3 +1,4 @@
+import { Command } from './input_handler.js'
 import { TextBubble } from './text_bubble.js';
 import { Character } from './character.js';
 import { FoodItem } from './food.js';
@@ -10,9 +11,8 @@ export class UiHandler{
         this.boy = null;
         this.girl = null;
 
-
         this.foods = [];
-        this.foodSelected = false;
+        this.foodSelected = null;
     }
     
     initUI(scale, assets, ctx){
@@ -22,12 +22,22 @@ export class UiHandler{
         this.initFoods(scale, assets);
     }
 
-    updateUI(scale, ctx, deltaTime){
+    updateUIscale(scale, ctx, deltaTime){
         this.textBubble.update(scale, ctx, deltaTime);
         this.boy.updateBoy(scale, ctx, deltaTime);
         this.girl.updateGirl(scale, ctx, deltaTime);
 
         this.foods.forEach(food => food.update(scale, ctx, deltaTime));
+    }
+
+    interact(command, mousePos){
+        if(command === Command.MOUSE_CLICK){
+           if(this.foods.forEach(food => food.checkForSelected())){return;}
+           else{this.foods.forEach(food => food.checkForCollision(mousePos));}
+        }
+
+        this.foods.forEach(food => food.move(mousePos));
+
     }
 
     drawUI(ctx){
@@ -47,7 +57,15 @@ export class UiHandler{
         if(this.boy){this.boy.draw(ctx)};
         if(this.girl){this.girl.draw(ctx)};
         if(this.textBubble){this.textBubble.draw(ctx);}
-        this.foods.forEach(food => food.draw(ctx));
+
+
+        const sortedFoods = [...this.foods].sort((a, b) => {
+            if (a.selected && !b.selected) return 1;  // a comes after b
+            if (!a.selected && b.selected) return -1;  // b comes after a
+            return 0;  // both selected or both not selected
+        });
+        
+        sortedFoods.forEach(food => food.draw(ctx));
     }
 
     resizeUI(scale){

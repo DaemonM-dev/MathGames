@@ -54,8 +54,10 @@ function update(deltaTime){
             console.log("Assets loaded");
         }
     } else{
+        Game.ui.updateUIscale(Game.scale, Game.ctx, deltaTime);
         Game.activeCommand = Game.input.getActiveCommand();
-        Game.ui.updateUI(Game.scale, Game.ctx, deltaTime);
+
+        Game.ui.interact(Game.activeCommand, Game.input.mousePos);
     }
 }
 
