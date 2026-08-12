@@ -10,13 +10,8 @@ export class UiHandler{
         this.boy = null;
         this.girl = null;
 
-        this.choc_cake = null;
-        this.fruit_cake = null;
-        this.fruit = null;
-        this.mint_cake = null;
-        this.onigiri = null;
-        this.salad = null;
-        this.tofu = null;
+
+        this.foods = [];
     }
     
     initUI(scale, assets, ctx){
@@ -30,25 +25,28 @@ export class UiHandler{
         this.textBubble.update(scale, ctx, deltaTime);
         this.boy.updateBoy(scale, ctx, deltaTime);
         this.girl.updateGirl(scale, ctx, deltaTime);
+
+        this.foods.forEach(food => food.update(scale, ctx, deltaTime));
     }
 
     drawUI(ctx){
         const halfWidth = ctx.canvas.width / 2;
         const halfHeight = ctx.canvas.height / 2;
-
+        
         ctx.drawImage(this.background, 0, 0, halfWidth, halfHeight);
 
+        // Blue scene background
         ctx.fillStyle = "#9bd7b5";
         ctx.fillRect(0, halfHeight, halfWidth, halfHeight)
 
+        // Comic window borders
         ctx.strokeRect(0, 0, halfWidth, halfHeight);
         ctx.strokeRect(0, halfHeight, halfWidth, halfHeight);
-
 
         if(this.boy){this.boy.draw(ctx)};
         if(this.girl){this.girl.draw(ctx)};
         if(this.textBubble){this.textBubble.draw(ctx);}
-        this.drawFoods(ctx);
+        this.foods.forEach(food => food.draw(ctx));
     }
 
     resizeUI(scale){
@@ -84,59 +82,16 @@ export class UiHandler{
     }
 
     initFoods(scale, assets){
+        const imgSize = {x: 1772 * 0.03, y: 1801 * 0.03};
 
-        const imgSize = {x: 1772 * 0.05, y: 1801 * 0.05};
-
-        this.choc_cake = new FoodItem(assets.getAsset('choc_cake'),
-        'choc_cake', // Name
-        imgSize, // Size
-        {x: 175 , y: 100}, // Position
-        scale,15);
-
-        this.fruit_cake = new FoodItem(assets.getAsset('fruit_cake'),
-        'fruit_cake',
-        imgSize,
-        {x: 290 , y: 95},
-        scale,15);
-
-        this.fruit = new FoodItem(assets.getAsset('fruit'),
-        'fruit',
-        imgSize,
-        {x: 407 , y: 95},
-        scale,15);
-
-        this.mint_cake = new FoodItem(assets.getAsset('mint_cake'),
-        'mint_cake',
-        imgSize,
-        {x: 528 , y: 95},
-        scale,15);
-
-        this.onigiri = new FoodItem(assets.getAsset('onigiri'),
-        'onigiri',
-        imgSize,
-        {x: 175 , y: 230},
-        scale,15);
-
-        this.salad = new FoodItem(assets.getAsset('salad'),
-        'salad',
-        imgSize,
-        {x: 290 , y: 225},
-        scale,15);
-
-        this.tofu = new FoodItem(assets.getAsset('tofu'),
-        'tofu',
-        imgSize,
-        {x: 410 , y: 235},
-        scale,15);
-    }
-
-    drawFoods(ctx){
-        this.choc_cake.draw(ctx);
-        this.fruit_cake.draw(ctx);
-        this.fruit.draw(ctx);
-        this.mint_cake.draw(ctx);
-        this.onigiri.draw(ctx);
-        this.salad.draw(ctx);
-        this.tofu.draw(ctx);
+        this.foods.push(
+            new FoodItem(assets.getAsset('choc_cake'), 'choc_cake', imgSize, { x: 175, y: 100 }, scale, 15),
+            new FoodItem(assets.getAsset('fruit_cake'), 'fruit_cake', imgSize, { x: 290, y: 95 }, scale, 15),
+            new FoodItem(assets.getAsset('fruit'), 'fruit', imgSize, { x: 407, y: 95 }, scale, 15),
+            new FoodItem(assets.getAsset('mint_cake'), 'mint_cake', imgSize, { x: 528, y: 95 }, scale, 15),
+            new FoodItem(assets.getAsset('onigiri'), 'onigiri', imgSize, { x: 175, y: 230 }, scale, 15),
+            new FoodItem(assets.getAsset('salad'), 'salad', imgSize, { x: 290, y: 225 }, scale, 15),
+            new FoodItem(assets.getAsset('tofu'), 'tofu', imgSize, { x: 410, y: 235 }, scale, 15)
+        );
     }
 }

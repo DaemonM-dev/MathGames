@@ -17,9 +17,6 @@ export class Character{
 
         this.size = newSize;
         this.pos.y = ctx.canvas.height - this.size.y;
-
-        console.log("new boy pos: ", this.pos);
-        console.log("new boy size: ", this.size)
     }
 
     updateGirl(scale, ctx, deltaTime){
@@ -34,9 +31,6 @@ export class Character{
         this.size = newSize;
         this.pos.x = (ctx.canvas.width / 2) - this.size.x;
         this.pos.y = ctx.canvas.height - this.size.y;
-
-        console.log("new girl pos: ", this.pos);
-        console.log("new boy size: ", this.size)
     }
 
     draw(ctx){
