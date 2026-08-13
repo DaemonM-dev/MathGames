@@ -7,9 +7,11 @@ export class FoodItem{
         this.pos = {...pos};
         this.cost = {...cost};
         this.selected = false;
+        this.scale = {x:1.0, y:1.0};
 
         this.cachedSize = {...size};
-        this.cachedPos = {...pos};
+        this.cachedPos = {...pos};  // Position BEFORE scaling
+        this.startPos = {...pos};   // Original position (never changes)
     }
 
     updateScale(scale){
@@ -18,9 +20,10 @@ export class FoodItem{
             y: this.cachedSize.y * scale.y
         };
         this.pos = {
-            x: this.cachedPos.x * scale.x,
-            y: this.cachedPos.y * scale.y
+            x: this.cachedPos.x * scale.x,  // Scale the cached position
+            y: this.cachedPos.y * scale.y   // Scale the cached position
         };
+        this.scale = {...scale};
     }
 
     draw(ctx){
@@ -44,11 +47,16 @@ export class FoodItem{
 
     move(mousePos){
         if(this.selected){
-            this.pos = {x:mousePos.x - (this.size.x / 2), y: mousePos.y - (this.size.y / 2)};
+            // Update the current position (this.pos) during dragging
+            this.pos = {x: mousePos.x - (this.size.x / 2), y: mousePos.y - (this.size.y / 2)};
         }
     }
 
     getSelected(){
         return this.selected;
+    }
+    
+    resetToStart(){
+        this.pos = {x:this.startPos.x * this.scale.x, y: this.startPos.y * this.scale.y};
     }
 }

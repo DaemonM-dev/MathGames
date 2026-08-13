@@ -87,27 +87,45 @@ export class UiHandler{
     }
 
     interact(command, mousePos){
-
-        if(command === Command.MOUSE_DOWN){
-            if(!this.selectedFood){
-                for(let i = 0; i < this.foods.length; i++){
-                    if(this.foods[i].select(mousePos)){
-                        this.selectedFood = true;
-                        break;
-                    }
-                }
-            }
-            else{
-                this.foods.forEach(food => {food.move(mousePos)});
-            }
-        } else if(command === Command.MOUSE_UP){
+    if(command === Command.MOUSE_DOWN){
+        if(!this.selectedFood){
             for(let i = 0; i < this.foods.length; i++){
-                    if(this.foods[i].getSelected()){
-                        this.foods[i].deselect();
-                        this.selectedFood = false;
-                        break;
-                    }
+                if(this.foods[i].select(mousePos)){
+                    this.selectedFood = true;
+                    break;
                 }
+            }
+        }
+        else{
+            this.foods.forEach(food => {food.move(mousePos)});
+        }
+    } else if(command === Command.MOUSE_UP){
+        for(let i = 0; i < this.foods.length; i++){
+            if(this.foods[i].getSelected()){
+
+                const whiteRectX = this.background.width * this.scale.x;
+                const whiteRectWidth = GAME_WIDTH * this.scale.x - (this.background.width * this.scale.x);
+                if(!this.isCollidingWithWhiteRect(this.foods[i], whiteRectX, whiteRectWidth)) {
+                    this.foods[i].resetToStart();
+                }
+                
+                this.foods[i].deselect();
+                this.selectedFood = false;
+                break;
+            }
         }
     }
+}
+
+    isCollidingWithWhiteRect(foodItem, whiteRectX, whiteRectWidth) {
+    const foodLeft = foodItem.pos.x;
+    const foodRight = foodItem.pos.x + (foodItem.size.x / 2);
+    const foodTop = foodItem.pos.y;
+    const foodBottom = foodItem.pos.y + (foodItem.size.y / 2);
+    
+    const rectLeft = whiteRectX;
+    const rectRight = whiteRectX + whiteRectWidth;
+    
+    return !(foodRight < rectLeft || foodLeft > rectRight);
+}
 }
