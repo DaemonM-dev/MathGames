@@ -19,19 +19,23 @@ export class AssetHandler{
 
     loadAll(){
         this.isLoading = true;
+        console.log("Starting to load assets...");
 
         const assetEntries = Array.from(this.assets.entries());
 
-        for(let i = 0; i < assetEntries.length; i++)
-        {
+        for(let i = 0; i < assetEntries.length; i++) {
             const entryName = assetEntries[i][0];
+            console.log(`Loading asset: ${entryName} from ${assetEntries[i][1].filepath}`);
             this.loadAsset(entryName);
         }
     }
 
     loadAsset(name){
         const asset = this.assets.get(name);
-        if(!asset || asset.loaded){return;}
+        if(!asset || asset.loaded){ 
+            console.log(`Skipping load for ${name}`);
+            return;
+        }
 
         const img = new Image();
 
@@ -39,35 +43,47 @@ export class AssetHandler{
             asset.data = img;
             asset.loaded = true;
             this.loadedCount++;
+            console.log(`Successfully loaded: ${name}`);
         };
 
-        img.onerror = () => {
-            console.error(`Failed to load asset: ${name}`);
+        img.onerror = (error) => {
+            console.error(`Failed to load asset: ${name}`, error);
+            console.error(`File path attempted: ${asset.filepath}`);
             this.loadedCount++;
         };
+        
+        console.log(`Setting src to: ${asset.filepath}`);
         img.src = asset.filepath;
     }
 
     getAsset(name){
         const asset = this.assets.get(name);
-        return asset?.data || null;
+        if (!asset) {
+            console.error(`Asset not found: ${name}`);
+            return null;
+        }
+        return asset.data || null;
     }
 
     areAllAssetsLoaded(){
+        console.log(`Loaded: ${this.loadedCount}/${this.loadingCount}`);
         return this.loadedCount === this.loadingCount && this.loadingCount > 0;
     }
 
     createAssetEntries(){
-        this.addAsset('background', 'MathGames/assets/background.png');
-        this.addAsset('boy', 'MathGames/assets/boy.png');
-        this.addAsset('girl', 'MathGames/assets/girl.png');
-        this.addAsset('chocolatecake', 'MathGames/assets/chocolatecake.png');
-        this.addAsset('cupcakes', 'MathGames/assets/cupcakes.png');
-        this.addAsset('fruitbowl', 'MathGames/assets/fruitbowl.png');
-        this.addAsset('fruitcake', 'MathGames/assets/fruitcake.png');
-        this.addAsset('mintcake', 'MathGames/assets/mintcake.png');
-        this.addAsset('onigiri', 'MathGames/assets/onigiri.png');
-        this.addAsset('salad', 'MathGames/assets/salad.png');
-        this.addAsset('tofu', 'MathGames/assets/tofu.png');
+        // Try multiple path variations
+        const basePath = './src/assets/'; // Relative path
+        
+        this.addAsset('background', basePath + 'background.png');
+        this.addAsset('boy', basePath + 'boy.png');
+        this.addAsset('girl', basePath + 'girl.png');
+        this.addAsset('chocolatecake', basePath + 'chocolatecake.png');
+        this.addAsset('cupcakes', basePath + 'cupcakes.png');
+        this.addAsset('fruitbowl', basePath + 'fruitbowl.png');
+        this.addAsset('fruitcake', basePath + 'fruitcake.png');
+        this.addAsset('mintcake', basePath + 'mintcake.png');
+        this.addAsset('onigiri', basePath + 'onigiri.png');
+        this.addAsset('salad', basePath + 'salad.png');
+        this.addAsset('tofu', basePath + 'tofu.png');
     }
 }
