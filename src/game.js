@@ -14,7 +14,7 @@ export const Game = {
     assetsLoaded: false,
     assets: new AssetHandler(),
     input: new InputHandler(),
-    ui: new UiHandler(),
+    ui: new UiHandler({x: 1.0, y: 1.0}),
     activeCommand: Command.NONE
 };
 

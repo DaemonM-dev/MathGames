@@ -2,21 +2,30 @@ import { GAME_WIDTH, GAME_HEIGHT } from './constants.js'
 import { Command } from './input_handler.js'
 import { FoodItem } from './food_item.js'
 import { Character } from './character.js'
+import { TextHandler } from './text_handler.js'
 
 export class UiHandler{
     constructor(scale){
-        this.scale = {...scale};
+        this.scale = scale;
         this.background = null;
+
+        this.money = null;
+        this.sign = null;
 
         this.foods = [];
         this.characters = [];
 
         this.cachedCommand = Command.NONE;
         this.selectedFood = false;
+
+        this.text = null;
     }
     
     initUI(assets, ctx){
         this.background = assets.getAsset('background');
+
+        this.money = new FoodItem(assets.getAsset('money'), {x:375 / 6,y:200 / 4}, {x:1500,y:150}, 0);
+        this.sign = new FoodItem(assets.getAsset('sign'), {x:600 / 2,y:600 / 2}, {x:1260,y:780}, 0);
 
         let imgSize = {x: 300 / 2, y: 300 / 2};
         this.foods.push(
@@ -39,6 +48,8 @@ export class UiHandler{
             new Character(assets.getAsset('boy'), imgSize, boyPos),
             new Character(assets.getAsset('girl'), imgSize, girlPos)
         );
+
+        this.text = new TextHandler(this.scale);
     }
 
     updateUI(command, mousePos, scale, deltaTime){
@@ -56,11 +67,15 @@ export class UiHandler{
             ctx.canvas.height
         )
 
-        ctx.drawImage(this.background,0,0, this.background.width * this.scale.x, this.background.height * this.scale.y);
+        this.money.draw(ctx);
+        this.sign.draw(ctx);
 
+        ctx.drawImage(this.background,0,0, this.background.width * this.scale.x, this.background.height * this.scale.y);
         this.drawBorders(ctx);
 
         this.characters.forEach(character => {character.draw(ctx)});
+
+        this.text.drawAllMessages(ctx);
 
         this.foods.filter(food => !food.getSelected()).forEach(food => {food.draw(ctx)});
         const selectedFood = this.foods.find(food => food.getSelected());
@@ -86,6 +101,9 @@ export class UiHandler{
             this.scale = {...scale};
             this.characters.forEach(character => {character.updateScale(this.scale)});
             this.foods.forEach(food => {food.updateScale(this.scale)});
+            this.money.updateScale(this.scale);
+            this.sign.updateScale(this.scale);
+            this.text.updateMessageScale(this.scale);
         }
     }
 

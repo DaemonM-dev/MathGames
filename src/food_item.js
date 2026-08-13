@@ -10,8 +10,8 @@ export class FoodItem{
         this.scale = {x:1.0, y:1.0};
 
         this.cachedSize = {...size};
-        this.cachedPos = {...pos};  // Position BEFORE scaling
-        this.startPos = {...pos};   // Original position (never changes)
+        this.cachedPos = {...pos};
+        this.startPos = {...pos};
     }
 
     updateScale(scale){
@@ -20,8 +20,8 @@ export class FoodItem{
             y: this.cachedSize.y * scale.y
         };
         this.pos = {
-            x: this.cachedPos.x * scale.x,  // Scale the cached position
-            y: this.cachedPos.y * scale.y   // Scale the cached position
+            x: this.cachedPos.x * scale.x,
+            y: this.cachedPos.y * scale.y
         };
         this.scale = {...scale};
     }
