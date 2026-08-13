@@ -10,6 +10,9 @@ export class UiHandler{
 
         this.foods = [];
         this.characters = [];
+
+        this.cachedCommand = Command.NONE;
+        this.selectedFood = false;
     }
     
     initUI(assets, ctx){
@@ -38,8 +41,9 @@ export class UiHandler{
         );
     }
 
-    updateUI(scale, deltaTime){
+    updateUI(command, mousePos, scale, deltaTime){
         this.updateUIScale(scale);
+        this.interact(command, mousePos);
     }
 
     drawUI(ctx){
@@ -79,6 +83,31 @@ export class UiHandler{
             this.scale = {...scale};
             this.characters.forEach(character => {character.updateScale(this.scale)});
             this.foods.forEach(food => {food.updateScale(this.scale)});
+        }
+    }
+
+    interact(command, mousePos){
+
+        if(command === Command.MOUSE_DOWN){
+            if(!this.selectedFood){
+                for(let i = 0; i < this.foods.length; i++){
+                    if(this.foods[i].select(mousePos)){
+                        this.selectedFood = true;
+                        break;
+                    }
+                }
+            }
+            else{
+                this.foods.forEach(food => {food.move(mousePos)});
+            }
+        } else if(command === Command.MOUSE_UP){
+            for(let i = 0; i < this.foods.length; i++){
+                    if(this.foods[i].getSelected()){
+                        this.foods[i].deselect();
+                        this.selectedFood = false;
+                        break;
+                    }
+                }
         }
     }
 }

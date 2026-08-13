@@ -3,7 +3,6 @@ import { GAME_WIDTH, GAME_HEIGHT } from './constants.js';
 
 export const Command = {
     NONE: 'none',
-    MOUSE_CLICK: 'mouse_click',
     MOUSE_DOWN: 'mouse_down',
     MOUSE_UP: 'mouse_up'
 }
@@ -20,17 +19,9 @@ export class InputHandler{
                 this.activeCommand = Command.MOUSE_DOWN;
             }
         });
-        
-        
-        Game.canvas.addEventListener('click', (event) => {
-            if(this.activeComand !== Command.MOUSE_CLICK){
-                this.activeCommand = Command.MOUSE_CLICK;
-            }
-        });
-        
        
         Game.canvas.addEventListener('mouseup', (event) => {
-            if(this.activeComand !== Command.MOUSE_UP){
+            if(this.activeCommand !== Command.MOUSE_UP){
                 this.activeCommand = Command.MOUSE_UP;
             }
         });
@@ -45,9 +36,11 @@ export class InputHandler{
 
     getActiveCommand(){
         const command = this.activeCommand;
+        /*
         if(this.activeCommand === Command.MOUSE_CLICK){
             this.activeCommand = Command.NONE;
         }
+            */
         return command;
     }
 }

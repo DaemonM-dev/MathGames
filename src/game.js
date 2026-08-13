@@ -54,7 +54,7 @@ function update(deltaTime){
         }
     } else{
         Game.activeCommand = Game.input.getActiveCommand();
-        Game.ui.updateUI(Game.scale, deltaTime);
+        Game.ui.updateUI(Game.activeCommand, Game.input.mousePos, Game.scale, deltaTime);
     }
 }
 
