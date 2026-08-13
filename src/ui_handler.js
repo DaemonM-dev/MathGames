@@ -1,3 +1,4 @@
+import { GAME_WIDTH, GAME_HEIGHT } from './constants.js'
 import { Command } from './input_handler.js'
 import { FoodItem } from './food_item.js'
 import { Character } from './character.js'
@@ -14,22 +15,22 @@ export class UiHandler{
     initUI(assets, ctx){
         this.background = assets.getAsset('background');
 
-        let imgSize = {x: (300 / 1.75) * this.scale.x, y: (300 / 1.75) * this.scale.y};
+        let imgSize = {x: 300 / 2, y: 300 / 2};
         this.foods.push(
-            new FoodItem(assets.getAsset('chocolatecake'), imgSize, { x: 255, y: 155 }, 15),
-            new FoodItem(assets.getAsset('cupcakes'), imgSize, { x: 470, y: 165 }, 15),
-            new FoodItem(assets.getAsset('fruitbowl'), imgSize, { x: 700, y: 160 }, 15),
-            new FoodItem(assets.getAsset('fruitcake'), imgSize, { x: 925, y: 155 }, 15),
-            new FoodItem(assets.getAsset('mintcake'), imgSize, { x: 255, y: 380 }, 15),
-            new FoodItem(assets.getAsset('onigiri'), imgSize, { x: 475, y: 395 }, 15),
-            new FoodItem(assets.getAsset('salad'), imgSize, { x: 700, y: 390 }, 15),
-            new FoodItem(assets.getAsset('tofu'), imgSize, { x: 930, y: 410 }, 15)
+            new FoodItem(assets.getAsset('chocolatecake'), imgSize, { x: 250, y: 140 }, 15),
+            new FoodItem(assets.getAsset('cupcakes'), imgSize, { x: 468, y: 155 }, 15),
+            new FoodItem(assets.getAsset('fruitbowl'), imgSize, { x: 695, y: 145 }, 15),
+            new FoodItem(assets.getAsset('fruitcake'), imgSize, { x: 920, y: 142 }, 15),
+            new FoodItem(assets.getAsset('mintcake'), imgSize, { x: 253, y: 370 }, 15),
+            new FoodItem(assets.getAsset('onigiri'), imgSize, { x: 472, y: 380 }, 15),
+            new FoodItem(assets.getAsset('salad'), imgSize, { x: 698, y: 378 }, 15),
+            new FoodItem(assets.getAsset('tofu'), imgSize, { x: 925, y: 400 }, 15)
         );
 
-        imgSize = {x: 450 * this.scale.x, y: 600 * this.scale.y };
+        imgSize = {x: 450 / 1.25, y: 600 / 1.25};
 
-        const boyPos = { x: 0.0, y: ctx.canvas.height - 205};
-        const girlPos = { x: this.background.width - imgSize.x, y:ctx.canvas.height - 205};
+        const boyPos = { x: 0.0, y: GAME_HEIGHT - imgSize.y};
+        const girlPos = { x: this.background.width - imgSize.x, y:GAME_HEIGHT - imgSize.y};
 
         this.characters.push(
             new Character(assets.getAsset('boy'), imgSize, boyPos),
@@ -55,8 +56,8 @@ export class UiHandler{
 
         this.drawBorders(ctx);
 
-        this.characters.forEach(character => {character.draw(this.scale, ctx)});
-        this.foods.forEach(food => {food.draw(this.scale, ctx)});
+        this.characters.forEach(character => {character.draw(ctx)});
+        this.foods.forEach(food => {food.draw(ctx)});
     }
 
     drawBorders(ctx){
@@ -74,6 +75,10 @@ export class UiHandler{
     }
 
     updateUIScale(scale){
-        if(scale.x !== this.scale.x || scale.y != this.scale.y){this.scale = {...scale};}
+        if(scale.x !== this.scale.x || scale.y != this.scale.y){
+            this.scale = {...scale};
+            this.characters.forEach(character => {character.updateScale(this.scale)});
+            this.foods.forEach(food => {food.updateScale(this.scale)});
+        }
     }
 }

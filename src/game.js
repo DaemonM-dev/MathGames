@@ -20,8 +20,6 @@ export const Game = {
 
 export function init(){
     Game.canvas = document.getElementById(CANVAS_ID);
-    Game.canvas.width = GAME_WIDTH;
-    Game.canvas.height = GAME_HEIGHT;
     Game.ctx = Game.canvas.getContext('2d');
 
     resizeCanvas();
@@ -51,7 +49,6 @@ function update(deltaTime){
         if (Game.assets.areAllAssetsLoaded()){
             Game.assetsLoaded = true;
             resizeCanvas();
-            Game.ui.updateUIScale(Game.scale);
             Game.ui.initUI(Game.assets, Game.ctx);
             console.log("Assets loaded");
         }

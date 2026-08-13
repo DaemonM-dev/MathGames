@@ -3,9 +3,23 @@ export class Character{
         this.texture = texture;
         this.size = {...size};
         this.pos = {...pos};
+
+        this.cachedSize = {...size};
+        this.cachedPos = {...pos};
     }
 
-    draw(scale, ctx){
-        ctx.drawImage(this.texture, this.pos.x * scale.x, this.pos.y * scale.y, this.size.x * scale.x, this.size.y * scale.y);
+    updateScale(scale){
+        this.size = {
+            x: this.cachedSize.x * scale.x,
+            y: this.cachedSize.y * scale.y
+        };
+        this.pos = {
+            x: this.cachedPos.x * scale.x,
+            y: this.cachedPos.y * scale.y
+        };
+    }
+
+    draw(ctx){
+        ctx.drawImage(this.texture, this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 }
