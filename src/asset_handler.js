@@ -58,16 +58,16 @@ export class AssetHandler{
     }
 
     createAssetEntries(){
-        this.addAsset('background', './assets/background.png');
-        this.addAsset('boy', './assets/boy.png');
-        this.addAsset('girl', './assets/girl.png');
-        this.addAsset('chocolatecake', './assets/chocolatecake.png');
-        this.addAsset('cupcakes', './assets/cupcakes.png');
-        this.addAsset('fruitbowl', './assets/fruitbowl.png');
-        this.addAsset('fruitcake', './assets/fruitcake.png');
-        this.addAsset('mintcake', './assets/mintcake.png');
-        this.addAsset('onigiri', './assets/onigiri.png');
-        this.addAsset('salad', './assets/salad.png');
-        this.addAsset('tofu', './assets/tofu.png');
+        this.addAsset('background', 'MathGames/assets/background.png');
+        this.addAsset('boy', 'MathGames/assets/boy.png');
+        this.addAsset('girl', 'MathGames/assets/girl.png');
+        this.addAsset('chocolatecake', 'MathGames/assets/chocolatecake.png');
+        this.addAsset('cupcakes', 'MathGames/assets/cupcakes.png');
+        this.addAsset('fruitbowl', 'MathGames/assets/fruitbowl.png');
+        this.addAsset('fruitcake', 'MathGames/assets/fruitcake.png');
+        this.addAsset('mintcake', 'MathGames/assets/mintcake.png');
+        this.addAsset('onigiri', 'MathGames/assets/onigiri.png');
+        this.addAsset('salad', 'MathGames/assets/salad.png');
+        this.addAsset('tofu', 'MathGames/assets/tofu.png');
     }
 }
