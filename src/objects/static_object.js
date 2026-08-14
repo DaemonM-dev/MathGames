@@ -10,7 +10,7 @@ export class StaticObject{
     }
 
     update(scale, deltaTime){
-        if(this.scale !== scale){
+        if(this.scale.x !== scale.x || this.scale.y !== scale.y){
             this.scale = {...scale};
             this.size = {
                 x: this.cachedSize.x * this.scale.x,

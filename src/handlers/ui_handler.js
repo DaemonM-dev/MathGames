@@ -9,6 +9,7 @@ export class UiHandler{
         this.dynamicObjects = [];
 
         this.selectedObject = false;
+        this.dropZone = null;
     }
     
     init(assets){
@@ -18,7 +19,6 @@ export class UiHandler{
     }
 
     update(command, mousePos, scale, deltaTime){
-
         switch(command) {
             case Commands.MOUSE_DOWN:
                 if(!this.selectedObject){
@@ -34,6 +34,9 @@ export class UiHandler{
             case Commands.MOUSE_UP:
                 for(let i = 0; i < this.dynamicObjects.length; i++){
                     if(this.dynamicObjects[i].selected){
+                        if(!this.dynamicObjects[i].isWithinRect(this.dropZone)){
+                            this.dynamicObjects[i].reset();
+                        }
                         this.dynamicObjects[i].deselect();
                         this.selectedObject = false;
                     }
@@ -96,8 +99,11 @@ export class UiHandler{
         const horizSize = {x: this.staticObjects[0].texture.width, y: barWidth};
         const horizPos = {x: 0.0, y: this.staticObjects[0].texture.height - (horizSize.y / 2.0)};
 
-        this.rectangles.push(new Rect(this.staticObjects[0].texture.width, 0.0, GAME_WIDTH - this.staticObjects[0].texture.width, GAME_HEIGHT, 'white' ))
+        const whiteRect = new Rect(this.staticObjects[0].texture.width, 0.0, GAME_WIDTH - this.staticObjects[0].texture.width, GAME_HEIGHT, 'white');
+        this.rectangles.push(whiteRect);
         this.rectangles.push(new Rect(vertPos.x, vertPos.y, vertSize.x, vertSize.y, 'black'));
         this.rectangles.push(new Rect(horizPos.x, horizPos.y, horizSize.x, horizSize.y, 'black'));
+
+        this.dropZone = whiteRect;
     }
 }
