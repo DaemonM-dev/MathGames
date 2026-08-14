@@ -12,9 +12,9 @@ export const Game = {
     lastTime: 0,
     scale: {x: 1.0, y: 1.0},
     
-    assets: new AssetHandler(),
-    input: new InputHandler(),
-    ui: new UiHandler(),
+    assetHandler: new AssetHandler(),
+    inputHandler: new InputHandler(),
+    uiHandler: new UiHandler(),
 
     gamestate: GameStates.LOADING,
     activeCommand: Commands.NONE,
@@ -25,7 +25,7 @@ export function init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
     resizeCanvas();
-    Game.assets.loadAll();
+    Game.assetHandler.loadAll();
     Game.running = true;
     requestAnimationFrame(gameLoop);
 }
@@ -42,18 +42,18 @@ function gameLoop(timeStamp){
 function update(deltaTime){
     switch(Game.gamestate){
         case GameStates.LOADING:
-            if(Game.assets.areAllAssetsLoaded()){
+            if(Game.assetHandler.areAllAssetsLoaded()){
                 Game.gamestate = GameStates.INITIALIZING;
                 console.log("Assets loaded!");
             }
             break;
         case GameStates.INITIALIZING:
-            Game.ui.initUI(Game.assets, Game.ctx);
+            Game.uiHandler.init(Game.assetHandler);
             Game.gamestate = GameStates.GAMEPLAY;
             break;
         case GameStates.GAMEPLAY:
-            Game.activeCommand = Game.input.getActiveCommand();
-            Game.ui.updateUI(Game.activeCommand, Game.input.mousePos, Game.scale, deltaTime);
+            Game.activeCommand = Game.inputHandler.getActiveCommand();
+            Game.uiHandler.update(Game.scale, Game.deltaTime);
             break;
         case GameStates.RESTARTING:
             break;
@@ -72,7 +72,7 @@ function draw(){
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
             break;
         case GameStates.GAMEPLAY:
-            Game.ui.drawUI(Game.ctx);
+            Game.uiHandler.draw(Game.ctx);
             break;
         case GameStates.RESTARTING:
             break;
