@@ -1,11 +1,9 @@
 import { GAME_WIDTH, GAME_HEIGHT, Commands } from '../../src/constants.js'
 import { FoodItem } from '../objects/food_item.js'
 import { Character } from '../objects/character.js'
-import { TextHandler } from './text_handler.js'
 
 export class UiHandler{
-    constructor(scale){
-        this.scale = scale;
+    constructor(){
         this.background = null;
 
         this.money = null;
@@ -16,8 +14,7 @@ export class UiHandler{
 
         this.cachedCommand = Commands.NONE;
         this.selectedFood = false;
-
-        this.text = null;
+        this.scale = {x:1.0 , y:1.0};
     }
     
     initUI(assets, ctx){
@@ -47,8 +44,6 @@ export class UiHandler{
             new Character(assets.getAsset('boy'), imgSize, boyPos),
             new Character(assets.getAsset('girl'), imgSize, girlPos)
         );
-
-        this.text = new TextHandler(this.scale);
     }
 
     updateUI(command, mousePos, scale, deltaTime){
@@ -73,8 +68,6 @@ export class UiHandler{
         this.drawBorders(ctx);
 
         this.characters.forEach(character => {character.draw(ctx)});
-
-        this.text.drawAllMessages(ctx);
 
         this.foods.filter(food => !food.getSelected()).forEach(food => {food.draw(ctx)});
         const selectedFood = this.foods.find(food => food.getSelected());
@@ -102,7 +95,6 @@ export class UiHandler{
             this.foods.forEach(food => {food.updateScale(this.scale)});
             this.money.updateScale(this.scale);
             this.sign.updateScale(this.scale);
-            this.text.updateMessageScale(this.scale);
         }
     }
 

@@ -1,4 +1,4 @@
-import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands } from './constants.js';
+import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates, Levels } from './constants.js';
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
 import { UiHandler }    from './handlers/ui_handler.js';
@@ -12,89 +12,82 @@ export const Game = {
     lastTime: 0,
     scale: {x: 1.0, y: 1.0},
     
-    assetsLoaded: false,
     assets: new AssetHandler(),
     input: new InputHandler(),
-    ui: new UiHandler({x: 1.0, y: 1.0}),
-    activeCommand: Commands.NONE
+    ui: new UiHandler(),
+
+    gamestate: GameStates.LOADING,
+    activeCommand: Commands.NONE,
+    currentLevel: Levels.LEVEL_1
 };
 
 export function init(){
     Game.canvas = document.getElementById(CANVAS_ID);
     Game.ctx = Game.canvas.getContext('2d');
-
     resizeCanvas();
-
     Game.assets.loadAll();
-    Game.input.initInputs();
-
     Game.running = true;
     requestAnimationFrame(gameLoop);
-    console.log("Game Initialized");
 }
 
 function gameLoop(timeStamp){
     if(!Game.running){return;}
-
     const deltaTime = (timeStamp - Game.lastTime) / 1000; // Calculating Delta Time in seconds
     Game.lastTime = timeStamp;
-
     update(deltaTime);
     draw();
-
     requestAnimationFrame(gameLoop); // Restart game loop
 }
 
 function update(deltaTime){
-    if(!Game.assetsLoaded){
-        if (Game.assets.areAllAssetsLoaded()){
-            Game.assetsLoaded = true;
-            resizeCanvas();
+    switch(Game.gamestate){
+        case GameStates.LOADING:
+            if(Game.assets.areAllAssetsLoaded()){
+                Game.gamestate = GameStates.INITIALIZING;
+                console.log("Assets loaded!");
+            }
+            break;
+        case GameStates.INITIALIZING:
             Game.ui.initUI(Game.assets, Game.ctx);
-            console.log("Assets loaded");
-        }
-    } else{
-        Game.activeCommand = Game.input.getActiveCommand();
-        Game.ui.updateUI(Game.activeCommand, Game.input.mousePos, Game.scale, deltaTime);
+            Game.gamestate = GameStates.GAMEPLAY;
+            break;
+        case GameStates.GAMEPLAY:
+            Game.activeCommand = Game.input.getActiveCommand();
+            Game.ui.updateUI(Game.activeCommand, Game.input.mousePos, Game.scale, deltaTime);
+            break;
+        case GameStates.RESTARTING:
+            break;
     }
 }
 
 function draw(){
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
-
-    if(!Game.assetsLoaded){
-        Game.ctx.fillStyle = "#000";
-        Game.ctx.font = `40px Arial`;
-        Game.ctx.fillText("Loading...", screenCenter.x - 40, screenCenter.y);
-    } else{
-        Game.ui.drawUI(Game.ctx);
+    switch(Game.gamestate){
+        case GameStates.LOADING:
+            Game.ctx.fillStyle = "#000";
+            Game.ctx.font = `40px Arial`;
+            Game.ctx.fillText("Loading...", screenCenter.x - 40, screenCenter.y);
+            break;
+        case GameStates.INITIALIZING:
+            Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
+            break;
+        case GameStates.GAMEPLAY:
+            Game.ui.drawUI(Game.ctx);
+            break;
+        case GameStates.RESTARTING:
+            break;
     }
 }
 
 export function resizeCanvas(){
-
     const displayWidth = window.innerWidth;
     const displayHeight = window.innerHeight;
 
-    if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) 
-    {
+    if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) {
         Game.canvas.width = displayWidth;
         Game.canvas.height = displayHeight;
-
         Game.scale.x = displayWidth / GAME_WIDTH;
         Game.scale.y = displayHeight / GAME_HEIGHT;
-
         screenCenter = {x: displayWidth / 2, y: displayHeight / 2};
-
-        /*
-        console.log("Canvas resized:", displayWidth, "x", displayHeight); 
-        */
-    }
-}
-
-function checkAssetsReady() {
-    if (Game.assets.areAllAssetsLoaded()){
-        Game.assetsLoaded = true;
-        console.log("Assets loaded");
     }
 }

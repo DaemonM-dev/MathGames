@@ -18,9 +18,8 @@ export class AssetHandler{
     }
 
     loadAll(){
-        this.isLoading = true;
         console.log("Starting to load assets...");
-
+        this.isLoading = true;
         const assetEntries = Array.from(this.assets.entries());
 
         for(let i = 0; i < assetEntries.length; i++) {
@@ -51,8 +50,6 @@ export class AssetHandler{
             console.error(`File path attempted: ${asset.filepath}`);
             this.loadedCount++;
         };
-        
-        console.log(`Setting src to: ${asset.filepath}`);
         img.src = asset.filepath;
     }
 
@@ -66,13 +63,11 @@ export class AssetHandler{
     }
 
     areAllAssetsLoaded(){
-        console.log(`Loaded: ${this.loadedCount}/${this.loadingCount}`);
         return this.loadedCount === this.loadingCount && this.loadingCount > 0;
     }
 
     createAssetEntries(){
-        // Try multiple path variations
-        const basePath = './src/assets/'; // Relative path
+        const basePath = './src/assets/';
         
         this.addAsset('background', basePath + 'background.png');
         this.addAsset('boy', basePath + 'boy.png');
