@@ -12,14 +12,14 @@ export class UiHandler{
         this.dropZone = null;
 
         this.slotPositions = [
-            { x: 250, y: 140 },
-            { x: 468, y: 155 },
+            { x: 245, y: 140 },
+            { x: 468, y: 140 },
             { x: 695, y: 145 },
             { x: 920, y: 142 },
-            { x: 253, y: 370 },
+            { x: 240, y: 375 },
             { x: 472, y: 380 },
             { x: 698, y: 378 },
-            { x: 925, y: 400 }
+            { x: 925, y: 380 }
         ];
     }
     
@@ -123,13 +123,22 @@ export class UiHandler{
         const horizSize = {x: this.staticObjects[0].texture.width, y: barWidth};
         const horizPos = {x: 0.0, y: this.staticObjects[0].texture.height - (horizSize.y / 2.0)};
 
-        const whiteRect = new Rect(this.staticObjects[0].texture.width, 0.0, GAME_WIDTH - this.staticObjects[0].texture.width, GAME_HEIGHT, 'white');
-        this.rectangles.push(whiteRect);
+        this.rectangles.push(new Rect(this.staticObjects[0].texture.width, 0.0, GAME_WIDTH - this.staticObjects[0].texture.width, GAME_HEIGHT, 'white'));
         this.rectangles.push(new Rect(vertPos.x, vertPos.y, vertSize.x, vertSize.y, 'black'));
         this.rectangles.push(new Rect(horizPos.x, horizPos.y, horizSize.x, horizSize.y, 'black'));
 
-        this.dropZone = whiteRect;
+        const blackRect = new Rect(this.rectangles[0].pos.x + (this.rectangles[0].size.x / 2) - 300 + barWidth / 4, (GAME_HEIGHT / 2) - 250, 600, 500, 'black');
+        
+        const size = { x: blackRect.size.x * 0.96 , y: blackRect.size.y * 0.95 };
+        const pos = { x: blackRect.pos.x + ((blackRect.size.x - size.x) / 2), y: blackRect.pos.y + ((blackRect.size.y - size.y) / 2)};
+
+        const whiteRect = new Rect(pos.x, pos.y, size.x, size.y, 'white');
+
+        this.rectangles.push(blackRect);
+        this.rectangles.push(whiteRect);
+        this.dropZone = blackRect;
     }
+
     randomizeDynamicObjects(){
         const positions = this.shuffledPositions();
 
@@ -145,7 +154,6 @@ export class UiHandler{
             };
         }
     }
-
     shuffledPositions(){
         const positions = [...this.slotPositions];
         for(let i = positions.length - 1; i > 0; i--){
