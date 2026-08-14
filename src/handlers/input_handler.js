@@ -1,28 +1,22 @@
-import { Game } from './game.js';
-import { GAME_WIDTH, GAME_HEIGHT } from './constants.js';
-
-export const Command = {
-    NONE: 'none',
-    MOUSE_DOWN: 'mouse_down',
-    MOUSE_UP: 'mouse_up'
-}
+import { Game } from '../game.js';
+import { GAME_WIDTH, GAME_HEIGHT, Commands } from '../constants.js';
 
 export class InputHandler{
     constructor(){
         this.mousePos = {x: 0.0, y: 0.0};
-        this.activeCommand = Command.NONE;
+        this.activeCommand = Commands.NONE;
     }
 
     initInputs(){
         Game.canvas.addEventListener('mousedown', (event) => {
-            if(this.activeCommand !== Command.MOUSE_DOWN){
-                this.activeCommand = Command.MOUSE_DOWN;
+            if(this.activeCommand !== Commands.MOUSE_DOWN){
+                this.activeCommand = Commands.MOUSE_DOWN;
             }
         });
        
         Game.canvas.addEventListener('mouseup', (event) => {
-            if(this.activeCommand !== Command.MOUSE_UP){
-                this.activeCommand = Command.MOUSE_UP;
+            if(this.activeCommand !== Commands.MOUSE_UP){
+                this.activeCommand = Commands.MOUSE_UP;
             }
         });
         

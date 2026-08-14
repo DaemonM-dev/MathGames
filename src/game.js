@@ -1,7 +1,7 @@
-import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT } from './constants.js';
-import { AssetHandler } from './asset_handler.js';
-import { InputHandler, Command } from './input_handler.js';
-import { UiHandler }    from './ui_handler.js';
+import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands } from './constants.js';
+import { AssetHandler } from './handlers/asset_handler.js';
+import { InputHandler } from './handlers/input_handler.js';
+import { UiHandler }    from './handlers/ui_handler.js';
 
 let screenCenter = {x: 0, y: 0};
 
@@ -11,11 +11,12 @@ export const Game = {
     running: false,
     lastTime: 0,
     scale: {x: 1.0, y: 1.0},
+    
     assetsLoaded: false,
     assets: new AssetHandler(),
     input: new InputHandler(),
     ui: new UiHandler({x: 1.0, y: 1.0}),
-    activeCommand: Command.NONE
+    activeCommand: Commands.NONE
 };
 
 export function init(){

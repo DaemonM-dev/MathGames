@@ -1,7 +1,6 @@
-import { GAME_WIDTH, GAME_HEIGHT } from './constants.js'
-import { Command } from './input_handler.js'
-import { FoodItem } from './food_item.js'
-import { Character } from './character.js'
+import { GAME_WIDTH, GAME_HEIGHT, Commands } from '../../src/constants.js'
+import { FoodItem } from '../objects/food_item.js'
+import { Character } from '../objects/character.js'
 import { TextHandler } from './text_handler.js'
 
 export class UiHandler{
@@ -15,7 +14,7 @@ export class UiHandler{
         this.foods = [];
         this.characters = [];
 
-        this.cachedCommand = Command.NONE;
+        this.cachedCommand = Commands.NONE;
         this.selectedFood = false;
 
         this.text = null;
@@ -108,7 +107,7 @@ export class UiHandler{
     }
 
     interact(command, mousePos){
-        if(command === Command.MOUSE_DOWN){
+        if(command === Commands.MOUSE_DOWN){
             if(!this.selectedFood){
                 for(let i = 0; i < this.foods.length; i++){
                     if(this.foods[i].select(mousePos)){
@@ -120,7 +119,7 @@ export class UiHandler{
             else{
             this.foods.forEach(food => {food.move(mousePos)});
             }
-        } else if(command === Command.MOUSE_UP){
+        } else if(command === Commands.MOUSE_UP){
             for(let i = 0; i < this.foods.length; i++){
                 if(this.foods[i].getSelected()){
 
