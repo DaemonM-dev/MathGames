@@ -10,6 +10,17 @@ export class UiHandler{
 
         this.selectedObject = false;
         this.dropZone = null;
+
+        this.slotPositions = [
+            { x: 250, y: 140 },
+            { x: 468, y: 155 },
+            { x: 695, y: 145 },
+            { x: 920, y: 142 },
+            { x: 253, y: 370 },
+            { x: 472, y: 380 },
+            { x: 698, y: 378 },
+            { x: 925, y: 400 }
+        ];
     }
     
     init(assets){
@@ -80,19 +91,27 @@ export class UiHandler{
         this.staticObjects.push(new StaticObject("girl", assets.getAsset('girl'), {x:1280 - objSize.x, y:GAME_HEIGHT - objSize.y}, objSize));
     }
     initDynamicObjects(assets){
-
         const objScale = 0.5;
         const objSize = {x: 300 * objScale, y: 300 * objScale};
-        this.dynamicObjects.push(
-            new DynamicObject("chocolateCake", assets.getAsset('chocolatecake'), { x: 250, y: 140 }, objSize),
-            new DynamicObject("cupcake",assets.getAsset('cupcakes'),{ x: 468, y: 155 }, objSize),
-            new DynamicObject("fruitBowl",assets.getAsset('fruitbowl'),{ x: 695, y: 145 }, objSize),
-            new DynamicObject("fruitCake",assets.getAsset('fruitcake'), { x: 920, y: 142 }, objSize),
-            new DynamicObject("mintCake",assets.getAsset('mintcake'), { x: 253, y: 370 }, objSize),
-            new DynamicObject("onigiri",assets.getAsset('onigiri'), { x: 472, y: 380 }, objSize),
-            new DynamicObject("salad",assets.getAsset('salad'), { x: 698, y: 378 }, objSize),
-            new DynamicObject("tofu",assets.getAsset('tofu'), { x: 925, y: 400 }, objSize)
-        );
+
+        const foods = [
+            { name: "chocolateCake", asset: 'chocolatecake' },
+            { name: "cupcake", asset: 'cupcakes' },
+            { name: "fruitBowl", asset: 'fruitbowl' },
+            { name: "fruitCake", asset: 'fruitcake' },
+            { name: "mintCake", asset: 'mintcake' },
+            { name: "onigiri", asset: 'onigiri' },
+            { name: "salad", asset: 'salad' },
+            { name: "tofu", asset: 'tofu' }
+        ];
+
+        const positions = this.shuffledPositions();
+
+        for(let i = 0; i < foods.length; i++){
+            this.dynamicObjects.push(
+                new DynamicObject(foods[i].name, assets.getAsset(foods[i].asset), positions[i], objSize)
+            );
+        }
     }
     initRectangles(){
         const barWidth = 20.0;
@@ -107,5 +126,29 @@ export class UiHandler{
         this.rectangles.push(new Rect(horizPos.x, horizPos.y, horizSize.x, horizSize.y, 'black'));
 
         this.dropZone = whiteRect;
+    }
+    randomizeDynamicObjects(){
+        const positions = this.shuffledPositions();
+
+        for(let i = 0; i < this.dynamicObjects.length; i++){
+            const obj = this.dynamicObjects[i];
+            const newPos = positions[i];
+
+            obj.initialPos = {...newPos};
+            obj.cachedPos = {...newPos};
+            obj.pos = {
+                x: newPos.x * obj.scale.x,
+                y: newPos.y * obj.scale.y
+            };
+        }
+    }
+
+    shuffledPositions(){
+        const positions = [...this.slotPositions];
+        for(let i = positions.length - 1; i > 0; i--){
+            const j = Math.floor(Math.random() * (i + 1));
+            [positions[i], positions[j]] = [positions[j], positions[i]];
+        }
+        return positions;
     }
 }
