@@ -7,6 +7,8 @@ export class UiHandler{
         this.staticObjects = [];
         this.dynamicObjects = [];
         this.selectedFood = false;
+
+        this.scale = {x:1.0, y:1.0};
     }
     
     init(assets){
@@ -40,6 +42,11 @@ export class UiHandler{
     }
 
     update(mousePos, scale, deltaTime){
+
+        if(this.scale !== scale){
+            this.scale = {...scale};
+        }
+
         for(let i = 0; i < this.dynamicObjects.length; i++){
             this.dynamicObjects[i].toggleSelect(mousePos);
             this.dynamicObjects[i].update(mousePos, scale, deltaTime);
@@ -54,12 +61,23 @@ export class UiHandler{
         ctx.fillStyle = "purple";
         ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
 
-        for(let i = 0; i < this.staticObjects.length; i++){
-            this.staticObjects[i].draw(ctx);
-        }
+        this.staticObjects[0].draw(ctx);
+        this.drawComicStripBorders(ctx);
+        for(let i = 1; i < this.staticObjects.length; i++){ this.staticObjects[i].draw(ctx); }
+        for(let i = 0; i < this.dynamicObjects.length; i++){ this.dynamicObjects[i].draw(ctx); }
+    }
 
-        for(let i = 0; i < this.dynamicObjects.length; i++){
-            this.dynamicObjects[i].draw(ctx);
-        }
+    drawComicStripBorders(ctx){
+        const barWidth = 20.0;
+
+        const vertSize = {x: barWidth, y: ctx.canvas.height};
+        const vertPos = {x: this.staticObjects[0].texture.width - (vertSize.x / 2.0), y: 0.0};
+        const horizSize = {x: this.staticObjects[0].texture.width, y: barWidth};
+        const horizPos = {x: 0.0, y: this.staticObjects[0].texture.height - (horizSize.y / 2.0)};
+
+        ctx.fillStyle = "black";
+
+        ctx.fillRect(vertPos.x * this.scale.x, vertPos.y * this.scale.y, vertSize.x * this.scale.x, vertSize.y);
+        ctx.fillRect(horizPos.x * this.scale.x, horizPos.y * this.scale.y, horizSize.x * this.scale.x, horizSize.y * this.scale.y);
     }
 }

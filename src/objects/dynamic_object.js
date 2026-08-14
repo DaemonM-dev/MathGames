@@ -37,9 +37,8 @@ export class DynamicObject{
            mousePos.x <= this.pos.x + this.size.x && 
            mousePos.y >= this.pos.y &&
            mousePos.y <= this.pos.y + this.size.y){
-            this.selected = !this.selected;
-
-            if(this.selected){console.log("Selected", this.name)};
+                this.selected = !this.selected;
+                if(this.selected){console.log("Selected", this.name)};
            }
     }
 
