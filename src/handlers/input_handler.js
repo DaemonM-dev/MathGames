@@ -25,16 +25,25 @@ export class InputHandler{
             this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
         });
         
+        document.addEventListener('keydown', (event) => {
+            if(event.code === 'Space') {
+                if(this.activeCommand !== Commands.SPACEBAR_DOWN){
+                    this.activeCommand = Commands.SPACEBAR_DOWN;
+                }
+                event.preventDefault();
+            }
+        });
+
         console.log("Inputs Initialized");
     }
 
     getActiveCommand(){
         const command = this.activeCommand;
-        /*
-        if(this.activeCommand === Command.MOUSE_CLICK){
-            this.activeCommand = Command.NONE;
+        
+        if(this.activeCommand === Commands.SPACEBAR_DOWN){
+            this.activeCommand = Commands.NONE; 
         }
-            */
+            
         return command;
     }
 }

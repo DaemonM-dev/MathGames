@@ -56,6 +56,9 @@ export class UiHandler{
                     }
                 }    
             break;
+            case Commands.SPACEBAR_DOWN:
+                this.randomizeDynamicObjects();
+            break;
         }
 
         for(let i = 0; i < this.dynamicObjects.length; i++){

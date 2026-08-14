@@ -5,7 +5,8 @@ export const GAME_HEIGHT = 1080;
 export const Commands = {
     NONE: 'none',
     MOUSE_DOWN: 'mouse_down',
-    MOUSE_UP: 'mouse_up'
+    MOUSE_UP: 'mouse_up',
+    SPACEBAR_DOWN: 'spacebar_down'
 }
 
 export const GameStates = {
