@@ -26,6 +26,9 @@ export class UiHandler{
                         if(this.dynamicObjects[i].isSelected(mousePos)){
                             this.dynamicObjects[i].select();
                             this.selectedObject = true;
+
+                            const [obj] = this.dynamicObjects.splice(i, 1);
+                            this.dynamicObjects.push(obj);
                             break;
                         }
                     }
@@ -62,7 +65,6 @@ export class UiHandler{
         for(let i = 0; i < this.rectangles.length; i++){ this.rectangles[i].draw(ctx); } // Comic Strip border
         for(let i = 1; i < this.staticObjects.length; i++){ this.staticObjects[i].draw(ctx); }
         for(let i = 0; i < this.dynamicObjects.length; i++){ this.dynamicObjects[i].draw(ctx); }
-        
     }
 
     initStaticObjects(assets){
