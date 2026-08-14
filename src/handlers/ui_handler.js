@@ -4,10 +4,11 @@ import { DynamicObject } from '../objects/dynamic_object.js'
 
 export class UiHandler{
     constructor(){
-        this.scale = {x:1.0, y:1.0};
         this.rectangles = [];
         this.staticObjects = [];
         this.dynamicObjects = [];
+
+        this.selectedObject = false;
     }
     
     init(assets){
@@ -16,10 +17,30 @@ export class UiHandler{
         this.initRectangles();
     }
 
-    update(mousePos, scale, deltaTime){
-        if(this.scale !== scale){
-            this.scale = {...scale};
+    update(command, mousePos, scale, deltaTime){
+
+        switch(command) {
+            case Commands.MOUSE_DOWN:
+                if(!this.selectedObject){
+                    for(let i = 0; i < this.dynamicObjects.length; i++){
+                        if(this.dynamicObjects[i].isSelected(mousePos)){
+                            this.dynamicObjects[i].select();
+                            this.selectedObject = true;
+                            break;
+                        }
+                    }
+                }
+            break;
+            case Commands.MOUSE_UP:
+                for(let i = 0; i < this.dynamicObjects.length; i++){
+                    if(this.dynamicObjects[i].selected){
+                        this.dynamicObjects[i].deselect();
+                        this.selectedObject = false;
+                    }
+                }    
+            break;
         }
+
         for(let i = 0; i < this.dynamicObjects.length; i++){
             this.dynamicObjects[i].update(mousePos, scale, deltaTime);
         }

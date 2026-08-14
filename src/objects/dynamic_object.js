@@ -23,7 +23,7 @@ export class DynamicObject{
                 y: this.cachedPos.y * this.scale.y
             };
         }
-        this.toggleSelect(mousePos);
+
         this.move(mousePos);
     }
 
@@ -31,14 +31,18 @@ export class DynamicObject{
         ctx.drawImage(this.texture, this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 
-    toggleSelect(mousePos){
+    isSelected(mousePos){
         if(mousePos.x >= this.pos.x &&
            mousePos.x <= this.pos.x + this.size.x && 
            mousePos.y >= this.pos.y &&
            mousePos.y <= this.pos.y + this.size.y){
-                this.selected = !this.selected;
-                if(this.selected){console.log("Selected", this.name)};
-           }
+                return true;
+        }
+        return false;
+    }
+
+    select(){
+        this.selected = true;
     }
 
     deselect(){
@@ -46,8 +50,6 @@ export class DynamicObject{
     }
 
     reset(){
-        this.pos = {x:this.startPos.x * this.scale.x, y: this.startPos.y * this.scale.y};
-        this.cachedPos = {...this.pos};
     }
 
     move(mousePos){
