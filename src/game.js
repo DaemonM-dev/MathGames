@@ -53,7 +53,7 @@ function update(deltaTime){
             break;
         case GameStates.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.uiHandler.update(Game.scale, Game.deltaTime);
+            Game.uiHandler.update(Game.inputHandler.mousePos, Game.scale, Game.deltaTime);
             break;
         case GameStates.RESTARTING:
             break;

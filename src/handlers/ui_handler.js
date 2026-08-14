@@ -1,11 +1,11 @@
 import { GAME_WIDTH, GAME_HEIGHT, Commands } from '../../src/constants.js'
-import { FoodItem } from '../objects/food_item.js'
 import { StaticObject } from '../objects/static_object.js'
+import { DynamicObject } from '../objects/dynamic_object.js'
 
 export class UiHandler{
     constructor(){
         this.staticObjects = [];
-        this.foods = [];
+        this.dynamicObjects = [];
         this.selectedFood = false;
     }
     
@@ -25,22 +25,26 @@ export class UiHandler{
         this.staticObjects.push(new StaticObject("boy", assets.getAsset('boy'), {x:0, y:GAME_HEIGHT - objSize.y}, objSize));
         this.staticObjects.push(new StaticObject("girl", assets.getAsset('girl'), {x:1280 - objSize.x, y:GAME_HEIGHT - objSize.y}, objSize));
 
-
         objScale = 0.5;
         objSize = {x: 300 * objScale, y: 300 * objScale};
-        this.foods.push(
-            new FoodItem(assets.getAsset('chocolatecake'), objSize, { x: 250, y: 140 }, 15),
-            new FoodItem(assets.getAsset('cupcakes'), objSize, { x: 468, y: 155 }, 15),
-            new FoodItem(assets.getAsset('fruitbowl'), objSize, { x: 695, y: 145 }, 15),
-            new FoodItem(assets.getAsset('fruitcake'), objSize, { x: 920, y: 142 }, 15),
-            new FoodItem(assets.getAsset('mintcake'), objSize, { x: 253, y: 370 }, 15),
-            new FoodItem(assets.getAsset('onigiri'), objSize, { x: 472, y: 380 }, 15),
-            new FoodItem(assets.getAsset('salad'), objSize, { x: 698, y: 378 }, 15),
-            new FoodItem(assets.getAsset('tofu'), objSize, { x: 925, y: 400 }, 15)
+        this.dynamicObjects.push(
+            new DynamicObject("chocolateCake", assets.getAsset('chocolatecake'), { x: 250, y: 140 }, objSize),
+            new DynamicObject("cupcake",assets.getAsset('cupcakes'),{ x: 468, y: 155 }, objSize),
+            new DynamicObject("fruitBowl",assets.getAsset('fruitbowl'),{ x: 695, y: 145 }, objSize),
+            new DynamicObject("fruitCake",assets.getAsset('fruitcake'), { x: 920, y: 142 }, objSize),
+            new DynamicObject("mintCake",assets.getAsset('mintcake'), { x: 253, y: 370 }, objSize),
+            new DynamicObject("onigiri",assets.getAsset('onigiri'), { x: 472, y: 380 }, objSize),
+            new DynamicObject("salad",assets.getAsset('salad'), { x: 698, y: 378 }, objSize),
+            new DynamicObject("tofu",assets.getAsset('tofu'), { x: 925, y: 400 }, objSize)
         );
     }
 
-    update(scale, deltaTime){
+    update(mousePos, scale, deltaTime){
+        for(let i = 0; i < this.dynamicObjects.length; i++){
+            this.dynamicObjects[i].toggleSelect(mousePos);
+            this.dynamicObjects[i].update(mousePos, scale, deltaTime);
+        }
+
         for(let i = 0; i < this.staticObjects.length; i++){
             this.staticObjects[i].update(scale, deltaTime);
         }
@@ -52,6 +56,10 @@ export class UiHandler{
 
         for(let i = 0; i < this.staticObjects.length; i++){
             this.staticObjects[i].draw(ctx);
+        }
+
+        for(let i = 0; i < this.dynamicObjects.length; i++){
+            this.dynamicObjects[i].draw(ctx);
         }
     }
 }
