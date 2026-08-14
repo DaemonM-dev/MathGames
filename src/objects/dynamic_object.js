@@ -1,14 +1,12 @@
 export class DynamicObject{
     constructor(name, texture, pos, size){
+        this.scale = {x:1.0,y:1.0};
         this.name = name;
         this.texture = texture;
         this.pos = {...pos};
         this.size = {...size};
-
         this.cachedPos = {...pos};
         this.cachedSize = {...size};
-
-        this.scale = {x:1.0,y:1.0};
         this.initialPos = {...pos};
         this.selected = false;
     }
@@ -25,6 +23,7 @@ export class DynamicObject{
                 y: this.cachedPos.y * this.scale.y
             };
         }
+        this.toggleSelect(mousePos);
         this.move(mousePos);
     }
 
