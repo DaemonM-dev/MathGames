@@ -60,6 +60,7 @@ export class DynamicObject{
             x: this.initialPos.x * this.scale.x,
             y: this.initialPos.y * this.scale.y
         };
+        console.log("New pos: ", this.pos, this.scale);
     }
 
     move(mousePos){

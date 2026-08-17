@@ -36,14 +36,35 @@ export class FoodItems{
         }
     }
 
-    update(command, mousePos, scale, deltaTime){
-        for(let i = 0; i < this.foodArray.length; i++){
-            this.foodArray[i].update(mousePos, scale, deltaTime);
+    update(command, mousePos, scale, dropZone, deltaTime){
+        switch(command){
+            case Commands.MOUSE_DOWN:
+                    for(let i = 0; i < this.foodArray.length; i++){
+                        if(this.foodArray[i].isSelected(mousePos)){
+                            this.foodArray[i].select();
+                            const [obj] = this.foodArray.splice(i, 1);
+                            this.foodArray.push(obj);
+                            break;
+                        }
+                    }
+            break;
+            case Commands.MOUSE_UP:
+                for(let i = 0; i < this.foodArray.length; i++){
+                    if(this.foodArray[i].selected){
+                        if(!this.foodArray[i].isWithinRect(dropZone)){
+                            this.foodArray[i].reset();
+                        }
+                        this.foodArray[i].deselect();
+                    }
+                }
+            break;
+            case Commands.SPACEBAR_DOWN:
+                this.resetToRandomPositions();
+            break;
         }
 
-        if(command === Commands.SPACEBAR_DOWN){
-            this.resetToRandomPositions();
-            console.log("Mouse Down input!");
+        for(let i = 0; i < this.foodArray.length; i++){
+            this.foodArray[i].update(mousePos, scale, deltaTime);
         }
     }
 

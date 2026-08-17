@@ -63,7 +63,7 @@ function update(deltaTime){
             Game.activeCommand = Game.inputHandler.getActiveCommand();
             Game.level.update(Game.scale, deltaTime);
             Game.uiHandler.update(Game.activeCommand, Game.scale, Game.ctx, deltaTime);
-            Game.foodItems.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, deltaTime);
+            Game.foodItems.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, Game.level.dropZone, deltaTime);
             break;
         case GameStates.RESTARTING:
             break;
