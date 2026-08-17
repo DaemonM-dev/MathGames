@@ -80,6 +80,7 @@ export class FoodItems{
             const newPos = positions[i];
 
             obj.cachedPos = {...newPos};
+            obj.initialPos = {...newPos};
             obj.pos = {
                 x: newPos.x * obj.scale.x,
                 y: newPos.y * obj.scale.y
