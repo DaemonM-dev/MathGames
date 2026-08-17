@@ -7,7 +7,8 @@ export const Commands = {
     MOUSE_DOWN: 'mouse_down',
     MOUSE_UP: 'mouse_up',
     SPACEBAR_DOWN: 'spacebar_down',
-    RIGHT_ARROW_DOWN: 'right_arrow_down'
+    RIGHT_ARROW_DOWN: 'right_arrow_down',
+    SUBMIT_PRESSED: 'submit_pressed'
 }
 
 export const GameStates = {

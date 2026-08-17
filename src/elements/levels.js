@@ -10,6 +10,9 @@ export class Level{
         this.staticObjects = [];
 
         this.dropZone = null;
+
+        this.startingKuro = 0;
+        this.foodValues = new Map();
     }
 
     init(assets){
@@ -43,6 +46,9 @@ export class Level{
         this.rectangles.push(blackRect);
         this.rectangles.push(whiteRect);
         this.dropZone = blackRect;
+
+        this.generateLevelCurrency();
+        this.generateFoodValues();
     }
 
     update(scale, deltaTime){
@@ -62,7 +68,30 @@ export class Level{
         for(let i = 1; i < this.staticObjects.length; i++){ this.staticObjects[i].draw(ctx); }
     }
 
+    generateLevelCurrency(){
+        this.startingKuro = Math.floor(Math.random() * 21) + 20; // Assigns value between 20 - 40
+    }
+
+    generateFoodValues(){
+        const foodItems = [
+            "chocolateCake", "cupcake", "fruitBowl", "fruitCake",
+            "mintCake", "onigiri", "salad", "tofu"
+        ];
+
+        foodItems.forEach(foodName => {
+            this.foodValues.set(foodName, Math.floor(Math.random() * 5) + 3); // Assigns value between 3-7
+        });
+    }
+
     getDropzone(){
         return this.dropZone;
+    }
+
+    getStartingKuro(){
+        return this.startingKuro;
+    }
+
+    getFoodValue(foodName){
+        return this.foodValues.get(foodName) || 0;
     }
 }

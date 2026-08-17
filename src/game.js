@@ -22,7 +22,10 @@ export const Game = {
 
     gamestate: GameStates.LOADING,
     currentLevel: Levels.LEVEL_1,
-    activeCommand: Commands.NONE
+    activeCommand: Commands.NONE,
+
+    playerKuro: 0,
+    submitted: false
 };
 
 export function init(){
@@ -56,6 +59,7 @@ function update(deltaTime){
             Game.uiHandler.init();
             Game.foodItems.init(Game.assetHandler);
             Game.inputHandler.initInputs();
+            Game.playerKuro = Game.level.getStartingKuro();
             Game.gamestate = GameStates.GAMEPLAY;
             console.log("Game initialized!");
             break;
@@ -64,6 +68,10 @@ function update(deltaTime){
             Game.level.update(Game.scale, deltaTime);
             Game.uiHandler.update(Game.activeCommand, Game.scale, Game.ctx, deltaTime);
             Game.foodItems.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, Game.level.dropZone, deltaTime);
+
+            if(Game.activeCommand === Commands.SUBMIT_PRESSED){
+                handleLevelSubmission();
+            }
             break;
         case GameStates.RESTARTING:
             break;
@@ -85,6 +93,8 @@ function draw(){
             Game.level.draw(Game.ctx);
             Game.uiHandler.draw(Game.ctx);
             Game.foodItems.draw(Game.ctx);
+
+            drawPlayerKuro();
             break;
         case GameStates.RESTARTING:
             break;
@@ -102,4 +112,32 @@ export function resizeCanvas(){
         Game.scale.y = displayHeight / GAME_HEIGHT;
         screenCenter = {x: displayWidth / 2, y: displayHeight / 2};
     }
+}
+
+function handleLevelSubmission(){
+    const totalCost = Game.foodItems.calculateTotalCost(Game.level);
+    if(totalCost > Game.playerKuro){
+        Game.foodItems.resetToStartingPositions();
+    } else {
+        advanceToNextLevel();
+    }
+    Game.submitted = true;
+}
+
+function advanceToNextLevel(){
+    const levelOrder = Object.values(Levels);
+    const currentIndex = levelOrder.indexOf(Game.currentLevel);
+
+    if(currentIndex < levelOrder.length - 1){
+        Game.currentLevel = levelOrder[currentIndex + 1];
+        Game.gamestate = GameStates.INITIALIZING;
+    } else {
+        console.log("Game Completed!");
+    }
+}
+
+function drawPlayerKuro(){
+    Game.ctx.fillStyle = "black";
+    Game.ctx.font = `24px Arial`;
+    Game.ctx.fillText(`Kuro: ${Game.playerKuro}`, 1300, 125);
 }

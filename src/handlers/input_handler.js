@@ -39,6 +39,13 @@ export class InputHandler{
                 }
                 event.preventDefault();
             }
+
+            if(event.code === 'Enter') {
+                if(this.activeCommand !== Commands.SUBMIT_PRESSED){
+                    this.activeCommand = Commands.SUBMIT_PRESSED;
+                }
+                event.preventDefault();
+            }
         });
 
         console.log("Inputs Initialized");
