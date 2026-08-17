@@ -1,6 +1,5 @@
 export class DynamicObject{
     constructor(name, texture, pos, size){
-        this.scale = {x:1.0,y:1.0};
         this.name = name;
         this.texture = texture;
         this.pos = {...pos};
@@ -8,6 +7,8 @@ export class DynamicObject{
         this.cachedPos = {...pos};
         this.cachedSize = {...size};
         this.initialPos = {...pos};
+        
+        this.scale = {x:1.0,y:1.0};
         this.selected = false;
     }
 

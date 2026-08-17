@@ -32,6 +32,13 @@ export class InputHandler{
                 }
                 event.preventDefault();
             }
+
+            if(event.code === 'ArrowRight') {
+                if(this.activeCommand !== Commands.RIGHT_ARROW_DOWN){
+                    this.activeCommand = Commands.RIGHT_ARROW_DOWN;
+                }
+                event.preventDefault();
+            }
         });
 
         console.log("Inputs Initialized");
@@ -39,11 +46,7 @@ export class InputHandler{
 
     getActiveCommand(){
         const command = this.activeCommand;
-        
-        if(this.activeCommand === Commands.SPACEBAR_DOWN){
-            this.activeCommand = Commands.NONE; 
-        }
-            
+        this.activeCommand = Commands.NONE;
         return command;
     }
 }

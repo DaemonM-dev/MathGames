@@ -6,7 +6,8 @@ export const Commands = {
     NONE: 'none',
     MOUSE_DOWN: 'mouse_down',
     MOUSE_UP: 'mouse_up',
-    SPACEBAR_DOWN: 'spacebar_down'
+    SPACEBAR_DOWN: 'spacebar_down',
+    RIGHT_ARROW_DOWN: 'right_arrow_down'
 }
 
 export const GameStates = {

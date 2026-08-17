@@ -1,9 +1,9 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates, Levels } from './constants.js';
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
-import { UiHandler }    from './handlers/ui_handler.js';
-import { Level } from './objects/levels.js'
-import { SpeechBubble } from './objects/speech_bubble.js'
+import { UiHandler } from './handlers/ui_handler.js';
+import { Level } from './elements/levels.js'
+import { FoodItems } from './elements/food_items.js'
 
 let screenCenter = {x: 0, y: 0};
 
@@ -16,19 +16,13 @@ export const Game = {
     
     assetHandler: new AssetHandler(),
     inputHandler: new InputHandler(),
-    uiHandler: new UiHandler(),
-    level: new Level(Levels.LEVEL_1, 'cafe'),
-    speechBubble: new SpeechBubble(
-        {x: 368 , y: 810},
-        {x: 520, y: 200},
-        '#f0b155',
-        10,
-        14,
-        'black'),
+    level:        new Level(),
+    uiHandler:    new UiHandler(),
+    foodItems:    new FoodItems(),
 
     gamestate: GameStates.LOADING,
-    activeCommand: Commands.NONE,
-    currentLevel: Levels.LEVEL_1
+    currentLevel: Levels.LEVEL_1,
+    activeCommand: Commands.NONE
 };
 
 export function init(){
@@ -58,17 +52,18 @@ function update(deltaTime){
             }
             break;
         case GameStates.INITIALIZING:
-            Game.uiHandler.init(Game.assetHandler);
+            Game.level.init(Game.assetHandler);
+            Game.uiHandler.init();
+            Game.foodItems.init(Game.assetHandler);
             Game.inputHandler.initInputs();
             Game.gamestate = GameStates.GAMEPLAY;
-            Game.level.init(Game.assetHandler);
-            Game.speechBubble.init('Arial', 34, 48);
+            console.log("Game initialized!");
             break;
         case GameStates.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.uiHandler.update(Game.activeCommand, Game.inputHandler.mousePos, Game.level.dropZone, Game.scale, Game.deltaTime);
-            Game.level.update(Game.scale, Game.deltaTime);
-            Game.speechBubble.update(Game.scale, Game.ctx, Game.deltaTime);
+            Game.level.update(Game.scale, deltaTime);
+            Game.uiHandler.update(Game.activeCommand, Game.scale, Game.ctx, deltaTime);
+            Game.foodItems.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, deltaTime);
             break;
         case GameStates.RESTARTING:
             break;
@@ -89,7 +84,7 @@ function draw(){
         case GameStates.GAMEPLAY:
             Game.level.draw(Game.ctx);
             Game.uiHandler.draw(Game.ctx);
-            Game.speechBubble.draw(Game.ctx);
+            Game.foodItems.draw(Game.ctx);
             break;
         case GameStates.RESTARTING:
             break;

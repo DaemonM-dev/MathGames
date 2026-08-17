@@ -82,9 +82,6 @@ export class SpeechBubble{
             this.padding = this.initialPad * Math.min(this.scale.x, this.scale.y);
 
             this.needsRewrap = true;
-
-            console.log("New TextBubble Position: ", this.pos);
-            console.log("New TextBubble Size: ", this.size);
         }
     }
 

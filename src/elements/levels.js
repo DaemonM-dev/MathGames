@@ -2,9 +2,9 @@ import { GAME_WIDTH, GAME_HEIGHT, Levels } from '../constants.js'
 import { StaticObject, Rect } from '../objects/static_object.js'
 
 export class Level{
-    constructor(level, name){
-        this.level = level;
-        this.name = name;
+    constructor(){
+        this.level = null;
+        this.name = null;
 
         this.rectangles = [];
         this.staticObjects = [];
