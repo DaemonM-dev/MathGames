@@ -2,6 +2,7 @@ import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates, Levels } from
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
 import { UiHandler }    from './handlers/ui_handler.js';
+import { Level } from './objects/levels.js'
 
 let screenCenter = {x: 0, y: 0};
 
@@ -15,6 +16,7 @@ export const Game = {
     assetHandler: new AssetHandler(),
     inputHandler: new InputHandler(),
     uiHandler: new UiHandler(),
+    level: new Level(Levels.LEVEL_1, 'cafe'),
 
     gamestate: GameStates.LOADING,
     activeCommand: Commands.NONE,
@@ -51,10 +53,12 @@ function update(deltaTime){
             Game.uiHandler.init(Game.assetHandler);
             Game.inputHandler.initInputs();
             Game.gamestate = GameStates.GAMEPLAY;
+            Game.level.init(Game.assetHandler);
             break;
         case GameStates.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.uiHandler.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, Game.deltaTime);
+            Game.uiHandler.update(Game.activeCommand, Game.inputHandler.mousePos, Game.level.dropZone, Game.scale, Game.deltaTime);
+            Game.level.update(Game.scale, Game.deltaTime);
             break;
         case GameStates.RESTARTING:
             break;
@@ -73,6 +77,7 @@ function draw(){
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
             break;
         case GameStates.GAMEPLAY:
+            Game.level.draw(Game.ctx);
             Game.uiHandler.draw(Game.ctx);
             break;
         case GameStates.RESTARTING:
