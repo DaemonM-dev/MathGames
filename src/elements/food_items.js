@@ -87,6 +87,13 @@ export class FoodItems{
         }
     }
 
+     resetToStartingPositions(){
+        for(let i = 0; i < this.foodArray.length; i++){
+            const obj = this.foodArray[i];
+            obj.reset();
+        }
+    }
+
     shuffledPositions(positions){
         const shuffled = [...positions];
 
@@ -96,5 +103,17 @@ export class FoodItems{
         }
 
         return shuffled;
+    }
+
+    calculateTotalCost(level){
+        let total = 0;
+        // Only count items that are in the drop zone
+        for(const foodItem of this.foodArray) {
+            if(foodItem.isWithinRect(level.getDropzone())) {
+                const value = level.getFoodValue(foodItem.name);
+                total += value;
+            }
+        }
+        return total;
     }
 }

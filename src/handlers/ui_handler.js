@@ -4,6 +4,8 @@ import { SpeechBubble } from "../elements/speech_bubble.js"
 export class UiHandler{
     constructor(){
         this.speechBubbles = [];
+        this.submitButton = null;
+        this.scale = {x:1.0, y:1.0};
     }
 
     init(){
@@ -11,20 +13,44 @@ export class UiHandler{
         {x: 520, y: 200}, '#f0b155', 10, 14, 'black'));
 
         this.speechBubbles[0].init('Arial', 34, 48);
+
+        this.submitButton = {
+            pos: {x: 1700, y: 950},
+            size: {x: 180, y: 60},
+            visible: true
+        };
     }
 
     update(command, scale, ctx, deltaTime){
+        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
+            this.scale = {...scale};
+            if(this.submitButton){
+                this.submitButton.pos = { x: 1700 * this.scale.x, y: 950 * this.scale.y };
+                this.submitButton.size = { x: 180 * this.scale.x, y: 60 * this.scale.y };
+            }
+        }
+
         for(let i = 0; i < this.speechBubbles.length; i++){
             if(command === Commands.RIGHT_ARROW_DOWN){
                 this.speechBubbles[i].nextMessage();
             }
-            this.speechBubbles[i].update(scale, ctx, deltaTime);
+            this.speechBubbles[i].update(this.scale, ctx, deltaTime);
         }
     }
 
     draw(ctx){
         for(let i = 0; i < this.speechBubbles.length; i++){
             this.speechBubbles[i].draw(ctx);
+        }
+        if(this.submitButton && this.submitButton.visible) {
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, 
+                        this.submitButton.size.x, this.submitButton.size.y);
+            ctx.fillStyle = 'white';
+            ctx.font = `${24 * Math.min(this.scale.x, this.scale.y)}px Arial`;
+            ctx.fillText('SUBMIT', 
+                        this.submitButton.pos.x + 10, 
+                        this.submitButton.pos.y + 35);
         }
     }
 }
