@@ -75,6 +75,8 @@ function update(deltaTime){
             break;
         case GameStates.RESTARTING:
             break;
+        case GameStates.GAME_COMPLETE:
+            break;
     }
 }
 
@@ -98,6 +100,11 @@ function draw(){
             break;
         case GameStates.RESTARTING:
             break;
+        case GameStates.GAME_COMPLETE:
+            Game.ctx.fillStyle = "#000";
+            Game.ctx.font = `40px Arial`;
+            Game.ctx.fillText("You did it! Game Complete!", screenCenter.x - 200, screenCenter.y);
+            break;
     }
 }
 
@@ -116,10 +123,17 @@ export function resizeCanvas(){
 
 function handleLevelSubmission(){
     const totalCost = Game.foodItems.calculateTotalCost(Game.level);
-    if(totalCost > Game.playerKuro){
-        Game.foodItems.resetToStartingPositions();
-    } else {
+    const typedAmount = Game.uiHandler.getTypedAmount
+        ? Game.uiHandler.getTypedAmount()
+        : totalCost;
+
+    const isCorrect = totalCost <= Game.playerKuro && typedAmount === totalCost;
+    if(isCorrect){
+        Game.uiHandler.speechBubble?.showFeedback("Good job!");
         advanceToNextLevel();
+    } else {
+        Game.foodItems.resetToStartingPositions();
+        Game.uiHandler.speechBubble?.showFeedback("Try again!");
     }
     Game.submitted = true;
 }
@@ -130,10 +144,18 @@ function advanceToNextLevel(){
 
     if(currentIndex < levelOrder.length - 1){
         Game.currentLevel = levelOrder[currentIndex + 1];
-        Game.gamestate = GameStates.INITIALIZING;
+        startNewLevel();
     } else {
         console.log("Game Completed!");
+        Game.gamestate = GameStates.GAME_COMPLETE;
     }
+}
+
+function startNewLevel(){
+    Game.level.loadLevel();
+    Game.foodItems.startNewLevel();
+    Game.playerKuro = Game.level.getStartingKuro();
+    Game.submitted = false;
 }
 
 function drawPlayerKuro(){

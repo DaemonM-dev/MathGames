@@ -47,6 +47,14 @@ export class Level{
         this.rectangles.push(whiteRect);
         this.dropZone = blackRect;
 
+        this.loadLevel();
+    }
+
+    // Call this (instead of init) whenever moving to a new level.
+    // It only touches per-level data - it never rebuilds the static scene
+    // (background, characters, comic panel borders, drop zone), so it's
+    // safe to call repeatedly without duplicating objects.
+    loadLevel(){
         this.generateLevelCurrency();
         this.generateFoodValues();
     }

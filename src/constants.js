@@ -15,7 +15,8 @@ export const GameStates = {
     LOADING: 'loading',
     INITIALIZING: 'initializing',
     GAMEPLAY: 'gameplay',
-    RESTARTING: 'restarting'
+    RESTARTING: 'restarting',
+    GAME_COMPLETE: 'game_complete'
 }
 
 export const Levels = {

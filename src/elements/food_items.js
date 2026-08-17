@@ -72,6 +72,14 @@ export class FoodItems{
         for(let i = 0; i < this.foodArray.length; i++){ this.foodArray[i].draw(ctx); }
     }
 
+    // Call this on advancing to a new level. Reuses resetToRandomPositions,
+    // which already updates each item's initialPos - so a wrong-answer
+    // reset during this level correctly returns items to *this level's*
+    // shuffled layout, not the very first level's layout.
+    startNewLevel(){
+        this.resetToRandomPositions();
+    }
+
     resetToRandomPositions(){
         const positions = this.shuffledPositions(this.startPositions);
 
