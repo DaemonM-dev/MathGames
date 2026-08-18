@@ -1,30 +1,11 @@
 import { GAME_WIDTH, GAME_HEIGHT } from "./constants.js";
-
-
-class StaticObject{
-    constructor(texture, size, pos, color){
-        this.texture = texture;
-        this.size = size;
-        this.pos = pos;
-        this.color = color;
-        this.initialSize = {...size};
-        this.initialPos = {...pos};
-
-        this.hoverColor = null;
-    }
-
-    pointIntersects(point, obj){
-        return (point.x >= obj.pos.x &&
-            point.x <= obj.pos.x + obj.size.x &&
-            point.y >= obj.pos.y &&
-            point.y <= obj.pos.y + obj.size.y)
-    }
-}
+import { GameObject } from "./gameobjects.js";
 
 export class Gameplay {
     constructor(){
         this.scale = {x:1.0, y:1.0};
 
+        this.purpleRect = null,
         this.background = null,
         this.vertBar = null,
         this.horizBar = null,
@@ -33,27 +14,41 @@ export class Gameplay {
     }
 
     init(assets){
-        this.background = new StaticObject(assets.getAsset('background'), {x:1280 , y:720}, {x: 0, y: 0}, 'white');
-        this.vertBar = new StaticObject(null, {x: 14, y: GAME_HEIGHT}, {x: this.background.size.x - 7, y: 0}, 'black');
-        this.horizBar = new StaticObject(null, {x: this.background.size.x, y: 14}, {x: 0, y:this.background.size.y - 7}, 'black');
+        const bgSize = {x: 1280, y: 720};
+        this.purpleRect = new GameObject(null, {x:bgSize.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
+        this.background = new GameObject(assets.getAsset('background'), bgSize, {x: 0, y: 0});
 
-        const FACTOR = 0.75;
-        this.boy = new StaticObject(assets.getAsset('boy'), {x: 450 * FACTOR, y: 600 * FACTOR}, {x: 0, y: GAME_HEIGHT - 600 * FACTOR}, 'white');
-        this.girl = new StaticObject(assets.getAsset('girl'),{x: 450 * FACTOR, y: 600 * FACTOR}, {x: this.background.size.x - 450 * FACTOR, y:GAME_HEIGHT - 600 * FACTOR}, 'white');
+        const BAR_WIDTH = 14;
+        this.vertBar = new GameObject(null, {x: BAR_WIDTH, y: GAME_HEIGHT}, {x: bgSize.x - BAR_WIDTH / 2, y: 0});
+        this.horizBar = new GameObject(null, {x: bgSize.x, y: BAR_WIDTH}, {x: 0, y:bgSize.y - BAR_WIDTH / 2});
+
+        const CHAR_SCALE = 0.75;
+        const CHAR_SIZE = {x: 450 * CHAR_SCALE, y: 600 * CHAR_SCALE};
+        this.boy = new GameObject(assets.getAsset('boy'), CHAR_SIZE, {x: 0, y: GAME_HEIGHT - CHAR_SIZE.y});
+        this.girl = new GameObject(assets.getAsset('girl'),CHAR_SIZE, {x: bgSize.x - CHAR_SIZE.x, y:GAME_HEIGHT - CHAR_SIZE.y});
+    
+        this.purpleRect.setColors('purple','purple','purple');
+        this.vertBar.setColors('black', 'black', 'black');
+        this.horizBar.setColors('black', 'black', 'black');
     }
 
     update(scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
-            this.scaleStaticObject(this.background, this.scale);
-            this.scaleStaticObject(this.vertBar, this.scale);
-            this.scaleStaticObject(this.horizBar, this.scale);
-            this.scaleStaticObject(this.boy, this.scale);
-            this.scaleStaticObject(this.girl, this.scale);
+            this.purpleRect.changeScale(this.scale);
+            this.background.changeScale(this.scale);
+            this.vertBar.changeScale(this.scale);
+            this.horizBar.changeScale(this.scale);
+            this.boy.changeScale(this.scale);
+            this.girl.changeScale(this.scale);
         }
     }
 
     draw(ctx){
+
+        ctx.fillStyle = this.purpleRect.color;
+        ctx.fillRect(this.purpleRect.pos.x, this.purpleRect.pos.y, this.purpleRect.size.x, this.purpleRect.size.y);
+
         ctx.drawImage(this.background.texture, this.background.pos.x,
              this.background.pos.y, this.background.size.x, this.background.size.y);
 
@@ -63,12 +58,5 @@ export class Gameplay {
 
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
-    }
-
-    scaleStaticObject(obj, scale){
-        obj.size.x = obj.initialSize.x * scale.x;
-        obj.size.y = obj.initialSize.y * scale.y;
-        obj.pos.x = obj.initialPos.x * scale.x;
-        obj.pos.y = obj.initialPos.y * scale.y;
     }
 }
