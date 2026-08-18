@@ -63,7 +63,7 @@ export class Gameplay {
         this.submitButton.setColor('green');
     }
 
-    update(mousePos, scale){
+    update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
             this.purpleRect.changeScale(this.scale);
