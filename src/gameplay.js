@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT } from "./constants.js";
+import { GAME_WIDTH, GAME_HEIGHT, Commands } from "./constants.js";
 import { GameObject } from "./gameobjects.js";
 
 export class Gameplay {
@@ -18,9 +18,50 @@ export class Gameplay {
         this.DZbounds = null,
 
         this.submitButton = null
+
+        this.foodSpawnPositions = [];
     }
 
     init(assets){
+        this.initStaticElements(assets);
+    }
+
+    update(command, mousePos, scale){
+        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
+            this.scale = scale;
+            this.purpleRect.changeScale(this.scale);
+            this.background.changeScale(this.scale);
+            this.vertBar.changeScale(this.scale);
+            this.horizBar.changeScale(this.scale);
+            this.boy.changeScale(this.scale);
+            this.girl.changeScale(this.scale);
+            this.DZoutside.changeScale(this.scale);
+            this.DZinside.changeScale(this.scale);
+            this.submitButton.changeScale(this.scale);
+        }
+
+        if(mousePos.x !== this.mousePos.x || mousePos.y !== this.mousePos.y){
+            this.mousePos = mousePos;
+            if(this.submitButton.intersects(this.mousePos)){
+                this.submitButton.setColor('blue');
+            } else {
+               this.submitButton.setColor('green');
+            }
+        }
+
+        switch(command){
+            case Commands.MOUSE_DOWN:
+                break;
+            case Commands.MOUSE_UP:
+                break;
+        }
+    }
+
+    draw(ctx){
+        this.drawStaticElements(ctx);
+    }
+
+    initStaticElements(assets){
         const BG_SIZE = {x: 1280, y: 720};
         this.purpleRect = new GameObject(null, {x:BG_SIZE.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
         this.background = new GameObject(assets.getAsset('background'), BG_SIZE, {x: 0, y: 0});
@@ -62,34 +103,7 @@ export class Gameplay {
         this.DZoutside.setColor('black');
         this.submitButton.setColor('green');
     }
-
-    update(command, mousePos, scale){
-        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
-            this.scale = scale;
-            this.purpleRect.changeScale(this.scale);
-            this.background.changeScale(this.scale);
-            this.vertBar.changeScale(this.scale);
-            this.horizBar.changeScale(this.scale);
-            this.boy.changeScale(this.scale);
-            this.girl.changeScale(this.scale);
-            this.DZoutside.changeScale(this.scale);
-            this.DZinside.changeScale(this.scale);
-            this.submitButton.changeScale(this.scale);
-        }
-
-        if(mousePos.x !== this.mousePos.x || mousePos.y !== this.mousePos.y){
-            this.mousePos = mousePos;
-
-            if(this.submitButton.intersects(this.mousePos)){
-                this.submitButton.setColor('blue');
-            } else {
-               this.submitButton.setColor('green');
-            }
-        }
-    }
-
-    draw(ctx){
-
+    drawStaticElements(ctx){
         ctx.fillStyle = this.purpleRect.color;
         ctx.fillRect(this.purpleRect.pos.x, this.purpleRect.pos.y, this.purpleRect.size.x, this.purpleRect.size.y);
 
@@ -109,5 +123,18 @@ export class Gameplay {
 
         ctx.fillStyle = this.submitButton.color;
         ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y);
+    }
+
+    initPossibleFoodSpawns(){
+        this.foodSpawnPositions = [
+            { x: 245, y: 140 },
+            { x: 468, y: 140 },
+            { x: 695, y: 145 },
+            { x: 920, y: 142 },
+            { x: 240, y: 375 },
+            { x: 472, y: 380 },
+            { x: 698, y: 378 },
+            { x: 925, y: 380 }
+        ];
     }
 }

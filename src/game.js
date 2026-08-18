@@ -2,6 +2,7 @@ import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates } from './cons
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
 import { Gameplay } from './gameplay.js'
+import { Dialogue } from './dialogue.js'
 
 let screenCenter = {x: 0, y: 0};
 
@@ -15,6 +16,7 @@ export const Game = {
     assetHandler: new AssetHandler(),
     inputHandler: new InputHandler(),
     gameplay: new Gameplay(),
+    dialogue: new Dialogue(40, {x:100, y:100}, 20,600),
 
     activeCommand: Commands.NONE,
     gamestate: GameStates.LOADING,
@@ -55,6 +57,7 @@ function update(deltaTime){
         case GameStates.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
             Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale);
+            Game.dialogue.update(Game.scale, Game.deltaTime);
             break;
         case GameStates.GAME_COMPLETE:
             break;
@@ -74,6 +77,7 @@ function draw(){
             break;
         case GameStates.GAMEPLAY:
             Game.gameplay.draw(Game.ctx);
+            Game.dialogue.draw(Game.ctx);
             break;
         case GameStates.GAME_COMPLETE:
             Game.ctx.fillStyle = "#000";
