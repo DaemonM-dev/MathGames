@@ -10,26 +10,46 @@ export class Gameplay {
         this.vertBar = null,
         this.horizBar = null,
         this.boy = null,
-        this.girl = null
+        this.girl = null,
+
+        this.DZoutside = null,
+        this.DZinside = null,
+        this.DZbounds = null
     }
 
     init(assets){
-        const bgSize = {x: 1280, y: 720};
-        this.purpleRect = new GameObject(null, {x:bgSize.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
-        this.background = new GameObject(assets.getAsset('background'), bgSize, {x: 0, y: 0});
+        const BG_SIZE = {x: 1280, y: 720};
+        this.purpleRect = new GameObject(null, {x:BG_SIZE.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
+        this.background = new GameObject(assets.getAsset('background'), BG_SIZE, {x: 0, y: 0});
 
         const BAR_WIDTH = 14;
-        this.vertBar = new GameObject(null, {x: BAR_WIDTH, y: GAME_HEIGHT}, {x: bgSize.x - BAR_WIDTH / 2, y: 0});
-        this.horizBar = new GameObject(null, {x: bgSize.x, y: BAR_WIDTH}, {x: 0, y:bgSize.y - BAR_WIDTH / 2});
+        this.vertBar = new GameObject(null, {x: BAR_WIDTH, y: GAME_HEIGHT}, {x: BG_SIZE.x - BAR_WIDTH / 2, y: 0});
+        this.horizBar = new GameObject(null, {x: BG_SIZE.x, y: BAR_WIDTH}, {x: 0, y:BG_SIZE.y - BAR_WIDTH / 2});
 
         const CHAR_SCALE = 0.75;
         const CHAR_SIZE = {x: 450 * CHAR_SCALE, y: 600 * CHAR_SCALE};
         this.boy = new GameObject(assets.getAsset('boy'), CHAR_SIZE, {x: 0, y: GAME_HEIGHT - CHAR_SIZE.y});
-        this.girl = new GameObject(assets.getAsset('girl'),CHAR_SIZE, {x: bgSize.x - CHAR_SIZE.x, y:GAME_HEIGHT - CHAR_SIZE.y});
+        this.girl = new GameObject(assets.getAsset('girl'),CHAR_SIZE, {x: BG_SIZE.x - CHAR_SIZE.x, y:GAME_HEIGHT - CHAR_SIZE.y});
     
+        const DZ_OUT_SIZE = { x: 500 , y: 500 };
+        const DZ_OUT_POS = {
+            x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - DZ_OUT_SIZE.x) / 2,
+            y: BG_SIZE.y - DZ_OUT_SIZE.y
+        };
+        this.DZoutside = new GameObject(null, DZ_OUT_SIZE, DZ_OUT_POS);
+        
+        const DZ_IN_SIZE = { x: 470, y: 470 };
+        const DZ_IN_POS = {
+            x: DZ_OUT_POS.x + ((DZ_OUT_SIZE.x - DZ_IN_SIZE.x) / 2),
+            y: DZ_OUT_POS.y + ((DZ_OUT_SIZE.y - DZ_IN_SIZE.y) / 2)
+        };
+        this.DZinside = new GameObject(null, DZ_IN_SIZE, DZ_IN_POS);
+        this.DZbounds = {...this.DZoutside};
+
         this.purpleRect.setColors('purple','purple','purple');
         this.vertBar.setColors('black', 'black', 'black');
         this.horizBar.setColors('black', 'black', 'black');
+        this.DZoutside.setColors('black', 'black', 'black');
     }
 
     update(scale){
@@ -41,6 +61,8 @@ export class Gameplay {
             this.horizBar.changeScale(this.scale);
             this.boy.changeScale(this.scale);
             this.girl.changeScale(this.scale);
+            this.DZoutside.changeScale(this.scale);
+            this.DZinside.changeScale(this.scale);
         }
     }
 
@@ -55,6 +77,10 @@ export class Gameplay {
         ctx.fillStyle = this.vertBar.color;
         ctx.fillRect(this.vertBar.pos.x, this.vertBar.pos.y, this.vertBar.size.x, this.vertBar.size.y);
         ctx.fillRect(this.horizBar.pos.x, this.horizBar.pos.y, this.horizBar.size.x, this.horizBar.size.y);
+        ctx.fillRect(this.DZoutside.pos.x, this.DZoutside.pos.y, this.DZoutside.size.x, this.DZoutside.size.y);
+
+        ctx.fillStyle = this.DZinside.color;
+        ctx.fillRect(this.DZinside.pos.x, this.DZinside.pos.y, this.DZinside.size.x, this.DZinside.size.y);
 
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);

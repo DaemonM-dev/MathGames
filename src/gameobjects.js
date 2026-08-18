@@ -7,7 +7,7 @@ export class GameObject{
         this.pos = pos;
         this.initialSize = {...size};
         this.initialPos = {...pos};
-        this.cachedPos = {...size};
+        this.cachedPos = {...pos};
 
         this.color = 'white';
         this.hoverColor = 'white';
