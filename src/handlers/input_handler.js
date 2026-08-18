@@ -13,10 +13,6 @@ export class InputHandler{
             if(this.activeCommand !== Commands.MOUSE_DOWN){
                 this.activeCommand = Commands.MOUSE_DOWN;
             }
-            
-            if(Game.uiHandler.isMouseOverSubmitButton(this.mousePos)) {
-                this.submitButtonPressed = true;
-            }
         });
        
         Game.canvas.addEventListener('mouseup', (event) => {
@@ -31,7 +27,6 @@ export class InputHandler{
             const screen = Game.canvas.getBoundingClientRect();
             this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
             
-            Game.uiHandler.updateSubmitHover(this.mousePos);
         });
         
         document.addEventListener('keydown', (event) => {
