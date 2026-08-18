@@ -5,6 +5,7 @@ export class InputHandler{
     constructor(){
         this.mousePos = {x: 0.0, y: 0.0};
         this.activeCommand = Commands.NONE;
+        this.submitButtonPressed = false;
     }
 
     initInputs(){
@@ -12,17 +13,25 @@ export class InputHandler{
             if(this.activeCommand !== Commands.MOUSE_DOWN){
                 this.activeCommand = Commands.MOUSE_DOWN;
             }
+            
+            if(Game.uiHandler.isMouseOverSubmitButton(this.mousePos)) {
+                this.submitButtonPressed = true;
+            }
         });
        
         Game.canvas.addEventListener('mouseup', (event) => {
             if(this.activeCommand !== Commands.MOUSE_UP){
                 this.activeCommand = Commands.MOUSE_UP;
             }
+            
+            this.submitButtonPressed = false;
         });
         
         Game.canvas.addEventListener('mousemove', (event) => {
             const screen = Game.canvas.getBoundingClientRect();
             this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
+            
+            Game.uiHandler.updateSubmitHover(this.mousePos);
         });
         
         document.addEventListener('keydown', (event) => {

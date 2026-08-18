@@ -6,6 +6,7 @@ export class UiHandler{
         this.speechBubbles = [];
         this.submitButton = null;
         this.scale = {x:1.0, y:1.0};
+        this.submitHovered = false;
     }
 
     init(){
@@ -17,7 +18,9 @@ export class UiHandler{
         this.submitButton = {
             pos: {x: 1700, y: 950},
             size: {x: 180, y: 60},
-            visible: true
+            visible: true,
+            hoverColor: '#3b8b3f',
+            normalColor: '#4CAF50'
         };
     }
 
@@ -43,14 +46,35 @@ export class UiHandler{
             this.speechBubbles[i].draw(ctx);
         }
         if(this.submitButton && this.submitButton.visible) {
-            ctx.fillStyle = '#4CAF50';
+            // Draw submit button with hover effect
+            ctx.fillStyle = this.submitHovered ? this.submitButton.hoverColor : this.submitButton.normalColor;
             ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, 
                         this.submitButton.size.x, this.submitButton.size.y);
+            
+            // Add button border
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.submitButton.pos.x, this.submitButton.pos.y, 
+                          this.submitButton.size.x, this.submitButton.size.y);
+            
             ctx.fillStyle = 'white';
             ctx.font = `${24 * Math.min(this.scale.x, this.scale.y)}px Arial`;
             ctx.fillText('SUBMIT', 
                         this.submitButton.pos.x + 10, 
                         this.submitButton.pos.y + 35);
         }
+    }
+    
+    isMouseOverSubmitButton(mousePos) {
+        if (!this.submitButton) return false;
+        
+        return mousePos.x >= this.submitButton.pos.x &&
+               mousePos.x <= this.submitButton.pos.x + this.submitButton.size.x &&
+               mousePos.y >= this.submitButton.pos.y &&
+               mousePos.y <= this.submitButton.pos.y + this.submitButton.size.y;
+    }
+    
+    updateSubmitHover(mousePos) {
+        this.submitHovered = this.isMouseOverSubmitButton(mousePos);
     }
 }

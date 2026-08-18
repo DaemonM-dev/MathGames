@@ -25,7 +25,8 @@ export const Game = {
     activeCommand: Commands.NONE,
 
     playerKuro: 0,
-    submitted: false
+    submitted: false,
+    nextLevelTimeout: null
 };
 
 export function init(){
@@ -69,7 +70,7 @@ function update(deltaTime){
             Game.uiHandler.update(Game.activeCommand, Game.scale, Game.ctx, deltaTime);
             Game.foodItems.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale, Game.level.dropZone, deltaTime);
 
-            if(Game.activeCommand === Commands.SUBMIT_PRESSED){
+            if(Game.inputHandler.submitButtonPressed){
                 handleLevelSubmission();
             }
             break;
@@ -95,7 +96,6 @@ function draw(){
             Game.level.draw(Game.ctx);
             Game.uiHandler.draw(Game.ctx);
             Game.foodItems.draw(Game.ctx);
-
             drawPlayerKuro();
             break;
         case GameStates.RESTARTING:
@@ -111,7 +111,6 @@ function draw(){
 export function resizeCanvas(){
     const displayWidth = window.innerWidth;
     const displayHeight = window.innerHeight;
-
     if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight) {
         Game.canvas.width = displayWidth;
         Game.canvas.height = displayHeight;
@@ -122,20 +121,30 @@ export function resizeCanvas(){
 }
 
 function handleLevelSubmission(){
-    const totalCost = Game.foodItems.calculateTotalCost(Game.level);
-    const typedAmount = Game.uiHandler.getTypedAmount
-        ? Game.uiHandler.getTypedAmount()
-        : totalCost;
-
-    const isCorrect = totalCost <= Game.playerKuro && typedAmount === totalCost;
-    if(isCorrect){
-        Game.uiHandler.speechBubble?.showFeedback("Good job!");
-        advanceToNextLevel();
-    } else {
-        Game.foodItems.resetToStartingPositions();
-        Game.uiHandler.speechBubble?.showFeedback("Try again!");
+    const foodInDropZone = Game.foodItems.getFoodInDropZone(Game.level.dropZone);
+    
+    if (foodInDropZone.length === 0) {
+        console.log("There are no food items in the dropzone!");
+        return;
     }
-    Game.submitted = true;
+    
+    const totalCost = Game.foodItems.calculateTotalCost(Game.level);
+    
+    if(totalCost > Game.playerKuro) {
+        Game.uiHandler.speechBubble?.showFeedback("You don't have enough Kuro!");
+        Game.foodItems.resetToStartingPositions();
+        return;
+    }
+    
+    console.log("Congratulations! You got it right!");
+    
+    if (Game.nextLevelTimeout) {
+        clearTimeout(Game.nextLevelTimeout);
+    }
+    
+    Game.nextLevelTimeout = setTimeout(() => {
+        advanceToNextLevel();
+    }, 1000);
 }
 
 function advanceToNextLevel(){
@@ -156,6 +165,11 @@ function startNewLevel(){
     Game.foodItems.startNewLevel();
     Game.playerKuro = Game.level.getStartingKuro();
     Game.submitted = false;
+    
+    if (Game.nextLevelTimeout) {
+        clearTimeout(Game.nextLevelTimeout);
+        Game.nextLevelTimeout = null;
+    }
 }
 
 function drawPlayerKuro(){

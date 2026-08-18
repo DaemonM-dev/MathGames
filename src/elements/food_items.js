@@ -72,10 +72,6 @@ export class FoodItems{
         for(let i = 0; i < this.foodArray.length; i++){ this.foodArray[i].draw(ctx); }
     }
 
-    // Call this on advancing to a new level. Reuses resetToRandomPositions,
-    // which already updates each item's initialPos - so a wrong-answer
-    // reset during this level correctly returns items to *this level's*
-    // shuffled layout, not the very first level's layout.
     startNewLevel(){
         this.resetToRandomPositions();
     }
@@ -116,7 +112,6 @@ export class FoodItems{
 
     calculateTotalCost(level){
         let total = 0;
-        // Only count items that are in the drop zone
         for(const foodItem of this.foodArray) {
             if(foodItem.isWithinRect(level.getDropzone())) {
                 const value = level.getFoodValue(foodItem.name);
@@ -124,5 +119,9 @@ export class FoodItems{
             }
         }
         return total;
+    }
+    
+    getFoodInDropZone(dropZone) {
+        return this.foodArray.filter(item => item.isWithinRect(dropZone));
     }
 }

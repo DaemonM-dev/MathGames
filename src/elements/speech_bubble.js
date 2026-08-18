@@ -114,8 +114,6 @@ export class SpeechBubble{
         this.needsRewrap = false;
     }
 
-    // Appends a one-off message (e.g. "Try again!" / "Good job!") and
-    // immediately displays it, without disturbing the existing message list.
     showFeedback(message){
         this.addMessage(message);
         this.setCurrentMessage(this.messages.length - 1);
