@@ -3,7 +3,8 @@ import { GameObject } from "./gameobjects.js";
 
 export class Gameplay {
     constructor(){
-        this.scale = {x:1.0, y:1.0};
+        this.mousePos = { x: 0.0, y: 0.0 };
+        this.scale = { x: 1.0, y: 1.0 };
 
         this.purpleRect = null,
         this.background = null,
@@ -14,7 +15,9 @@ export class Gameplay {
 
         this.DZoutside = null,
         this.DZinside = null,
-        this.DZbounds = null
+        this.DZbounds = null,
+
+        this.submitButton = null
     }
 
     init(assets){
@@ -46,13 +49,21 @@ export class Gameplay {
         this.DZinside = new GameObject(null, DZ_IN_SIZE, DZ_IN_POS);
         this.DZbounds = {...this.DZoutside};
 
-        this.purpleRect.setColors('purple','purple','purple');
-        this.vertBar.setColors('black', 'black', 'black');
-        this.horizBar.setColors('black', 'black', 'black');
-        this.DZoutside.setColors('black', 'black', 'black');
+        const SUBMIT_SIZE = {x: 200, y:100 };
+        const SUBMIT_POS = {
+            x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - SUBMIT_SIZE.x) / 2,
+            y: DZ_OUT_POS.y + DZ_OUT_SIZE.y + 50
+        };
+        this.submitButton = new GameObject(null, SUBMIT_SIZE, SUBMIT_POS);
+
+        this.purpleRect.setColor('purple');
+        this.vertBar.setColor('black');
+        this.horizBar.setColor('black');
+        this.DZoutside.setColor('black');
+        this.submitButton.setColor('green');
     }
 
-    update(scale){
+    update(mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
             this.purpleRect.changeScale(this.scale);
@@ -63,6 +74,17 @@ export class Gameplay {
             this.girl.changeScale(this.scale);
             this.DZoutside.changeScale(this.scale);
             this.DZinside.changeScale(this.scale);
+            this.submitButton.changeScale(this.scale);
+        }
+
+        if(mousePos.x !== this.mousePos.x || mousePos.y !== this.mousePos.y){
+            this.mousePos = mousePos;
+
+            if(this.submitButton.intersects(this.mousePos)){
+                this.submitButton.setColor('blue');
+            } else {
+               this.submitButton.setColor('green');
+            }
         }
     }
 
@@ -84,5 +106,8 @@ export class Gameplay {
 
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
+
+        ctx.fillStyle = this.submitButton.color;
+        ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y);
     }
 }

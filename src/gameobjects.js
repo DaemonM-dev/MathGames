@@ -10,8 +10,6 @@ export class GameObject{
         this.cachedPos = {...pos};
 
         this.color = 'white';
-        this.hoverColor = 'white';
-        this.selectColor = 'white';
 
         this.selected = false;
         this.hovering = false;
@@ -24,10 +22,8 @@ export class GameObject{
         this.pos.y = this.initialPos.y * scale.y;
     }
 
-    setColors(color, hoverColor, selectColor){
+    setColor(color){
         this.color = color;
-        this.hoverColor = hoverColor;
-        this.selectColor = selectColor;
     }
 
     intersects(point){
