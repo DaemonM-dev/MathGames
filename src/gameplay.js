@@ -1,5 +1,13 @@
 import { GAME_WIDTH, GAME_HEIGHT, Commands } from "./constants.js";
 import { GameObject } from "./gameobjects.js";
+import { Dialogue } from './dialogue.js';
+
+
+const Speaker = {
+    BOY: 'boy',
+    GIRL: 'girl'
+}
+
 
 export class Gameplay {
     constructor(){
@@ -17,13 +25,18 @@ export class Gameplay {
         this.DZinside = null,
         this.DZbounds = null,
 
-        this.submitButton = null
+        this.submitButton = null,
+        this.foodSpawnPositions = [],
 
-        this.foodSpawnPositions = [];
+        this.dialogueBox = null,
+        this.dialogue = null
+
+        this.activeSpeaker = Speaker.GIRL;
     }
 
     init(assets){
         this.initStaticElements(assets);
+        this.dialogue = new Dialogue(40, {x:100, y:100}, 20,600);
     }
 
     update(command, mousePos, scale){
@@ -38,6 +51,8 @@ export class Gameplay {
             this.DZoutside.changeScale(this.scale);
             this.DZinside.changeScale(this.scale);
             this.submitButton.changeScale(this.scale);
+            this.dialogueBox.changeScale(this.scale);
+            this.dialogue.changeScale(this.scale);
         }
 
         if(mousePos.x !== this.mousePos.x || mousePos.y !== this.mousePos.y){
@@ -55,10 +70,13 @@ export class Gameplay {
             case Commands.MOUSE_UP:
                 break;
         }
+
+        this.dialogue.update(this.scale, )
     }
 
     draw(ctx){
         this.drawStaticElements(ctx);
+        this.dialogue.draw(ctx);
     }
 
     initStaticElements(assets){
@@ -97,6 +115,12 @@ export class Gameplay {
         };
         this.submitButton = new GameObject(null, SUBMIT_SIZE, SUBMIT_POS);
 
+        this.dialogueBox = new GameObject(null, {x: 500, y:225}, {x: 390, y: 800});
+        this.dialogueBox.setColor('#f0b155');
+        this.dialogueBox.setOutlineColor('black');
+        this.dialogueBox.setOutlineWidth(8);
+        this.dialogueBox.setRadius(90);
+
         this.purpleRect.setColor('purple');
         this.vertBar.setColor('black');
         this.horizBar.setColor('black');
@@ -123,6 +147,24 @@ export class Gameplay {
 
         ctx.fillStyle = this.submitButton.color;
         ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y);
+
+
+        ctx.fillStyle = this.dialogueBox.color;
+        ctx.lineWidth = this.dialogueBox.outlineWidth;
+        ctx.strokeStyle = this.dialogueBox.outlineColor;
+        ctx.beginPath();
+        switch(this.activeSpeaker){
+            case Speaker.BOY:
+                ctx.roundRect(this.dialogueBox.pos.x, this.dialogueBox.pos.y, this.dialogueBox.size.x, this.dialogueBox.size.y,
+                    [0, this.dialogueBox.radius, this.dialogueBox.radius, this.dialogueBox.radius]);
+            break;
+            case Speaker.GIRL:
+                ctx.roundRect(this.dialogueBox.pos.x, this.dialogueBox.pos.y, this.dialogueBox.size.x, this.dialogueBox.size.y,
+                    [this.dialogueBox.radius, 0, this.dialogueBox.radius, this.dialogueBox.radius]);
+            break;
+        }
+            ctx.fill();
+        ctx.stroke();
     }
 
     initPossibleFoodSpawns(){

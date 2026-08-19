@@ -3,13 +3,21 @@ import { GAME_WIDTH, GAME_HEIGHT } from "./constants.js";
 export class GameObject{
     constructor(texture, size, pos){
         this.texture = texture;
+
         this.size = size;
         this.pos = pos;
+        this.radius = 0;
+        this.outlineWidth = 0;
+
+
         this.initialSize = {...size};
         this.initialPos = {...pos};
         this.cachedPos = {...pos};
+        this.initialRadius = 0;
+        this.initialOutlineWidth = 0;
 
         this.color = 'white';
+        this.outlineColor = 'white';
 
         this.selected = false;
         this.hovering = false;
@@ -20,10 +28,27 @@ export class GameObject{
         this.size.y = this.initialSize.y * scale.y;
         this.pos.x = this.initialPos.x * scale.x;
         this.pos.y = this.initialPos.y * scale.y;
+
+        this.radius = this.initialRadius * Math.min(scale.x ,scale.y);
+        this.outlineWidth = this.initialOutlineWidth * Math.min(scale.x, scale.y);
     }
 
     setColor(color){
         this.color = color;
+    }
+
+    setOutlineColor(color){
+        this.outlineColor = color;
+    }
+
+    setRadius(radius){
+        this.radius = radius;
+        this.initialRadius = radius;
+    }
+
+    setOutlineWidth(width){
+        this.outlineWidth = width;
+        this.initialOutlineWidth = width;
     }
 
     intersects(point){

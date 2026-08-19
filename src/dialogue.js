@@ -52,11 +52,7 @@ export class Dialogue{
         this.activeText = this.level_1_text[this.currentMessageIndex];
     }
 
-    update(scale, deltaTime){
-        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
-            this.scale = scale;
-            this.changeScale(this.scale);
-        }
+    update(deltaTime){
     }
 
     draw(ctx){
