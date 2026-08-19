@@ -19,7 +19,7 @@ export class Level{
         this.staticObjects.push(new StaticObject("background", assets.getAsset('background'), {x:0.0, y:0.0}, {x:1280, y:720}));
         let objScale = 0.35;
         let objSize = {x: 300 * objScale, y: 200 * objScale};
-        this.staticObjects.push(new StaticObject("money", assets.getAsset('money'), {x:1500,y:150}, objSize));
+        this.staticObjects.push(new StaticObject("money", assets.getAsset('money'), {x:1500,y:120}, objSize));
         objScale = 0.75;
         objSize = {x: 450 * objScale, y: 600 * objScale};
         this.staticObjects.push(new StaticObject("boy", assets.getAsset('boy'), {x:0, y:GAME_HEIGHT - objSize.y}, objSize));

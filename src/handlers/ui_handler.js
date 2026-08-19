@@ -11,12 +11,12 @@ export class UiHandler{
 
     init(){
         this.speechBubbles.push(new SpeechBubble({x: 368 , y: 810},
-        {x: 520, y: 200}, '#f0b155', 10, 14, 'black'));
+        {x: 520, y: 200}, '#f0b155', 30, 7, 'black'));
 
         this.speechBubbles[0].init('Arial', 34, 48);
 
         this.submitButton = {
-            pos: {x: 1700, y: 950},
+            pos: {x: 1600, y: 950},
             size: {x: 180, y: 60},
             visible: true,
             hoverColor: '#3b8b3f',

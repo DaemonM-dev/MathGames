@@ -57,7 +57,7 @@ export class SpeechBubble{
         ctx.lineWidth = this.lineWidth;
 
         ctx.beginPath();
-        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
+        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, [this.radius, 0, this.radius, this.radius]);
         ctx.fill();
         ctx.stroke()
 
