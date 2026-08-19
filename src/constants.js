@@ -17,3 +17,20 @@ export const GameStates = {
     GAMEPLAY: 'gameplay',
     GAME_COMPLETE: 'game_complete'
 }
+
+export const Maths = {
+    ADDITION: 'addition',
+    ADD_SUB: 'add_sub',
+    MULTIPLICATION: 'multiplication',
+    FRACTIONS: 'fractions'
+}
+
+export const InputType = {
+    KEYBOARD: 'keyboard',
+    DRAG_DROP: 'drag_drop'
+}
+
+export const Speaker = {
+    BOY: 'boy',
+    GIRL: 'girl'
+}

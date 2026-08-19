@@ -1,6 +1,6 @@
-import { GAME_WIDTH, GAME_HEIGHT, Commands } from "./constants.js";
+import { GAME_WIDTH, GAME_HEIGHT, Commands, Maths, InputType, Speaker } from "../constants.js";
 import { GameObject } from "./gameobjects.js";
-import { Dialogue, Speaker } from './dialogue.js';
+import { Level } from '../levels/levels.js'
 
 const MAX_LEVELS = 10;
 
@@ -24,16 +24,19 @@ export class Gameplay {
         this.foodSpawnPositions = [],
 
         this.dialogueBox = null,
-        this.dialogue = null
+        this.activeDialogue = null
 
         this.activeSpeaker = Speaker.GIRL;
 
-        this.level = 1;
+        this.level1 = null;
+        this.level2 = null;
+        this.level3 = null;
+        this.level4 = null;
+        this.level5 = null;
     }
 
     init(assets){
         this.initStaticElements(assets);
-        this.dialogue = new Dialogue(35, {x:460, y:900}, 20,600);
     }
 
     update(command, mousePos, scale){
@@ -49,7 +52,6 @@ export class Gameplay {
             this.DZinside.changeScale(this.scale);
             this.submitButton.changeScale(this.scale);
             this.dialogueBox.changeScale(this.scale);
-            this.dialogue.changeScale(this.scale);
         }
 
         if(mousePos.x !== this.mousePos.x || mousePos.y !== this.mousePos.y){
@@ -68,15 +70,11 @@ export class Gameplay {
                 break;
         }
 
-        if(this.dialogue.getActiveSpeaker() !== this.activeSpeaker){
-             this.activeSpeaker = this.dialogue.getActiveSpeaker();
-        }
-        this.dialogue.update(this.activeSpeaker, this.level, command, mousePos );
+
     }
 
     draw(ctx){
         this.drawStaticElements(ctx);
-        this.dialogue.draw(ctx);
     }
 
     initStaticElements(assets){
@@ -152,7 +150,6 @@ export class Gameplay {
         ctx.roundRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y, this.submitButton.radius);
         ctx.fill();
 
-
         ctx.fillStyle = this.dialogueBox.color;
         ctx.lineWidth = this.dialogueBox.outlineWidth;
         ctx.strokeStyle = this.dialogueBox.outlineColor;
@@ -182,5 +179,58 @@ export class Gameplay {
             { x: 698, y: 378 },
             { x: 925, y: 380 }
         ];
+    }
+
+    initLevelDialogue(levelNum){
+        switch(levelNum){
+            case 1:
+                this.levelOneDialogue();
+                this.activeDialogue = this.level1.getQuestions();
+            break;
+            case 2:
+                this.levelTwoDialogue();
+                this.activeDialogue = this.level2.getQuestions();
+            break;
+            case 3:
+                this.levelThreeDialogue();
+                this.activeDialogue = this.level3.getQuestions();
+            break;
+            case 4:
+                this.levelFourDialogue();
+                this.activeDialogue = this.level4.getQuestions();
+            break;
+            case 5:
+                this.levelFiveDialogue();
+                this.activeDialogue = this.level5.getQuestions();
+            break;
+        }
+    }
+
+
+
+    levelOneDialogue(){
+        let question = "How much Kuro would it take to buy the chocolate cake and the fruit bowl?";
+        let answer = 25;
+        this.level1.addQuestion(1, Speaker.BOY, question, answer);
+
+        question = "How much Kuro would it take to buy the salad and the cupcakes?";
+        answer = 16;
+        this.level1.addQuestion(2, Speaker.GIRL, question, answer);
+
+        question = "How much Kuro would it take to buy the salad and the cupcakes?";
+        answer = 16;
+        this.level1.addQuestion(3, Speaker.BOY, question, answer);
+    }
+    levelTwoDialogue(){
+        
+    }
+    levelThreeDialogue(){
+        
+    }
+    levelFourDialogue(){
+
+    }
+    levelFiveDialogue(){
+        
     }
 }

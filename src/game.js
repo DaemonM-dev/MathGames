@@ -1,8 +1,7 @@
 import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates } from './constants.js';
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
-import { Gameplay } from './gameplay.js'
-import { Dialogue } from './dialogue.js'
+import { Gameplay } from './gameplay/gameplay.js'
 
 let screenCenter = {x: 0, y: 0};
 

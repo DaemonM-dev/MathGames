@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT } from "./constants.js";
+import { GAME_WIDTH, GAME_HEIGHT } from "../constants.js";
 
 export class GameObject{
     constructor(texture, size, pos){
