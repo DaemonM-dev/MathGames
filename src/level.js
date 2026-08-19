@@ -19,6 +19,9 @@ export class Level{
 
         this.MAX_QUESTIONS = 5;
         this.questions = [];
+
+        this.activeSpeaker = Speaker.GIRL;
+        this.activeMessageIndex = 0;
     }
 
     addQuestion(numberID, speaker, question, answer){
@@ -29,6 +32,10 @@ export class Level{
 
     getQuestions(){
         return this.questions;
+    }
+
+    getActiveSpeaker(){
+        return this.activeSpeaker;
     }
 
     update(deltaTime){

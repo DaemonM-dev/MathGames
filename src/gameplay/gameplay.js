@@ -19,11 +19,19 @@ export class Gameplay {
         this.submitButton = null,
         this.dialogueBox = null,
 
+        this.levels = [];
+        this.activeLevel = 1;
         this.activeSpeaker = Speaker.GIRL;
     }
 
     init(assets){
         this.initStaticElements(assets);
+
+        this.levels.push(new Level(1, Maths.ADDITION, InputType.KEYBOARD));
+        this.levels.push(new Level(2, Maths.ADDITION, InputType.DRAG_DROP));
+        this.levels.push(new Level(3, Maths.ADD_SUB, InputType.KEYBOARD));
+        this.levels.push(new Level(4, Maths.MULTIPLICATION, InputType.KEYBOARD));
+        this.levels.push(new Level(5, Maths.FRACTIONS, InputType.DRAG_DROP));
     }
 
     update(command, mousePos, scale){
@@ -56,6 +64,11 @@ export class Gameplay {
                 break;
             case Commands.MOUSE_UP:
                 break;
+        }
+
+        const newSpeaker = this.levels[this.activeLevel - 1].getActiveSpeaker();
+        if(this.activeSpeaker !== newSpeaker){
+            this.activeSpeaker = newSpeaker;
         }
     }
 
