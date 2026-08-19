@@ -1,3 +1,8 @@
+export const Speaker = {
+    BOY: 'boy',
+    GIRL: 'girl'
+}
+
 export class Dialogue{
     constructor(fontSize, pos, padding, maxWidth){
         this.scale = { x: 1.0, y: 1.0 };
@@ -33,6 +38,8 @@ export class Dialogue{
         this.initialPadding = padding;
 
         this.initText();
+
+        this.activeSpeaker = Speaker.GIRL;
     }
 
     initText(){
@@ -52,7 +59,7 @@ export class Dialogue{
         this.activeText = this.level_1_text[this.currentMessageIndex];
     }
 
-    update(deltaTime){
+    update(speaker, level, command, mousePos, deltaTime){
     }
 
     draw(ctx){
@@ -65,7 +72,11 @@ export class Dialogue{
         const newScale = Math.min(scale.x, scale.y);
         this.fontSize = this.initialFontSize * newScale;
         this.padding = this.initialPadding * newScale;
-        this.pos = {x: this.initialPos.x * scale.x, y: this.initialPos.x * scale.y};
+        this.pos = {x: this.initialPos.x * scale.x, y: this.initialPos.y * scale.y};
+    }
+
+    getActiveSpeaker(){
+        return this.activeSpeaker;
     }
 
     initLevelOneText(){

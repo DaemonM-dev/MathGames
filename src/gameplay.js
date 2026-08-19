@@ -1,13 +1,8 @@
 import { GAME_WIDTH, GAME_HEIGHT, Commands } from "./constants.js";
 import { GameObject } from "./gameobjects.js";
-import { Dialogue } from './dialogue.js';
+import { Dialogue, Speaker } from './dialogue.js';
 
-
-const Speaker = {
-    BOY: 'boy',
-    GIRL: 'girl'
-}
-
+const MAX_LEVELS = 10;
 
 export class Gameplay {
     constructor(){
@@ -32,11 +27,13 @@ export class Gameplay {
         this.dialogue = null
 
         this.activeSpeaker = Speaker.GIRL;
+
+        this.level = 1;
     }
 
     init(assets){
         this.initStaticElements(assets);
-        this.dialogue = new Dialogue(40, {x:100, y:100}, 20,600);
+        this.dialogue = new Dialogue(35, {x:460, y:900}, 20,600);
     }
 
     update(command, mousePos, scale){
@@ -71,7 +68,10 @@ export class Gameplay {
                 break;
         }
 
-        this.dialogue.update(this.scale, )
+        if(this.dialogue.getActiveSpeaker() !== this.activeSpeaker){
+             this.activeSpeaker = this.dialogue.getActiveSpeaker();
+        }
+        this.dialogue.update(this.activeSpeaker, this.level, command, mousePos );
     }
 
     draw(ctx){
@@ -126,6 +126,8 @@ export class Gameplay {
         this.horizBar.setColor('black');
         this.DZoutside.setColor('black');
         this.submitButton.setColor('green');
+
+        this.submitButton.setRadius(10);
     }
     drawStaticElements(ctx){
         ctx.fillStyle = this.purpleRect.color;
@@ -146,7 +148,9 @@ export class Gameplay {
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
 
         ctx.fillStyle = this.submitButton.color;
-        ctx.fillRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y);
+        ctx.beginPath();
+        ctx.roundRect(this.submitButton.pos.x, this.submitButton.pos.y, this.submitButton.size.x, this.submitButton.size.y, this.submitButton.radius);
+        ctx.fill();
 
 
         ctx.fillStyle = this.dialogueBox.color;
