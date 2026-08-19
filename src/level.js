@@ -1,9 +1,8 @@
-import { Maths } from '../constants.js'
+import { InputType, Maths, Speaker } from './constants.js';
 
 class Question{
-    constructor(numberID, speaker, question, answer){
-        this.numberID = numberID;
-        this.speaker = speaker;
+    constructor(number, speaker, question, answer){
+        this.number = number;
         this.question = question;
         this.answer = answer;
     }
@@ -13,13 +12,12 @@ export class Level{
     constructor(levelNum, maths, inputType){
         this.level = levelNum;
         this.maths = maths;
-        this.inputType = inputType;
-
-        this.MAX_QUESTIONS = 5;
+        this.inputType = InputType.KEYBOARD;
 
         this.wrongMSG = 'Try again!';
         this.rightMSG = 'You got it!';
 
+        this.MAX_QUESTIONS = 5;
         this.questions = [];
     }
 
@@ -31,5 +29,14 @@ export class Level{
 
     getQuestions(){
         return this.questions;
+    }
+
+    update(deltaTime){
+        switch(this.inputType){
+            case InputType.KEYBOARD:
+            break;
+            case InputType.DRAG_DROP:
+            break;
+        }
     }
 }
