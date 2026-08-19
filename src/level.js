@@ -26,7 +26,7 @@ export class Level{
 
     addQuestion(numberID, speaker, question, answer){
         if(this.questions.length < this.MAX_QUESTIONS){
-            this.questions.push(numberID, speaker, question, answer);
+            this.questions.push(new Question(numberID, speaker, question, answer));
         }
     }
 

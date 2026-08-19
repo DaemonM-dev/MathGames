@@ -9,15 +9,15 @@ export class Gameplay {
         this.mousePos = { x: 0.0, y: 0.0 };
         this.scale = { x: 1.0, y: 1.0 };
 
-        this.purpleRect = null,
-        this.background = null,
-        this.vertBar = null,
-        this.horizBar = null,
-        this.boy = null,
-        this.girl = null,
-        this.dropZone = null,
-        this.submitButton = null,
-        this.dialogueBox = null,
+        this.purpleRect = null;
+        this.background = null;
+        this.vertBar = null;
+        this.horizBar = null;
+        this.boy = null;
+        this.girl = null;
+        this.dropZone = null;
+        this.submitButton = null;
+        this.dialogueBox = null;
 
         this.levels = [];
         this.activeLevel = 1;
@@ -32,6 +32,10 @@ export class Gameplay {
         this.levels.push(new Level(3, Maths.ADD_SUB, InputType.KEYBOARD));
         this.levels.push(new Level(4, Maths.MULTIPLICATION, InputType.KEYBOARD));
         this.levels.push(new Level(5, Maths.FRACTIONS, InputType.DRAG_DROP));
+
+        this.initLevelQuestions(1);
+
+        console.log(this.levels[0].questions);
     }
 
     update(command, mousePos, scale){
@@ -176,5 +180,47 @@ export class Gameplay {
         }
             ctx.fill();
         ctx.stroke();
+    }
+
+
+    initLevelQuestions(levelNum){
+        switch(levelNum){
+            case 1:
+                this.lvlOneQuestions();
+            break;
+            case 2:
+            break;
+            case 3:
+            break;
+            case 4:
+            break;
+            case 5:
+            break;
+        }
+    }
+
+    lvlOneQuestions(){
+        let question = "N/A";
+        let answer = "N/A";
+
+        question = "How much Kuro would it cost to buy a bowl of fruit salad and a chocolate cake?";
+        answer = "15";
+        this.levels[0].addQuestion(1, Speaker.GIRL, question, answer);
+
+        question = "How much Kuro would it cost to buy a bowl of salad and cupcakes?";
+        answer = "9";
+        this.levels[0].addQuestion(2, Speaker.BOY, question, answer);
+
+        question = "How much Kuro would it cost to buy a Macha Cake and a Fruit Cake?";
+        answer = "20";
+        this.levels[0].addQuestion(3, Speaker.GIRL, question, answer);
+
+        question = "How much Kuro would it cost to buy tofu and a salad?";
+        answer = "14";
+        this.levels[0].addQuestion(4, Speaker.BOY, question, answer);
+
+        question = "How much Kuro would it cost to buy all the cake?";
+        answer = "15";
+        this.levels[0].addQuestion(5, Speaker.GIRL, question, answer);
     }
 }
