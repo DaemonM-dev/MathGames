@@ -21,14 +21,13 @@ export class Gameplay {
 
         this.submitButton = null;
 
-
         this.levels = [];
         this.activeLevel = 1;
         this.activeSpeaker = Speaker.GIRL;
     }
 
     init(assets){
-        this.initStaticElements(assets);
+        this.initBackground(assets);
         this.initButtons();
 
         this.levels.push(new Level(1, Maths.ADDITION, InputType.KEYBOARD));
@@ -41,43 +40,41 @@ export class Gameplay {
 
         console.log(this.levels[0].questions);
     }
-
     update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
-            this.purpleRect.changeScale(this.scale);
-            this.background.changeScale(this.scale);
-            this.vertBar.changeScale(this.scale);
-            this.horizBar.changeScale(this.scale);
-            this.boy.changeScale(this.scale);
-            this.girl.changeScale(this.scale);
-            this.dialogueBox.changeScale(this.scale);
-            this.dropZone.changeScale(this.scale);
-
-            this.submitButton.changeScale(this.scale);
+            this.scaleBackground();
+            this.scaleButtons();
         }
 
         this.submitButton.update(mousePos, command);
-
-        switch(command){
-            case Commands.MOUSE_DOWN:
-                break;
-            case Commands.MOUSE_UP:
-                break;
-        }
+        const submitButtonPressed = this.submitButton.isPressed();
 
         const newSpeaker = this.levels[this.activeLevel - 1].getActiveSpeaker();
         if(this.activeSpeaker !== newSpeaker){
             this.activeSpeaker = newSpeaker;
         }
     }
-
     draw(ctx){
-        this.drawStaticElements(ctx);
+        this.drawBackground(ctx);
         this.drawButtons(ctx);
     }
 
-    initStaticElements(assets){
+    scaleBackground(){
+        this.purpleRect.changeScale(this.scale);
+        this.background.changeScale(this.scale);
+        this.vertBar.changeScale(this.scale);
+        this.horizBar.changeScale(this.scale);
+        this.boy.changeScale(this.scale);
+        this.girl.changeScale(this.scale);
+        this.dialogueBox.changeScale(this.scale);
+        this.dropZone.changeScale(this.scale);
+    }
+    scaleButtons(){
+        this.submitButton.changeScale(this.scale);
+    }
+
+    initBackground(assets){
         // Purple Rectangle
         const BG_SIZE = {x: 1280, y: 720};
         this.purpleRect = new GameObject(null, {x:BG_SIZE.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
@@ -130,7 +127,7 @@ export class Gameplay {
                                     '#ec40ff','#510960');
     }
 
-    drawStaticElements(ctx){
+    drawBackground(ctx){
         ctx.fillStyle = this.purpleRect.color;
         ctx.fillRect(this.purpleRect.pos.x, this.purpleRect.pos.y, this.purpleRect.size.x, this.purpleRect.size.y);
 

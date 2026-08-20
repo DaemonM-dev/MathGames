@@ -14,6 +14,7 @@ export class Button{
 
         this.initial = {size: {...size}, pos: {...pos}, radius: radius, lineWidth: lineWidth};
         this.state = ButtonState.NONE;
+        this.pressed = false;
     }
 
     setColors(defIn, defOut, hoverIn, hoverOut, clickIn, clickOut){
@@ -65,6 +66,7 @@ export class Button{
                     if(command === Commands.MOUSE_UP){
                         this.color = this.hoverColor;
                         this.state = ButtonState.HOVER;
+                        this.pressed = true;
                     }
                 } else {
                     this.color = this.defColor;
@@ -72,6 +74,15 @@ export class Button{
                 }
             break;
         }
+    }
+
+    isPressed(){
+        const pressed = this.pressed;
+        if(this.pressed === true){
+            this.pressed = false;
+            console.log("Button Pressed!");
+        }
+        return pressed;
     }
 
     draw(ctx){
