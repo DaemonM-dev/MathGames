@@ -2,7 +2,7 @@ export const CANVAS_ID = 'game_canvas';
 export const GAME_WIDTH = 1920;
 export const GAME_HEIGHT = 1080;
 
-export const Commands = {
+export const Command = {
     NONE: 'none',
     MOUSE_DOWN: 'mouse_down',
     MOUSE_UP: 'mouse_up',
@@ -11,7 +11,7 @@ export const Commands = {
     SUBMIT_PRESSED: 'submit_pressed'
 }
 
-export const GameStates = {
+export const GameState = {
     LOADING: 'loading',
     INITIALIZING: 'initializing',
     GAMEPLAY: 'gameplay',

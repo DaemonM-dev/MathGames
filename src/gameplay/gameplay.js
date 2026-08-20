@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT, Commands, Maths, InputType, Speaker } from "../constants.js";
+import { GAME_WIDTH, GAME_HEIGHT, Command, Maths, InputType, Speaker } from "../constants.js";
 import { GameObject } from "./gameobjects.js";
 import { Level } from '../level.js'
 import { Button } from './button.js'
@@ -19,26 +19,15 @@ export class Gameplay {
         this.dropZone = null;
         this.dialogueBox = null;
 
-        this.submitButton = null;
-
-        this.levels = [];
-        this.activeLevel = 1;
-        this.activeSpeaker = Speaker.GIRL;
+        this.submit = null;
+        this.dialogueNext = null;
+        this.dialoguePrev = null;
+        this.help = null;
     }
 
     init(assets){
         this.initBackground(assets);
         this.initButtons();
-
-        this.levels.push(new Level(1, Maths.ADDITION, InputType.KEYBOARD));
-        this.levels.push(new Level(2, Maths.ADDITION, InputType.DRAG_DROP));
-        this.levels.push(new Level(3, Maths.ADD_SUB, InputType.KEYBOARD));
-        this.levels.push(new Level(4, Maths.MULTIPLICATION, InputType.KEYBOARD));
-        this.levels.push(new Level(5, Maths.FRACTIONS, InputType.DRAG_DROP));
-
-        this.initLevelQuestions(1);
-
-        console.log(this.levels[0].questions);
     }
     update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
@@ -47,13 +36,21 @@ export class Gameplay {
             this.scaleButtons();
         }
 
-        this.submitButton.update(mousePos, command);
-        const submitButtonPressed = this.submitButton.isPressed();
+        this.submit.update(mousePos, command);
+        this.dialogueNext.update(mousePos, command);
+        this.dialoguePrev.update(mousePos, command);
+        this.help.update(mousePos, command);
 
-        const newSpeaker = this.levels[this.activeLevel - 1].getActiveSpeaker();
-        if(this.activeSpeaker !== newSpeaker){
-            this.activeSpeaker = newSpeaker;
+        if(this.submit.isPressed()){
+            console.log("Submit Button Pressed");
+        } else if (this.dialogueNext.isPressed()){
+            console.log("Next Dialogue Button Pressed");
+        } else if(this.dialoguePrev.isPressed()){
+            console.log("Preivous Dialogue Button Pressed");
+        } else if(this.help.isPressed()){
+            console.log("Help Button Pressed");
         }
+
     }
     draw(ctx){
         this.drawBackground(ctx);
@@ -71,7 +68,10 @@ export class Gameplay {
         this.dropZone.changeScale(this.scale);
     }
     scaleButtons(){
-        this.submitButton.changeScale(this.scale);
+        this.submit.changeScale(this.scale);
+        this.dialogueNext.changeScale(this.scale);
+        this.dialoguePrev.changeScale(this.scale);
+        this.help.changeScale(this.scale);
     }
 
     initBackground(assets){
@@ -115,16 +115,31 @@ export class Gameplay {
         this.dialogueBox.setOutlineWidth(8);
         this.dialogueBox.setRadius(90);
     }
-
     initButtons(){
          // Submit Button (Below DropZone)
-        const SUBMIT_SIZE = {x: 200, y:100 };
-        const SUBMIT_POS = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (SUBMIT_SIZE.x / 2),
-                             y: 850};
-        this.submitButton = new Button(SUBMIT_SIZE, SUBMIT_POS, 10, 4);
-        this.submitButton.setColors('#40ff50','#196f0f',
-                                    '#40ffa9','#0f5d6f',
-                                    '#ec40ff','#510960');
+        let size = {x: 200, y:100 };
+        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 800};
+        let radius = 10;
+        let lineWidth = 14;
+        this.submit = new Button(size, pos, radius, lineWidth);
+        this.submit.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
+
+        size = {x:50, y:50};
+        pos = {x: 850, y: GAME_HEIGHT - 75};
+        lineWidth = 7;
+        this.dialogueNext = new Button(size, pos, radius, lineWidth);
+        this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+
+        size = {x:50, y:50};
+        pos = {x: 350, y: GAME_HEIGHT - 75};
+        this.dialoguePrev = new Button(size, pos, radius, lineWidth);
+        this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+
+        size = {x:150, y:75};
+        pos = {x: 25, y: 25};
+        lineWidth = 7;
+        this.help = new Button(size, pos, radius, lineWidth);
+        this.help.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
     }
 
     drawBackground(ctx){
@@ -166,49 +181,10 @@ export class Gameplay {
             ctx.fill();
         ctx.stroke();
     }
-
     drawButtons(ctx){
-        this.submitButton.draw(ctx);
-    }
-
-    initLevelQuestions(levelNum){
-        switch(levelNum){
-            case 1:
-                this.lvlOneQuestions();
-            break;
-            case 2:
-            break;
-            case 3:
-            break;
-            case 4:
-            break;
-            case 5:
-            break;
-        }
-    }
-
-    lvlOneQuestions(){
-        let question = "N/A";
-        let answer = "N/A";
-
-        question = "How much Kuro would it cost to buy a bowl of fruit salad and a chocolate cake?";
-        answer = "15";
-        this.levels[0].addQuestion(1, Speaker.GIRL, question, answer);
-
-        question = "How much Kuro would it cost to buy a bowl of salad and cupcakes?";
-        answer = "9";
-        this.levels[0].addQuestion(2, Speaker.BOY, question, answer);
-
-        question = "How much Kuro would it cost to buy a Macha Cake and a Fruit Cake?";
-        answer = "20";
-        this.levels[0].addQuestion(3, Speaker.GIRL, question, answer);
-
-        question = "How much Kuro would it cost to buy tofu and a salad?";
-        answer = "14";
-        this.levels[0].addQuestion(4, Speaker.BOY, question, answer);
-
-        question = "How much Kuro would it cost to buy all the cake?";
-        answer = "15";
-        this.levels[0].addQuestion(5, Speaker.GIRL, question, answer);
+        this.submit.draw(ctx);
+        this.dialogueNext.draw(ctx);
+        this.dialoguePrev.draw(ctx);
+        this.help.draw(ctx);
     }
 }

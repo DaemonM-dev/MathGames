@@ -1,4 +1,4 @@
-import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Commands, GameStates } from './constants.js';
+import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Command, GameState } from './constants.js';
 import { AssetHandler } from './handlers/asset_handler.js';
 import { InputHandler } from './handlers/input_handler.js';
 import { Gameplay } from './gameplay/gameplay.js'
@@ -16,8 +16,8 @@ export const Game = {
     inputHandler: new InputHandler(),
     gameplay: new Gameplay(),
 
-    activeCommand: Commands.NONE,
-    gamestate: GameStates.LOADING,
+    activeCommand: Command.NONE,
+    gamestate: GameState.LOADING,
 };
 
 export function init(){
@@ -40,23 +40,23 @@ function gameLoop(timeStamp){
 
 function update(deltaTime){
     switch(Game.gamestate){
-        case GameStates.LOADING:
+        case GameState.LOADING:
             if(Game.assetHandler.areAllAssetsLoaded()){
-                Game.gamestate = GameStates.INITIALIZING;
+                Game.gamestate = GameState.INITIALIZING;
                 console.log("Assets loaded!");
             }
             break;
-        case GameStates.INITIALIZING:
+        case GameState.INITIALIZING:
             Game.gameplay.init(Game.assetHandler);
             Game.inputHandler.initInputs();
-            Game.gamestate = GameStates.GAMEPLAY;
+            Game.gamestate = GameState.GAMEPLAY;
             console.log("Game initialized!");
             break;
-        case GameStates.GAMEPLAY:
+        case GameState.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
             Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, Game.scale);
             break;
-        case GameStates.GAME_COMPLETE:
+        case GameState.GAME_COMPLETE:
             break;
     }
 }
@@ -64,18 +64,18 @@ function update(deltaTime){
 function draw(){
     Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
     switch(Game.gamestate){
-        case GameStates.LOADING:
+        case GameState.LOADING:
             Game.ctx.fillStyle = "#000";
             Game.ctx.font = `40px Arial`;
             Game.ctx.fillText("Loading...", screenCenter.x - 40, screenCenter.y);
             break;
-        case GameStates.INITIALIZING:
+        case GameState.INITIALIZING:
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
             break;
-        case GameStates.GAMEPLAY:
+        case GameState.GAMEPLAY:
             Game.gameplay.draw(Game.ctx);
             break;
-        case GameStates.GAME_COMPLETE:
+        case GameState.GAME_COMPLETE:
             Game.ctx.fillStyle = "#000";
             Game.ctx.font = `40px Arial`;
             Game.ctx.fillText("You did it! Game Complete!", screenCenter.x - 200, screenCenter.y);

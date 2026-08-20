@@ -1,4 +1,4 @@
-import { Commands, ButtonState } from "../constants.js";
+import { Command, ButtonState } from "../constants.js";
 
 export class Button{
     constructor(size, pos, radius, lineWidth, ){
@@ -55,7 +55,7 @@ export class Button{
                     this.color = this.defColor;
                     this.state = ButtonState.NONE;
                 } else {
-                    if(command === Commands.MOUSE_DOWN){
+                    if(command === Command.MOUSE_DOWN){
                         this.color = this.pressColor;
                         this.state = ButtonState.PRESSED;
                     }
@@ -63,7 +63,7 @@ export class Button{
             break;
             case ButtonState.PRESSED:
                 if(this.intersects(mousePos)){
-                    if(command === Commands.MOUSE_UP){
+                    if(command === Command.MOUSE_UP){
                         this.color = this.hoverColor;
                         this.state = ButtonState.HOVER;
                         this.pressed = true;
@@ -80,7 +80,6 @@ export class Button{
         const pressed = this.pressed;
         if(this.pressed === true){
             this.pressed = false;
-            console.log("Button Pressed!");
         }
         return pressed;
     }
