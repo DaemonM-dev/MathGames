@@ -119,14 +119,21 @@ export class Gameplay {
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
         let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 800};
-        let radius = 10;
-        let lineWidth = 14;
+        let radius = 45;
+        let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
 
+        size = {x:150, y:75};
+        pos = {x: 25, y: 25};
+        radius = 35;
+        this.help = new Button(size, pos, radius, lineWidth);
+        this.help.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
+
+        radius = 22;
+
         size = {x:50, y:50};
         pos = {x: 850, y: GAME_HEIGHT - 75};
-        lineWidth = 7;
         this.dialogueNext = new Button(size, pos, radius, lineWidth);
         this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
 
@@ -134,12 +141,6 @@ export class Gameplay {
         pos = {x: 350, y: GAME_HEIGHT - 75};
         this.dialoguePrev = new Button(size, pos, radius, lineWidth);
         this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-
-        size = {x:150, y:75};
-        pos = {x: 25, y: 25};
-        lineWidth = 7;
-        this.help = new Button(size, pos, radius, lineWidth);
-        this.help.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
     }
 
     drawBackground(ctx){
