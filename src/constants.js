@@ -34,3 +34,9 @@ export const Speaker = {
     BOY: 'boy',
     GIRL: 'girl'
 }
+
+export const ButtonState = {
+    NONE: 'none',
+    HOVER: 'hover',
+    CLICKED: 'clicked'
+}
