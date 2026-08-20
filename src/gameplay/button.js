@@ -1,16 +1,16 @@
-import { ButtonState } from "../constants.js";
+import { Commands, ButtonState } from "../constants.js";
 
 export class Button{
-    constructor(size, pos, radius, lineWidth, color, lineColor){
+    constructor(size, pos, radius, lineWidth, ){
         this.size = size;
         this.pos = pos;
         this.radius = radius;
         this.lineWidth = lineWidth;
 
-        this.color = {inner: color, outer: color};
-        this.defColor = {inner: color, outer: lineColor};
-        this.hoverColor = {inner: color, outer: lineColor};
-        this.clickColor = {inner: color, outer: lineColor};
+        this.color = {inner: 'white', outer: 'white'};
+        this.defColor = {inner: 'white', outer: 'white'};
+        this.hoverColor = {inner: 'white', outer: 'white'};
+        this.pressColor = {inner: 'white', outer: 'white'};
 
         this.initial = {size: {...size}, pos: {...pos}, radius: radius, lineWidth: lineWidth};
         this.state = ButtonState.NONE;
@@ -20,7 +20,7 @@ export class Button{
         this.color = {inner: defIn, outer: defOut};
         this.defColor = {inner: defIn, outer: defOut};
         this.hoverColor = {inner: hoverIn, outer: hoverOut};
-        this.clickColor = {inner: clickIn, outer: clickOut};
+        this.pressColor = {inner: clickIn, outer: clickOut};
     }
 
     changeScale(scale){
@@ -41,22 +41,46 @@ export class Button{
         return false;
     }
 
-    update(mousePos){
+    update(mousePos, command){
         switch(this.state){
             case ButtonState.NONE:
                 if(this.intersects(mousePos)){
-                    this.state = ButtonState.HOVER;
                     this.color = this.hoverColor;
+                    this.state = ButtonState.HOVER;
                 }
             break;
             case ButtonState.HOVER:
                 if(!this.intersects(mousePos)){
-                    this.state = ButtonState.NONE;
                     this.color = this.defColor;
+                    this.state = ButtonState.NONE;
+                } else {
+                    if(command === Commands.MOUSE_DOWN){
+                        this.color = this.pressColor;
+                        this.state = ButtonState.PRESSED;
+                    }
                 }
             break;
-            case ButtonState.CLICKED:
+            case ButtonState.PRESSED:
+                if(this.intersects(mousePos)){
+                    if(command === Commands.MOUSE_UP){
+                        this.color = this.hoverColor;
+                        this.state = ButtonState.HOVER;
+                    }
+                } else {
+                    this.color = this.defColor;
+                    this.state = ButtonState.NONE;
+                }
             break;
         }
+    }
+
+    draw(ctx){
+        ctx.fillStyle = this.color.inner;
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.color.outer;
+        ctx.beginPath();
+        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
+        ctx.fill();
+        ctx.stroke();
     }
 }

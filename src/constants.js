@@ -38,5 +38,5 @@ export const Speaker = {
 export const ButtonState = {
     NONE: 'none',
     HOVER: 'hover',
-    CLICKED: 'clicked'
+    PRESSED: 'pressed'
 }
