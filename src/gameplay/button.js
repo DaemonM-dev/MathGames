@@ -1,7 +1,7 @@
 import { Command, ButtonState } from "../constants.js";
 
 export class Button{
-    constructor(size, pos, radius, lineWidth, ){
+    constructor(size, pos, radius, lineWidth){
         this.size = size;
         this.pos = pos;
         this.radius = radius;

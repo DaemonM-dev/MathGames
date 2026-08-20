@@ -40,3 +40,9 @@ export const ButtonState = {
     HOVER: 'hover',
     PRESSED: 'pressed'
 }
+
+export const Direction = {
+    NONE: 'none',
+    LEFT: 'left',
+    RIGHT: 'right'
+}

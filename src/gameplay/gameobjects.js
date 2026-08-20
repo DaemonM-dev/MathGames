@@ -9,7 +9,6 @@ export class GameObject{
         this.radius = 0;
         this.outlineWidth = 0;
 
-
         this.initialSize = {...size};
         this.initialPos = {...pos};
         this.cachedPos = {...pos};
