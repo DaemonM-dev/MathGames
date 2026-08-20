@@ -3,6 +3,7 @@ import { GameObject } from "./gameobjects.js";
 import { Scene } from './scene.js'
 import { SpeechBubble } from './speechbubble.js'
 import { Button } from './button.js'
+import { ProgressWindow } from './progresswindow.js'
 
 const MAX_LEVELS = 10;
 
@@ -14,6 +15,7 @@ export class Gameplay {
         this.scene = null;
         this.dropZone = null;
         this.speechBubble = null;
+        this.progressWindow = null;
 
         // Buttons
         this.submit = null;
@@ -28,6 +30,7 @@ export class Gameplay {
         this.initDropZone();
         this.initSpeechBubble();
         this.initButtons();
+        this.progressWindow = new ProgressWindow();
     }
     update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
@@ -36,6 +39,7 @@ export class Gameplay {
             this.scene.changeScale(this.scale);
             this.dropZone.changeScale(this.scale);
             this.speechBubble.changeScale(this.scale);
+            this.progressWindow.changeScale(this.scale);
 
             // Buttons
             this.submit.changeScale(this.scale);
@@ -67,6 +71,7 @@ export class Gameplay {
         this.drawDropZone(ctx);
         this.speechBubble.draw(ctx);
         this.drawButtons(ctx);
+        this.progressWindow.draw(ctx);
     }
 
     initDropZone(){
