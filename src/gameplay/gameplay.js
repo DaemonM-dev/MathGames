@@ -3,6 +3,7 @@ import { GameObject } from "./gameobjects.js";
 import { Scene } from './scene.js'
 import { SpeechBubble } from './speechbubble.js'
 import { Button } from './button.js'
+import { FoodHandler } from "../handlers/food_handler.js";
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -35,6 +36,8 @@ export class Gameplay {
         this.progressWindow = null;
         this.dropZone = null;
         this.inputWindow = null;
+
+        this.foodHandler = null;
     }
 
     init(assets){
@@ -43,34 +46,35 @@ export class Gameplay {
         this.initDropZone();
         this.initSpeechBubble();
         this.initButtons(assets);
+        this.foodHandler = new FoodHandler(assets);
     }
     update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
-
             this.scene.changeScale(this.scale);
-            // Buttons
             this.submit.changeScale(this.scale);
             this.dialogueNext.changeScale(this.scale);
             this.dialoguePrev.changeScale(this.scale);
             this.help.changeScale(this.scale);
-            //
             this.speechBubble.changeScale(this.scale);
-
             this.progressWindow.changeScale(this.scale);
             this.dropZone.changeScale(this.scale);
-
             if(this.inputType === InputType.KEYBOARD){
                 this.inputWindow.changeScale(this.scale);
             }
+            this.foodHandler.changeScale(this.scale);
         }
 
         this.submit.update(mousePos, command);
         this.dialogueNext.update(mousePos, command);
         this.dialoguePrev.update(mousePos, command);
         this.help.update(mousePos, command);
+
+
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.update(mousePos, command);
+        } else {
+            this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
         }
 
         if(this.submit.isPressed()){
@@ -113,6 +117,7 @@ export class Gameplay {
             this.inputWindow.draw(ctx);
             this.drawInputDigits(ctx);
         }
+        this.foodHandler.draw(ctx);
     }
 
     initDropZone(){

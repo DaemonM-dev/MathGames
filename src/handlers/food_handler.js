@@ -1,11 +1,11 @@
-import { Command } from "../constants";
-import { FoodItem } from "../gameplay/fooditem";
+import { Command } from "../constants.js";
+import { FoodItem } from "../gameplay/fooditem.js";
 
 const TOTAL_FOOD = 8;
-const FOOD_SIZE = { x: 300, y: 300 };
+const FOOD_SIZE = { x: 150, y: 150 };
 
 export class FoodHandler{
-    constructor(){
+    constructor(assets){
 
         const foodID = [
             { name: "chocolateCake", asset: 'chocolatecake' },
@@ -40,9 +40,6 @@ export class FoodHandler{
             {value: 3.75},
         ];
 
-        shuffle(this.shelfPoints);
-        shuffle(this.prices);
-
         this.foodItems = [];
 
         for(let i = 0; i < TOTAL_FOOD; i++){
@@ -50,11 +47,11 @@ export class FoodHandler{
                                 this.prices[i].value,
                                 assets.getAsset(foodID[i].asset),
                                 FOOD_SIZE,
-                                this.shelfPoints[i]));
-                                this.foodItems[i].resetPosition();
+                                this.shelfPoints[i].pos));
         }
         console.log(this.foodItems);
 
+        this.assignRandomValues();
     }
 
     assignRandomValues(){
@@ -62,18 +59,42 @@ export class FoodHandler{
         shuffle(this.prices);
 
         for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].setPosition(this.shelfPoints[i].pos);
+            this.foodItems[i].setValue(this.prices[i].value);
+        }
+    }
 
+    changeScale(scale){
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].changeScale(scale);
+        }
+    }
+
+    dragFood(command, mousePos, boundarySize, boundaryPos){
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].update(command, mousePos);
+
+            if(command == Command.MOUSE_UP){
+                if(!this.foodItems[i].isWithinBounds(boundarySize, boundaryPos)){
+                    this.foodItems[i].resetPosition();
+                }
+            }
+        }
+    }
+    draw(ctx){
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].draw(ctx);
         }
     }
 }
 
 function shuffle(array){
-    console.log("Shuffling array: ", array);
+    console.log("Shuffling array: ", [...array]);
     let currentIndex = array.length;
     while(currentIndex !== 0){
         let randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        [array[currentIndex], array[randomIndex] = array[randomIndex], array[currentIndex]];
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-    console.log("New array order: ", array);
+    console.log("New array order: ", [...array]);
 }

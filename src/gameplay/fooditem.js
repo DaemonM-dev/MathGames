@@ -7,8 +7,8 @@ export class FoodItem{
         this.texture = texture;
         this.size = size;
         this.pos = pos;
-        this.cachedPos = pos;
-        this.initial = {size: size, pos: pos};
+        this.cachedPos = {...pos};
+        this.initial = {size: {...size}, pos: {...pos}};
         this.scale = {x:1.0, y: 1.0};
         this.selected = false;
     }
@@ -46,6 +46,19 @@ export class FoodItem{
         return false;
     }
 
+    isWithinBounds(boundarySize, boundaryPos){
+
+        const CENTER = {x:this.pos.x + (this.size.x / 2), y:this.pos.y + (this.size.y / 2)};
+
+        if(CENTER.x >= boundaryPos.x  &&
+            CENTER.x <= boundaryPos.x + boundarySize.x &&
+            CENTER.y >= boundaryPos.y &&
+            CENTER.y <= boundaryPos.y + boundarySize.y){
+                return true;
+        }
+        return false;
+    }
+
     update(command, mousePos){
         switch(command){
             case Command.MOUSE_DOWN:
@@ -62,5 +75,9 @@ export class FoodItem{
         }
 
         if(this.selected){this.pos = {x: mousePos.x - (this.size.x / 2), y:mousePos.y - (this.size.y / 2)};}
+    }
+
+    draw(ctx){
+        ctx.drawImage(this.texture, this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 }
