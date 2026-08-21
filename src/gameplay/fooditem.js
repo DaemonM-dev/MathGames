@@ -13,6 +13,21 @@ export class FoodItem{
         this.selected = false;
     }
 
+    setPosition(pos){
+        this.initialPos = pos;
+        this.cachedPos = pos;
+        this.pos = {x :pos.x * this.scale.x, y: pos.y * this.scale.y};
+    }
+
+    resetPosition(){
+        this.cachedPos = {...this.initialPos};
+        this.pos = {x: this.cachedPos.x * this.scale.x, y: this.cachedPos.y * this.scale.y};
+    }
+
+    setValue(value){
+        this.value = {...value};
+    }
+
     changeScale(scale){
         this.scale = {...scale};
         this.pos.x = this.cachedPos.x * scale.x;
