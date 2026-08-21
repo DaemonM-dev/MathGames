@@ -39,7 +39,7 @@ export class InputHandler{
             }
 
             if(event.code === 'Enter') {
-                pressButton(Game.gameplay.submit);
+                pressButton(Game.gameplay, Game.gameplay.submit);
                 event.preventDefault();
             }
 

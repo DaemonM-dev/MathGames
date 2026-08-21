@@ -16,8 +16,6 @@ export class Gameplay {
         this.inputBuffer = "";
         this.maxDigits = 10;
 
-
-
         this.level = 1;
         this.question = 1;
         this.awaitingInput = false;
