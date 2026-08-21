@@ -21,7 +21,8 @@ export class Gameplay {
         this.level = 1;
         this.question = 1;
         this.awaitingInput = false;
-        this.answer = null;
+
+        this.answer = 100;
 
         this.scene = null;
 
@@ -75,6 +76,10 @@ export class Gameplay {
         }
 
         if(this.submit.isPressed()){
+            if(this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer){
+                clearInputBuffer(this);
+                console.log("Incorrect Answer: Try Again!");
+            }
             console.log("Submit Button Pressed");
         } else if (this.dialogueNext.isPressed()){
             console.log("Next Dialogue Button Pressed");
@@ -108,6 +113,7 @@ export class Gameplay {
         this.drawDropZone(ctx);
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
+            this.drawInputDigits(ctx);
         }
     }
 
@@ -157,6 +163,7 @@ export class Gameplay {
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
+        this.inputWindow.setText("", 'AlegrayaBold', 90, 'black');
     }
 
     initButtons(assets){
@@ -195,20 +202,45 @@ export class Gameplay {
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
     }
+
+    drawInputDigits(ctx){
+        const text = this.inputBuffer;
+        if(text !== ""){
+            ctx.fillStyle = this.inputWindow.fontColor;
+            ctx.font = `${this.inputWindow.fontSize}px ${this.inputWindow.font}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const textX = this.inputWindow.pos.x + this.inputWindow.size.x / 2;
+            const textY = this.inputWindow.pos.y + this.inputWindow.size.y / 2;
+            ctx.fillText(text, textX, textY);
+        }
+    }
 }
 
 function clearInputBuffer(object){
     if(object.inputBuffer !== ""){object.inputBuffer = ""; console.log("Buffer Cleared!");}
 }
-
 export function getKeyboardInput(object, key){
-        if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-            if(object.inputBuffer.length < object.maxDigits){
-                if(/^\d$/.test(key)){
-                    object.inputBuffer += key;
-                }
-            } else {
-                console.log("Recieved Input: ", object.inputBuffer);
+    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
+        if(object.inputBuffer.length < object.maxDigits){
+            if(/^\d$/.test(key)){
+                object.inputBuffer += key;
             }
+        } else {
+            console.log("Recieved Input: ", object.inputBuffer);
         }
     }
+}
+export function removeKeyboardInput(object){
+    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
+        if(object.inputBuffer.length > 0){
+            object.inputBuffer = object.inputBuffer.slice(0, -1);
+            console.log("New Input buffer: ", object.inputBuffer);
+        }
+    }
+}
+export function pressButton(object, button){
+    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
+        if(!button.pressed){button.pressed = true;}
+    }
+}

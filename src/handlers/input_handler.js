@@ -1,6 +1,6 @@
 import { Game } from '../game.js';
 import { Command } from '../constants.js';
-import { getKeyboardInput } from '../gameplay/gameplay.js';
+import { getKeyboardInput, removeKeyboardInput, pressButton } from '../gameplay/gameplay.js';
 
 export class InputHandler{
     constructor(){
@@ -38,17 +38,13 @@ export class InputHandler{
                 event.preventDefault();
             }
 
-            if(event.code === 'ArrowRight') {
-                if(this.activeCommand !== Command.RIGHT_ARROW_DOWN){
-                    this.activeCommand = Command.RIGHT_ARROW_DOWN;
-                }
+            if(event.code === 'Enter') {
+                pressButton(Game.gameplay.submit);
                 event.preventDefault();
             }
 
-            if(event.code === 'Enter') {
-                if(this.activeCommand !== Command.SUBMIT_PRESSED){
-                    this.activeCommand = Command.SUBMIT_PRESSED;
-                }
+            if(event.code === 'Backspace'){
+                removeKeyboardInput(Game.gameplay);
                 event.preventDefault();
             }
 
