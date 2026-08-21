@@ -5,16 +5,19 @@ import { SpeechBubble } from './speechbubble.js'
 import { Button } from './button.js'
 
 const MAX_LEVELS = 10;
+const LIMIT = 5;
 
 export class Gameplay {
     constructor(){
         this.mousePos = { x: 0.0, y: 0.0 };
         this.scale = { x: 1.0, y: 1.0 };
 
-        this.q_lvl_limit = 5;
+        this.inputType = InputType.DRAG_DROP;
+
         this.level = 1;
         this.question = 1;
-        this.gettingInput = false;
+        this.awaitingInput = false;
+        this.answer = null;
 
         this.scene = null;
 
@@ -53,14 +56,19 @@ export class Gameplay {
 
             this.progressWindow.changeScale(this.scale);
             this.dropZone.changeScale(this.scale);
-            this.inputWindow.changeScale(this.scale);
+
+            if(this.inputType === InputType.KEYBOARD){
+                this.inputWindow.changeScale(this.scale);
+            }
         }
 
         this.submit.update(mousePos, command);
         this.dialogueNext.update(mousePos, command);
         this.dialoguePrev.update(mousePos, command);
         this.help.update(mousePos, command);
-        this.inputWindow.update(mousePos, command);
+        if(this.inputType === InputType.KEYBOARD){
+            this.inputWindow.update(mousePos, command);
+        }
 
         if(this.submit.isPressed()){
             console.log("Submit Button Pressed");
@@ -72,17 +80,25 @@ export class Gameplay {
             this.speechBubble.setDirection(Direction.LEFT);
         } else if(this.help.isPressed()){
             console.log("Help Button Pressed");
-        } else if(this.inputWindow.isPressed()){
-            if(!this.gettingInput){this.gettingInput = true;}
-            console.log("Waiting for input");
+        } 
+        
+        if(this.inputType === InputType.KEYBOARD){
+            if(this.inputWindow.isPressed()){
+            if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
         } else {
-            if(this.gettingInput){
+            if(this.awaitingInput){
                 if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                    this.gettingInput = false;
+                    this.awaitingInput = false;
                     console.log("No longer waiting for input");
                 }
             }
         }
+    }
+
+        if(this.awaitingInput){
+            this.answer = this.getInput();
+        }
+
     }
     draw(ctx){
         this.scene.draw(ctx);
@@ -90,7 +106,9 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         this.progressWindow.draw(ctx);
         this.drawDropZone(ctx);
-        this.inputWindow.draw(ctx);
+        if(this.inputType === InputType.KEYBOARD){
+            this.inputWindow.draw(ctx);
+        }
     }
 
     initDropZone(){
@@ -176,5 +194,9 @@ export class Gameplay {
         this.dialogueNext.draw(ctx);
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
+    }
+
+    getInput(){
+        return 1;
     }
 }
