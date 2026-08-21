@@ -29,7 +29,7 @@ export class Gameplay {
         this.scene.init(assets);
         this.initDropZone();
         this.initSpeechBubble();
-        this.initButtons();
+        this.initButtons(assets);
         this.progressWindow = new ProgressWindow();
     }
     update(command, mousePos, scale){
@@ -106,7 +106,7 @@ export class Gameplay {
         this.speechBubble.setColors('#f0b155', 'black');
     }
 
-    initButtons(){
+    initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
         let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 800};
@@ -114,28 +114,45 @@ export class Gameplay {
         let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
+        this.submit.setText("Enter", assets.getAsset('alegraya_bold'), 50, '#f3b255');
+
 
         size = {x:150, y:75};
         pos = {x: 25, y: 25};
-        radius = 35;
+        radius = 30;
         this.help = new Button(size, pos, radius, lineWidth);
         this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
+        this.help.setText("Info", assets.getAsset('alegraya_bold'), 50, '#9bd7b5');
 
         size = {x:50, y:50};
         pos = {x: 925, y: GAME_HEIGHT - 75};
         radius = 22;
         this.dialogueNext = new Button(size, pos, radius, lineWidth);
         this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+        this.dialogueNext.setText(">", assets.getAsset('alegraya_bold'), 50, '#9bd7b5');
 
         size = {x:50, y:50};
         pos = {x: 300, y: GAME_HEIGHT - 75};
         this.dialoguePrev = new Button(size, pos, radius, lineWidth);
         this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+        this.dialoguePrev.setText("<", assets.getAsset('alegraya_bold'), 50, '#9bd7b5');
     }
     drawButtons(ctx){
         this.submit.draw(ctx);
         this.dialogueNext.draw(ctx);
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
+    }
+
+    initProgressWindow(){
+
+    }
+
+    updateProgressWindow(){
+
+    }
+
+    drawProgressWindow(){
+        
     }
 }

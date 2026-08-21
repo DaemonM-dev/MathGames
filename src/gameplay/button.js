@@ -15,6 +15,13 @@ export class Button{
         this.initial = {size: {...size}, pos: {...pos}, radius: radius, lineWidth: lineWidth};
         this.state = ButtonState.NONE;
         this.pressed = false;
+
+        this.textVisible = false;
+        this.font = 'Arial';
+        this.fontSize = 0;
+        this.initialFontSize = 0;
+        this.fontColor = 'white';
+        this.text = " ";
     }
 
     setColors(defIn, defOut, hoverIn, hoverOut, clickIn, clickOut){
@@ -24,12 +31,25 @@ export class Button{
         this.pressColor = {inner: clickIn, outer: clickOut};
     }
 
+    setText(text, font, fontSize, color){
+        this.text = text;
+        this.font = font;
+        this.fontSize = fontSize;
+        this.initialFontSize = fontSize;
+        this.fontColor = color;
+        this.textVisible = true;
+    }
+
     changeScale(scale){
         const minScale = Math.min(scale.x, scale.y);
         this.size = {x: this.initial.size.x * scale.x, y: this.initial.size.y * scale.y};
         this.pos = {x: this.initial.pos.x * scale.x, y: this.initial.pos.y * scale.y};;
         this.radius = this.initial.radius * minScale;
         this.lineWidth = this.initial.lineWidth * minScale;
+
+        if(this.textVisible){
+            this.fontSize = this.initialFontSize * minScale;
+        }
     }
 
     intersects(point){
@@ -92,5 +112,17 @@ export class Button{
         ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
         ctx.fill();
         ctx.stroke();
+
+        if (this.textVisible && this.text !== " ") {
+            ctx.fillStyle = this.fontColor || 'black'; // Set text color
+            ctx.font = `${this.fontSize}px ${this.font}`; // Set font
+            ctx.textAlign = 'center'; // Center text horizontally
+            ctx.textBaseline = 'middle'; // Center text vertically
+        
+            // Calculate text position (center of the button)
+            const textX = this.pos.x + this.size.x / 2;
+            const textY = this.pos.y + this.size.y / 2;
+        
+        ctx.fillText(this.text, textX, textY);}
     }
 }
