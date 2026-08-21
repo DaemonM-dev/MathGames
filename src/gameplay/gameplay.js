@@ -5,14 +5,18 @@ import { SpeechBubble } from './speechbubble.js'
 import { Button } from './button.js'
 
 const MAX_LEVELS = 10;
-const LIMIT = 5;
+const Q_LVL_LIMIT = 5;
 
 export class Gameplay {
     constructor(){
         this.mousePos = { x: 0.0, y: 0.0 };
         this.scale = { x: 1.0, y: 1.0 };
 
-        this.inputType = InputType.DRAG_DROP;
+        this.inputType = InputType.KEYBOARD;
+        this.inputBuffer = "";
+        this.maxDigits = 10;
+
+
 
         this.level = 1;
         this.question = 1;
@@ -84,22 +88,18 @@ export class Gameplay {
         
         if(this.inputType === InputType.KEYBOARD){
             if(this.inputWindow.isPressed()){
-            if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
-        } else {
-            if(this.awaitingInput){
-                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                    this.awaitingInput = false;
-                    console.log("No longer waiting for input");
+                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
+            } else {
+                if(this.awaitingInput){
+                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                        this.awaitingInput = false;
+                        console.log("No longer waiting for input");
+                    }
                 }
             }
         }
     }
 
-        if(this.awaitingInput){
-            this.answer = this.getInput();
-        }
-
-    }
     draw(ctx){
         this.scene.draw(ctx);
         this.drawButtons(ctx);
@@ -195,8 +195,20 @@ export class Gameplay {
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
     }
-
-    getInput(){
-        return 1;
-    }
 }
+
+function clearInputBuffer(object){
+    if(object.inputBuffer !== ""){object.inputBuffer = ""; console.log("Buffer Cleared!");}
+}
+
+export function getKeyboardInput(object, key){
+        if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
+            if(object.inputBuffer.length < object.maxDigits){
+                if(/^\d$/.test(key)){
+                    object.inputBuffer += key;
+                }
+            } else {
+                console.log("Recieved Input: ", object.inputBuffer);
+            }
+        }
+    }

@@ -1,5 +1,6 @@
 import { Game } from '../game.js';
 import { Command } from '../constants.js';
+import { getKeyboardInput } from '../gameplay/gameplay.js';
 
 export class InputHandler{
     constructor(){
@@ -48,6 +49,47 @@ export class InputHandler{
                 if(this.activeCommand !== Command.SUBMIT_PRESSED){
                     this.activeCommand = Command.SUBMIT_PRESSED;
                 }
+                event.preventDefault();
+            }
+
+            if(event.code === 'Digit1' || event.code === 'Numpad1'){
+                getKeyboardInput(Game.gameplay, '1');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit2' || event.code === 'Numpad2'){
+                getKeyboardInput(Game.gameplay, '2');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit3' || event.code === 'Numpad3'){
+                getKeyboardInput(Game.gameplay, '3');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit4' || event.code === 'Numpad4'){
+                getKeyboardInput(Game.gameplay, '4');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit5' || event.code === 'Numpad5'){
+                getKeyboardInput(Game.gameplay, '5');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit6' || event.code === 'Numpad6'){
+                getKeyboardInput(Game.gameplay, '6');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit7' || event.code === 'Numpad7'){
+                getKeyboardInput(Game.gameplay, '7');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit8' || event.code === 'Numpad8'){
+                getKeyboardInput(Game.gameplay, '8');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit9' || event.code === 'Numpad9'){
+                getKeyboardInput(Game.gameplay, '9');
+                event.preventDefault();
+            }
+            if(event.code === 'Digit0' || event.code === 'Numpad0'){
+                getKeyboardInput(Game.gameplay, '0');
                 event.preventDefault();
             }
         });
