@@ -11,6 +11,14 @@ export class SpeechBubble{
 
         this.color = {inner: 'white', outer: 'white'};
         this.dir = Direction.NONE;
+        this.visible = true;
+
+        this.textVisible = false;
+        this.font = 'Arial';
+        this.fontSize = 0;
+        this.initialFontSize = 0;
+        this.fontColor = 'white';
+        this.text = " ";
     }
 
     setColors(defIn, defOut){
@@ -37,6 +45,7 @@ export class SpeechBubble{
     }
 
     draw(ctx){
+        if(!this.visible){return;}
         ctx.fillStyle = this.color.inner;
         ctx.lineWidth = this.lineWidth;
         ctx.strokeStyle = this.color.outer;

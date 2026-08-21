@@ -3,7 +3,6 @@ import { GameObject } from "./gameobjects.js";
 import { Scene } from './scene.js'
 import { SpeechBubble } from './speechbubble.js'
 import { Button } from './button.js'
-import { ProgressWindow } from './progresswindow.js'
 
 const MAX_LEVELS = 10;
 
@@ -12,16 +11,23 @@ export class Gameplay {
         this.mousePos = { x: 0.0, y: 0.0 };
         this.scale = { x: 1.0, y: 1.0 };
 
+        this.q_lvl_limit = 5;
+        this.level = 1;
+        this.question = 1;
+
         this.scene = null;
-        this.dropZone = null;
-        this.speechBubble = null;
-        this.progressWindow = null;
 
         // Buttons
         this.submit = null;
         this.dialogueNext = null;
         this.dialoguePrev = null;
         this.help = null;
+
+        this.speechBubble = null;
+
+        this.progressWindow = null;
+        this.dropZone = null;
+        this.inputWindow = null;
     }
 
     init(assets){
@@ -30,23 +36,23 @@ export class Gameplay {
         this.initDropZone();
         this.initSpeechBubble();
         this.initButtons(assets);
-        this.progressWindow = new ProgressWindow();
     }
     update(command, mousePos, scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
 
             this.scene.changeScale(this.scale);
-            this.dropZone.changeScale(this.scale);
-            this.speechBubble.changeScale(this.scale);
-            this.progressWindow.changeScale(this.scale);
-
             // Buttons
             this.submit.changeScale(this.scale);
             this.dialogueNext.changeScale(this.scale);
             this.dialoguePrev.changeScale(this.scale);
             this.help.changeScale(this.scale);
             //
+            this.speechBubble.changeScale(this.scale);
+
+            this.progressWindow.changeScale(this.scale);
+            this.dropZone.changeScale(this.scale);
+            this.inputWindow.changeScale(this.scale);
         }
 
         this.submit.update(mousePos, command);
@@ -68,10 +74,11 @@ export class Gameplay {
     }
     draw(ctx){
         this.scene.draw(ctx);
-        this.drawDropZone(ctx);
-        this.speechBubble.draw(ctx);
         this.drawButtons(ctx);
+        this.speechBubble.draw(ctx);
         this.progressWindow.draw(ctx);
+        this.drawDropZone(ctx);
+        this.inputWindow.draw(ctx);
     }
 
     initDropZone(){
@@ -98,24 +105,40 @@ export class Gameplay {
     }
 
     initSpeechBubble(){
-        const size = {x: 600, y:300};
-        const pos = {x: 338, y:755};
-        const radius = 125;
-        const lineWidth = 10;
+        let size = {x: 600, y:300};
+        let pos = {x: 338, y:755};
+        let radius = 125;
+        let lineWidth = 10;
         this.speechBubble = new SpeechBubble(size,pos,radius,lineWidth);
         this.speechBubble.setColors('#f0b155', 'black');
+
+
+        const BG_SIZE = {x: 1280, y: 720};
+
+        size = {x: 500, y:175};
+        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:20};
+        radius = 35;
+        lineWidth = 8;
+        this.progressWindow = new SpeechBubble(size, pos, radius, lineWidth);
+        this.progressWindow.setColors('white', 'black');
+
+        size = {x: 500, y:175};
+        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
+        radius = 35;
+        lineWidth = 8;
+        this.inputWindow = new SpeechBubble(size, pos, radius, lineWidth);
+        this.inputWindow.setColors('white', 'black');
     }
 
     initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
-        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 800};
+        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: GAME_HEIGHT - size.y - 30};
         let radius = 45;
         let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
         this.submit.setText("Enter", assets.getAsset('alegraya_bold'), 50, '#f3b255');
-
 
         size = {x:150, y:75};
         pos = {x: 25, y: 25};
@@ -142,17 +165,5 @@ export class Gameplay {
         this.dialogueNext.draw(ctx);
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
-    }
-
-    initProgressWindow(){
-
-    }
-
-    updateProgressWindow(){
-
-    }
-
-    drawProgressWindow(){
-        
     }
 }

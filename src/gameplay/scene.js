@@ -21,29 +21,33 @@ export class Scene{
     }
 
     init(assets){
-        // Purple Rectangle
-                const BG_SIZE = {x: 1280, y: 720};
-                this.purpleRect = new GameObject(null, {x:BG_SIZE.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
-                this.purpleRect.setColor('purple');
-        
-                // Cafe Background
-                this.background = new GameObject(assets.getAsset('background'), BG_SIZE, {x: 0, y: 0});
-        
-                // Comic strip borders
-                const BAR_WIDTH = 14;
-                this.vertBar = new GameObject(null, {x: BAR_WIDTH, y: GAME_HEIGHT}, {x: BG_SIZE.x - BAR_WIDTH / 2, y: 0});
-                this.vertBar.setColor('black');
-                this.horizBar = new GameObject(null, {x: BG_SIZE.x, y: BAR_WIDTH}, {x: 0, y:BG_SIZE.y - BAR_WIDTH / 2});
-                this.horizBar.setColor('black');
-        
-                // Characters
-                const CHAR_SCALE = 0.75;
-                const CHAR_SIZE = {x: 450 * CHAR_SCALE, y: 600 * CHAR_SCALE};
-                this.boy = new GameObject(assets.getAsset('boy'), CHAR_SIZE, {x: 0, y: GAME_HEIGHT - CHAR_SIZE.y});
-                this.girl = new GameObject(assets.getAsset('girl'),CHAR_SIZE, {x: BG_SIZE.x - CHAR_SIZE.x, y:GAME_HEIGHT - CHAR_SIZE.y});
+    // Purple Rectangle
+        const BG_SIZE = {x: 1280, y: 720};
+        this.purpleRect = new GameObject(null, {x:BG_SIZE.x , y: 360}, {x: 0, y: GAME_HEIGHT - 360});
+        this.purpleRect.setColor('purple');
+
+        // Cafe Background
+        this.background = new GameObject(assets.getAsset('background'), BG_SIZE, {x: 0, y: 0});
+
+        // Comic strip borders
+        const BAR_WIDTH = 14;
+        this.vertBar = new GameObject(null, {x: BAR_WIDTH, y: GAME_HEIGHT}, {x: BG_SIZE.x - BAR_WIDTH / 2, y: 0});
+        this.vertBar.setColor('black');
+        this.horizBar = new GameObject(null, {x: BG_SIZE.x, y: BAR_WIDTH}, {x: 0, y:BG_SIZE.y - BAR_WIDTH / 2});
+        this.horizBar.setColor('black');
+
+        // Characters
+        const CHAR_SCALE = 0.75;
+        const CHAR_SIZE = {x: 450 * CHAR_SCALE, y: 600 * CHAR_SCALE};
+        this.boy = new GameObject(assets.getAsset('boy'), CHAR_SIZE, {x: 0, y: GAME_HEIGHT - CHAR_SIZE.y});
+        this.girl = new GameObject(assets.getAsset('girl'),CHAR_SIZE, {x: BG_SIZE.x - CHAR_SIZE.x, y:GAME_HEIGHT - CHAR_SIZE.y});
     }
 
     draw(ctx){
+
+        ctx.fillStyle = '#9bd7b585';
+        ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+
         ctx.fillStyle = this.purpleRect.color;
         ctx.fillRect(this.purpleRect.pos.x, this.purpleRect.pos.y, this.purpleRect.size.x, this.purpleRect.size.y);
 
