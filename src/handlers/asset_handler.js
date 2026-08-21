@@ -82,6 +82,5 @@ export class AssetHandler{
         this.addAsset('tofu', basePath + 'tofu.png');
         this.addAsset('money', basePath + 'money.png');
         this.addAsset('sign', basePath + 'sign.png');
-        this.addAsset('alegraya_bold', basePath + 'alegraya_bold.otf');
     }
 }

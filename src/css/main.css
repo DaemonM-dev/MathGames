@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'AlegrayaBold';
+    src: url('../assets/alegraya_bold.otf') format('opentype');
+    font-display: swap; 
+}
+
 body {
     margin: 0;
     padding: 0;
