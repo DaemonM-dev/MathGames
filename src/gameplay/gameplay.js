@@ -14,6 +14,7 @@ export class Gameplay {
         this.q_lvl_limit = 5;
         this.level = 1;
         this.question = 1;
+        this.gettingInput = false;
 
         this.scene = null;
 
@@ -59,6 +60,7 @@ export class Gameplay {
         this.dialogueNext.update(mousePos, command);
         this.dialoguePrev.update(mousePos, command);
         this.help.update(mousePos, command);
+        this.inputWindow.update(mousePos, command);
 
         if(this.submit.isPressed()){
             console.log("Submit Button Pressed");
@@ -70,6 +72,16 @@ export class Gameplay {
             this.speechBubble.setDirection(Direction.LEFT);
         } else if(this.help.isPressed()){
             console.log("Help Button Pressed");
+        } else if(this.inputWindow.isPressed()){
+            if(!this.gettingINput){this.gettingInput = true;}
+            console.log("Waiting for input");
+        } else {
+            if(this.gettingInput){
+                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                    this.gettingInput = false;
+                    console.log("No longer waiting for input");
+                }
+            }
         }
     }
     draw(ctx){
@@ -112,7 +124,6 @@ export class Gameplay {
         this.speechBubble = new SpeechBubble(size,pos,radius,lineWidth);
         this.speechBubble.setColors('#f0b155', 'black');
 
-
         const BG_SIZE = {x: 1280, y: 720};
 
         size = {x: 500, y:175};
@@ -126,8 +137,8 @@ export class Gameplay {
         pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
         radius = 35;
         lineWidth = 8;
-        this.inputWindow = new SpeechBubble(size, pos, radius, lineWidth);
-        this.inputWindow.setColors('white', 'black');
+        this.inputWindow = new Button(size, pos, radius, lineWidth);
+        this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
     }
 
     initButtons(assets){
