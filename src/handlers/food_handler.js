@@ -29,6 +29,12 @@ export class FoodHandler{
             {pos: {x:925,y:378}},
         ];
 
+        this.dropZonePoints = [
+            {pos:{x:1400, y: 350}},
+            {pos:{x:1650, y: 350}},
+            {pos:{x:1525, y: 550}}
+        ];
+
         this.prices = [
             {value: 3.50},
             {value: 4.00},
@@ -52,6 +58,7 @@ export class FoodHandler{
         console.log(this.foodItems);
 
         this.assignRandomValues();
+        this.autoSelectRandom();
     }
 
     assignRandomValues(){
@@ -81,6 +88,27 @@ export class FoodHandler{
             }
         }
     }
+
+    autoSelectRandom(){
+        let firstIndex = Math.floor(Math.random() * 8);
+        let secIndex = Math.floor(Math.random() * 8);
+        let thirdIndex = Math.floor(Math.random() * 8);
+
+        while(secIndex === firstIndex){
+            secIndex = Math.floor(Math.random() * 8)
+        }
+        this.foodItems[firstIndex].setPosition(this.dropZonePoints[0].pos);
+        this.foodItems[secIndex].setPosition(this.dropZonePoints[1].pos);
+
+        let spawnThree = Math.floor(Math.random() * 2);
+        if(spawnThree === 1){
+            while(thirdIndex === firstIndex || thirdIndex === secIndex){
+                thirdIndex = Math.floor(Math.random() * 8);
+            }
+            this.foodItems[thirdIndex].setPosition(this.dropZonePoints[2].pos);
+        }
+    }
+
     draw(ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
@@ -89,12 +117,11 @@ export class FoodHandler{
 }
 
 function shuffle(array){
-    console.log("Shuffling array: ", [...array]);
+    console.log("Shuffling array");
     let currentIndex = array.length;
     while(currentIndex !== 0){
         let randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
         [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
-    console.log("New array order: ", [...array]);
 }

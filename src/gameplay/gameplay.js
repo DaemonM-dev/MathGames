@@ -70,9 +70,18 @@ export class Gameplay {
         this.dialoguePrev.update(mousePos, command);
         this.help.update(mousePos, command);
 
-
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.update(mousePos, command);
+            if(this.inputWindow.isPressed()){
+                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
+            } else {
+                if(this.awaitingInput){
+                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                        this.awaitingInput = false;
+                        console.log("No longer waiting for input");
+                    }
+                }
+            }
         } else {
             this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
         }
@@ -92,19 +101,6 @@ export class Gameplay {
         } else if(this.help.isPressed()){
             console.log("Help Button Pressed");
         } 
-        
-        if(this.inputType === InputType.KEYBOARD){
-            if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
-            } else {
-                if(this.awaitingInput){
-                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                        this.awaitingInput = false;
-                        console.log("No longer waiting for input");
-                    }
-                }
-            }
-        }
     }
 
     draw(ctx){
@@ -177,14 +173,14 @@ export class Gameplay {
         let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
-        this.submit.setText("Enter", 'AlegrayaBold', 60, '#f3b255');
+        this.submit.setText("Enter", 'AlegrayaBold', 60, '#000000');
 
         size = {x:150, y:75};
         pos = {x: 25, y: 25};
         radius = 30;
         this.help = new Button(size, pos, radius, lineWidth);
         this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
-        this.help.setText("Info", 'AlegrayaBold', 60, '#9bd7b5');
+        this.help.setText("Info", 'AlegrayaBold', 60, '#000000');
 
         size = {x:50, y:50};
         pos = {x: 925, y: GAME_HEIGHT - 75};
