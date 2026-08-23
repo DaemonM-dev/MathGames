@@ -1,8 +1,9 @@
 import { GAME_WIDTH, GAME_HEIGHT, Command, Maths, InputType, Speaker, Direction } from "../constants.js";
-import { GameObject } from "./gameobjects.js";
-import { Scene } from './scene.js'
-import { SpeechBubble } from './speechbubble.js'
-import { Button } from './button.js'
+import { GameObject } from "./gameobjects.js";;
+import { Scene } from './scene.js';
+import { SpeechBubble } from './speechbubble.js';
+import { Button } from './button.js';
+import { ProgressWindow } from "./progresswindow.js";
 import { FoodHandler } from "../handlers/food_handler.js";
 
 const MAX_LEVELS = 10;
@@ -15,7 +16,7 @@ export class Gameplay {
 
         this.inputType = InputType.KEYBOARD;
         this.inputBuffer = "";
-        this.maxDigits = 10;
+        this.maxDigits = 5;
 
         this.level = 1;
         this.question = 1;
@@ -51,6 +52,9 @@ export class Gameplay {
     update(command, mousePos, scale){
         this.changeScale(scale);
         this.updateButtons(command, mousePos);
+        this.progressWindow.update(this.level, this.question);
+
+
 
         if(this.inputType === InputType.KEYBOARD){
             this.checkReadyForKeyInputs(command, mousePos);
@@ -162,8 +166,9 @@ export class Gameplay {
         pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:20};
         radius = 35;
         lineWidth = 8;
-        this.progressWindow = new SpeechBubble(size, pos, radius, lineWidth);
+        this.progressWindow = new ProgressWindow(size, pos, radius, lineWidth);
         this.progressWindow.setColors('white', 'black');
+        this.progressWindow.setFont('AlegrayaBold', 70, 'black');
 
         size = {x: 500, y:175};
         pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
