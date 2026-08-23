@@ -135,7 +135,9 @@ export class FoodHandler{
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
         }
+    }
 
+    drawCopies(ctx){
         for(let i = 0; i < this.foodCopies.length; i++){
             this.foodCopies[i].draw(ctx);
         }

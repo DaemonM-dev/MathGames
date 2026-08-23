@@ -49,39 +49,11 @@ export class Gameplay {
         this.foodHandler = new FoodHandler(assets);
     }
     update(command, mousePos, scale){
-        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
-            this.scale = scale;
-            this.scene.changeScale(this.scale);
-            this.submit.changeScale(this.scale);
-            this.dialogueNext.changeScale(this.scale);
-            this.dialoguePrev.changeScale(this.scale);
-            this.help.changeScale(this.scale);
-            this.speechBubble.changeScale(this.scale);
-            this.progressWindow.changeScale(this.scale);
-            this.dropZone.changeScale(this.scale);
-            if(this.inputType === InputType.KEYBOARD){
-                this.inputWindow.changeScale(this.scale);
-            }
-            this.foodHandler.changeScale(this.scale);
-        }
-
-        this.submit.update(mousePos, command);
-        this.dialogueNext.update(mousePos, command);
-        this.dialoguePrev.update(mousePos, command);
-        this.help.update(mousePos, command);
+        this.changeScale(scale);
+        this.updateButtons(command, mousePos);
 
         if(this.inputType === InputType.KEYBOARD){
-            this.inputWindow.update(mousePos, command);
-            if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
-            } else {
-                if(this.awaitingInput){
-                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                        this.awaitingInput = false;
-                        console.log("No longer waiting for input");
-                    }
-                }
-            }
+            this.checkReadyForKeyInputs(command, mousePos);
         } else {
             this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
         }
@@ -112,10 +84,48 @@ export class Gameplay {
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
             this.drawInputDigits(ctx);
+            this.foodHandler.drawCopies(ctx);
         }
         this.foodHandler.draw(ctx);
     }
 
+
+    changeScale(scale){
+        if(scale.x !== this.scale.x || scale.y !== this.scale.y){
+            this.scale = scale;
+            this.scene.changeScale(this.scale);
+            this.submit.changeScale(this.scale);
+            this.dialogueNext.changeScale(this.scale);
+            this.dialoguePrev.changeScale(this.scale);
+            this.help.changeScale(this.scale);
+            this.speechBubble.changeScale(this.scale);
+            this.progressWindow.changeScale(this.scale);
+            this.dropZone.changeScale(this.scale);
+            if(this.inputType === InputType.KEYBOARD){
+                this.inputWindow.changeScale(this.scale);
+            }
+            this.foodHandler.changeScale(this.scale);
+        }
+    }
+    updateButtons(command, mousePos){
+        this.submit.update(mousePos, command);
+        this.dialogueNext.update(mousePos, command);
+        this.dialoguePrev.update(mousePos, command);
+        this.help.update(mousePos, command);
+    }
+    checkReadyForKeyInputs(command, mousePos){
+        this.inputWindow.update(mousePos, command);
+            if(this.inputWindow.isPressed()){
+                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
+            } else {
+                if(this.awaitingInput){
+                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                        this.awaitingInput = false;
+                        console.log("No longer waiting for input");
+                    }
+                }
+            }
+    }
     initDropZone(){
         const BG_SIZE = {x: 1280, y: 720};
         const DZ_SIZE = { x: 500, y: 500 };
@@ -138,7 +148,6 @@ export class Gameplay {
         ctx.fill();
         ctx.stroke();
     }
-
     initSpeechBubble(){
         let size = {x: 600, y:300};
         let pos = {x: 338, y:755};
@@ -164,7 +173,6 @@ export class Gameplay {
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
         this.inputWindow.setText("", 'AlegrayaBold', 90, 'black');
     }
-
     initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
@@ -201,7 +209,6 @@ export class Gameplay {
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
     }
-
     drawInputDigits(ctx){
         const text = this.inputBuffer;
         if(text !== ""){
