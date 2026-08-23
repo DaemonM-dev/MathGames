@@ -222,9 +222,8 @@ function clearInputBuffer(object){
 export function getKeyboardInput(object, key){
     if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
         if(object.inputBuffer.length < object.maxDigits){
-            if(/^\d$/.test(key)){
                 object.inputBuffer += key;
-            }
+    
         } else {
             console.log("Recieved Input: ", object.inputBuffer);
         }
