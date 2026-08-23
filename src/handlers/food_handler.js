@@ -30,27 +30,19 @@ export class FoodHandler{
         ];
 
         this.dropZonePoints = [
-            {pos:{x:1400, y: 350}},
-            {pos:{x:1650, y: 350}},
-            {pos:{x:1525, y: 550}}
+            {pos:{x:1400, y: 300}},
+            {pos:{x:1650, y: 300}},
+            {pos:{x:1525, y: 450}}
         ];
 
-        this.prices = [
-            {value: 3.50},
-            {value: 4.00},
-            {value: 4.75},
-            {value: 5.25},
-            {value: 5.00},
-            {value: 4.50},
-            {value: 4.25},
-            {value: 3.75},
-        ];
+        this.prices = [ 3.50, 4.00, 4.75, 5.25, 5.00, 4.50, 4.25, 3.75, ];
 
         this.foodItems = [];
+        this.foodCopies = [];
 
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems.push(new FoodItem(foodID[i].name,
-                                this.prices[i].value,
+                                this.prices[i],
                                 assets.getAsset(foodID[i].asset),
                                 FOOD_SIZE,
                                 this.shelfPoints[i].pos));
@@ -67,13 +59,17 @@ export class FoodHandler{
 
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].setPosition(this.shelfPoints[i].pos);
-            this.foodItems[i].setValue(this.prices[i].value);
+            this.foodItems[i].setValue(this.prices[i]);
         }
     }
 
     changeScale(scale){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].changeScale(scale);
+        }
+
+        for(let i = 0; i < this.foodCopies.length; i++){
+            this.foodCopies[i].changeScale(scale);
         }
     }
 
@@ -97,21 +93,51 @@ export class FoodHandler{
         while(secIndex === firstIndex){
             secIndex = Math.floor(Math.random() * 8)
         }
-        this.foodItems[firstIndex].setPosition(this.dropZonePoints[0].pos);
-        this.foodItems[secIndex].setPosition(this.dropZonePoints[1].pos);
+
+        this.foodCopies[0] = new FoodItem(
+        this.foodItems[firstIndex].name,
+        this.foodItems[firstIndex].value,
+        this.foodItems[firstIndex].texture,
+        this.foodItems[firstIndex].size,
+        this.dropZonePoints[0].pos
+        );
+
+        this.foodCopies[1] = new FoodItem(
+        this.foodItems[secIndex].name,
+        this.foodItems[secIndex].value,
+        this.foodItems[secIndex].texture,
+        this.foodItems[secIndex].size,
+        this.dropZonePoints[1].pos
+        );
+
+        this.foodCopies[0].setPosition(this.dropZonePoints[0].pos);
+        this.foodCopies[1].setPosition(this.dropZonePoints[1].pos);
 
         let spawnThree = Math.floor(Math.random() * 2);
         if(spawnThree === 1){
             while(thirdIndex === firstIndex || thirdIndex === secIndex){
                 thirdIndex = Math.floor(Math.random() * 8);
             }
-            this.foodItems[thirdIndex].setPosition(this.dropZonePoints[2].pos);
+           
+            this.foodCopies[2] = new FoodItem(
+            this.foodItems[thirdIndex].name,
+            this.foodItems[thirdIndex].value,
+            this.foodItems[thirdIndex].texture,
+            this.foodItems[thirdIndex].size,
+            this.dropZonePoints[2].pos
+            );
+
+            this.foodCopies[2].setPosition(this.dropZonePoints[2].pos);
         }
     }
 
     draw(ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
+        }
+
+        for(let i = 0; i < this.foodCopies.length; i++){
+            this.foodCopies[i].draw(ctx);
         }
     }
 }

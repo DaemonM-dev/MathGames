@@ -25,7 +25,7 @@ export class FoodItem{
     }
 
     setValue(value){
-        this.value = {...value};
+        this.value = value;
     }
 
     changeScale(scale){
