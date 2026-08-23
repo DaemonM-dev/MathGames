@@ -31,6 +31,10 @@ export class Gameplay {
         this.dialogueNext = null;
         this.dialoguePrev = null;
         this.help = null;
+        this.menuboard = null;
+
+        this.viewingMenu = false;
+        this.menuTexture = null;
 
         this.speechBubble = null;
 
@@ -48,13 +52,12 @@ export class Gameplay {
         this.initSpeechBubble();
         this.initButtons(assets);
         this.foodHandler = new FoodHandler(assets);
+        this.menuTexture = assets.getAsset('menuboard');
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
         this.updateButtons(command, mousePos);
         this.progressWindow.update(this.level, this.question);
-
-
 
         if(this.inputType === InputType.KEYBOARD){
             this.checkReadyForKeyInputs(command, mousePos);
@@ -76,7 +79,13 @@ export class Gameplay {
             this.speechBubble.setDirection(Direction.LEFT);
         } else if(this.help.isPressed()){
             console.log("Help Button Pressed");
-        } 
+        } else if(this.menuboard.isPressed()){
+            this.viewingMenu = true;
+        }
+
+        if(this.viewingMenu && command === Command.MOUSE_DOWN){
+            this.viewingMenu = false;
+        }
     }
 
     draw(ctx){
@@ -91,6 +100,18 @@ export class Gameplay {
             this.foodHandler.drawCopies(ctx);
         }
         this.foodHandler.draw(ctx);
+        if(this.viewingMenu){
+
+            const extra = 50;
+            const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
+            const pos = {x: ((GAME_WIDTH / 2) - ((this.menuTexture.width + extra) / 2)) * this.scale.x,
+                 y: ((GAME_HEIGHT / 2) - ((this.menuTexture.height + extra) / 2)) * this.scale.y
+                };
+
+            ctx.fillStyle = '#000000c7';
+            ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
+            ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
+        }
     }
 
 
@@ -104,6 +125,7 @@ export class Gameplay {
             this.help.changeScale(this.scale);
             this.speechBubble.changeScale(this.scale);
             this.progressWindow.changeScale(this.scale);
+            this.menuboard.changeScale(this.scale);
             this.dropZone.changeScale(this.scale);
             if(this.inputType === InputType.KEYBOARD){
                 this.inputWindow.changeScale(this.scale);
@@ -116,6 +138,7 @@ export class Gameplay {
         this.dialogueNext.update(mousePos, command);
         this.dialoguePrev.update(mousePos, command);
         this.help.update(mousePos, command);
+        this.menuboard.update(mousePos, command);
     }
     checkReadyForKeyInputs(command, mousePos){
         this.inputWindow.update(mousePos, command);
@@ -207,12 +230,21 @@ export class Gameplay {
         this.dialoguePrev = new Button(size, pos, radius, lineWidth);
         this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
         this.dialoguePrev.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
+
+        size = {x: 250, y: 30};
+        pos = {x: 530, y:85};
+        radius = 10;
+        lineWidth = 5;
+        this.menuboard = new Button(size, pos, radius, lineWidth);
+        this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
+        this.menuboard.setText("+", 'AlegrayaBold', 30, '#00000060');
     }
     drawButtons(ctx){
         this.submit.draw(ctx);
         this.dialogueNext.draw(ctx);
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
+        this.menuboard.draw(ctx);
     }
     drawInputDigits(ctx){
         const text = this.inputBuffer;
