@@ -35,6 +35,7 @@ export class Gameplay {
 
         this.viewingMenu = false;
         this.menuTexture = null;
+        this.kuroTexture = null;
 
         this.speechBubble = null;
 
@@ -53,6 +54,7 @@ export class Gameplay {
         this.initButtons(assets);
         this.foodHandler = new FoodHandler(assets);
         this.menuTexture = assets.getAsset('menuboard');
+        this.kuroTexture = assets.getAsset('kuro');
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -98,19 +100,11 @@ export class Gameplay {
             this.inputWindow.draw(ctx);
             this.drawInputDigits(ctx);
             this.foodHandler.drawCopies(ctx);
+            this.drawKuro(ctx);
         }
         this.foodHandler.draw(ctx);
         if(this.viewingMenu){
-
-            const extra = 50;
-            const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
-            const pos = {x: ((GAME_WIDTH / 2) - ((this.menuTexture.width + extra) / 2)) * this.scale.x,
-                 y: ((GAME_HEIGHT / 2) - ((this.menuTexture.height + extra) / 2)) * this.scale.y
-                };
-
-            ctx.fillStyle = '#000000c7';
-            ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
-            ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
+            this.drawMenu(ctx);
         }
     }
 
@@ -193,9 +187,9 @@ export class Gameplay {
         this.progressWindow.setColors('white', 'black');
         this.progressWindow.setFont('AlegrayaBold', 70, 'black');
 
-        size = {x: 500, y:175};
+        size = {x: 500, y:85};
         pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
-        radius = 35;
+        radius = 30;
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
@@ -204,7 +198,7 @@ export class Gameplay {
     initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
-        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: GAME_HEIGHT - size.y - 30};
+        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 855};
         let radius = 45;
         let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
@@ -237,7 +231,7 @@ export class Gameplay {
         lineWidth = 5;
         this.menuboard = new Button(size, pos, radius, lineWidth);
         this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.menuboard.setText("+", 'AlegrayaBold', 30, '#00000060');
+        this.menuboard.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
     }
     drawButtons(ctx){
         this.submit.draw(ctx);
@@ -257,6 +251,27 @@ export class Gameplay {
             const textY = this.inputWindow.pos.y + this.inputWindow.size.y / 2;
             ctx.fillText(text, textX, textY);
         }
+    }
+    drawKuro(ctx){
+        const defSize = {x: 100, y: 66};
+        const size = {x: defSize.x * this.scale.x, y: defSize.y * this.scale.y};
+        const pos = {
+            x: this.inputWindow.pos.x + (10 * this.scale.x),
+            y: this.inputWindow.pos.y + (this.inputWindow.size.y / 2) - (size.y / 2) - (5 * this.scale.y)
+            };
+
+        ctx.drawImage(this.kuroTexture, pos.x, pos.y, size.x, size.y);
+    }
+    drawMenu(ctx){
+        const extra = 50;
+        const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
+        const pos = {x: ((GAME_WIDTH / 2) - ((this.menuTexture.width + extra) / 2)) * this.scale.x,
+                y: ((GAME_HEIGHT / 2) - ((this.menuTexture.height + extra) / 2)) * this.scale.y
+            };
+
+        ctx.fillStyle = '#000000c7';
+        ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
     }
 }
 
