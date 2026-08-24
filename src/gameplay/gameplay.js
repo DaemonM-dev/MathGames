@@ -1,5 +1,5 @@
 import { GAME_WIDTH, GAME_HEIGHT, Command, Maths, InputType, Speaker, Direction } from "../constants.js";
-import { GameObject } from "./gameobjects.js";;
+import { GameObject } from "./gameobjects.js";
 import { Scene } from './scene.js';
 import { SpeechBubble } from './speechbubble.js';
 import { Button } from './button.js';
@@ -48,7 +48,7 @@ export class Gameplay {
 
         this.foodHandler = null;
 
-        this.dialogue = null
+        this.dialogue = null;
     }
 
     init(assets){
@@ -65,6 +65,7 @@ export class Gameplay {
         this.dialogue.setFont('AlegrayaBold', 35, 'black');
         this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
     }
+
     update(command, mousePos, scale){
         this.changeScale(scale);
         this.updateButtons(command, mousePos);
@@ -82,7 +83,7 @@ export class Gameplay {
         } else {
             if(this.submit.isPressed()){
                 if(this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer){
-                    clearInputBuffer(this);
+                    this.clearInputBuffer();
                     console.log("Incorrect Answer: Try Again!");
                 }
                 console.log("Submit Button Pressed");
@@ -101,7 +102,7 @@ export class Gameplay {
             if(this.inputType === InputType.KEYBOARD){
                 this.checkReadyForKeyInputs(command, mousePos);
             } else {
-            this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
+                this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
             }
         }
     }
@@ -144,44 +145,52 @@ export class Gameplay {
             this.dialogue.changeScale(this.scale);
         }
     }
+
     updateButtons(command, mousePos){
         if(this.viewingMenu){
             this.escapeButton.update(mousePos, command);
         } else {
             this.submit.update(mousePos, command);
-        this.dialogueNext.update(mousePos, command);
-        this.dialoguePrev.update(mousePos, command);
-        this.help.update(mousePos, command);
-        this.menuboard.update(mousePos, command);
+            this.dialogueNext.update(mousePos, command);
+            this.dialoguePrev.update(mousePos, command);
+            this.help.update(mousePos, command);
+            this.menuboard.update(mousePos, command);
         }
     }
+
     checkReadyForKeyInputs(command, mousePos){
         this.inputWindow.update(mousePos, command);
-            if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; this.inputWindow.toggleVisibleText(); console.log("Waiting for input");}
-            } else {
-                if(this.awaitingInput){
-                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                        this.awaitingInput = false;
-                        console.log("No longer waiting for input");
-                        this.inputWindow.toggleVisibleText();
-                    }
+        if(this.inputWindow.isPressed()){
+            if(!this.awaitingInput){
+                this.awaitingInput = true;
+                this.inputWindow.toggleVisibleText();
+                console.log("Waiting for input");
+            }
+        } else {
+            if(this.awaitingInput){
+                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                    this.awaitingInput = false;
+                    console.log("No longer waiting for input");
+                    this.inputWindow.toggleVisibleText();
                 }
             }
+        }
     }
+
     initDropZone(){
-        const BG_SIZE = {x: 1280, y: 720};
-        const DZ_SIZE = { x: 500, y: 500 };
-        const DZ_POS = {
-            x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - DZ_SIZE.x) / 2,
-            y: BG_SIZE.y - DZ_SIZE.y
+        const bgSize = {x: 1280, y: 720};
+        const dzSize = { x: 500, y: 500 };
+        const dzPos = {
+            x: (GAME_WIDTH - (GAME_WIDTH - bgSize.x)) + ((GAME_WIDTH - bgSize.x) - dzSize.x) / 2,
+            y: bgSize.y - dzSize.y
         };
-        this.dropZone = new GameObject(null, DZ_SIZE, DZ_POS);
+        this.dropZone = new GameObject(null, dzSize, dzPos);
         this.dropZone.setColor('white');
         this.dropZone.setOutlineColor('black');
         this.dropZone.setOutlineWidth(8);
         this.dropZone.setRadius(45);
     }
+
     drawDropZone(ctx){
         ctx.fillStyle = this.dropZone.color;
         ctx.lineWidth = this.dropZone.outlineWidth;
@@ -191,6 +200,7 @@ export class Gameplay {
         ctx.fill();
         ctx.stroke();
     }
+
     initSpeechBubble(){
         let size = {x: 600, y:300};
         let pos = {x: 338, y:755};
@@ -199,10 +209,10 @@ export class Gameplay {
         this.speechBubble = new SpeechBubble(size,pos,radius,lineWidth);
         this.speechBubble.setColors('#f0b155', 'black');
 
-        const BG_SIZE = {x: 1280, y: 720};
+        const bgSize = {x: 1280, y: 720};
 
         size = {x: 500, y:175};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:20};
+        pos = { x: (GAME_WIDTH - (GAME_WIDTH - bgSize.x)) + ((GAME_WIDTH - bgSize.x) - size.x) / 2, y:20};
         radius = 35;
         lineWidth = 8;
         this.progressWindow = new ProgressWindow(size, pos, radius, lineWidth);
@@ -210,7 +220,7 @@ export class Gameplay {
         this.progressWindow.setFont('AlegrayaBold', 60, 'black');
 
         size = {x: 500, y:85};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
+        pos = { x: (GAME_WIDTH - (GAME_WIDTH - bgSize.x)) + ((GAME_WIDTH - bgSize.x) - size.x) / 2, y:745};
         radius = 30;
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
@@ -218,6 +228,7 @@ export class Gameplay {
         this.inputWindow.setText("", 'AlegrayaBold', 70, '#000000');
         this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
     }
+
     initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
@@ -270,6 +281,7 @@ export class Gameplay {
         this.escapeButton.setText("X", 'AlegrayaBold', 40, '#ffffff9d');
         this.escapeButton.toggleVisibleText();
     }
+
     drawButtons(ctx){
         this.submit.draw(ctx);
         this.dialogueNext.draw(ctx);
@@ -277,16 +289,18 @@ export class Gameplay {
         this.help.draw(ctx);
         this.menuboard.draw(ctx);
     }
+
     drawKuro(ctx){
         const defSize = {x: 100, y: 66};
         const size = {x: defSize.x * this.scale.x, y: defSize.y * this.scale.y};
         const pos = {
             x: this.inputWindow.pos.x + (10 * this.scale.x),
             y: this.inputWindow.pos.y + (this.inputWindow.size.y / 2) - (size.y / 2) - (5 * this.scale.y)
-            };
+        };
 
         ctx.drawImage(this.kuroTexture, pos.x, pos.y, size.x, size.y);
     }
+
     drawMenu(ctx){
         const extra = 50;
         const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
@@ -298,31 +312,38 @@ export class Gameplay {
         ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
     }
-}
 
-function clearInputBuffer(object){
-    if(object.inputBuffer !== ""){object.inputBuffer = ""; console.log("Buffer Cleared!");}
-}
-export function getKeyboardInput(object, key){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-        if(object.inputBuffer.length < object.maxDigits){
-                object.inputBuffer += key;
-    
-        } else {
-            console.log("Recieved Input: ", object.inputBuffer);
+    clearInputBuffer(){
+        if(this.inputBuffer !== ""){
+            this.inputBuffer = "";
+            console.log("Buffer Cleared!");
         }
     }
-}
-export function removeKeyboardInput(object){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-        if(object.inputBuffer.length > 0){
-            object.inputBuffer = object.inputBuffer.slice(0, -1);
-            console.log("New Input buffer: ", object.inputBuffer);
+
+    getKeyboardInput(key){
+        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+            if(this.inputBuffer.length < this.maxDigits){
+                this.inputBuffer += key;
+            } else {
+                console.log("Received Input: ", this.inputBuffer);
+            }
         }
     }
-}
-export function pressButton(object, button){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-        if(!button.pressed){button.pressed = true;}
+
+    removeKeyboardInput(){
+        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+            if(this.inputBuffer.length > 0){
+                this.inputBuffer = this.inputBuffer.slice(0, -1);
+                console.log("New Input buffer: ", this.inputBuffer);
+            }
+        }
+    }
+
+    pressButton(button){
+        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+            if(!button.pressed){
+                button.pressed = true;
+            }
+        }
     }
 }

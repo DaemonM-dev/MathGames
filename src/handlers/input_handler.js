@@ -1,6 +1,5 @@
 import { Game } from '../game.js';
 import { Command } from '../constants.js';
-import { getKeyboardInput, removeKeyboardInput, pressButton } from '../gameplay/gameplay.js';
 
 export class InputHandler{
     constructor(){
@@ -28,66 +27,66 @@ export class InputHandler{
         this.keydownHandler = (event) => {
             switch(event.code) {
                 case 'Enter':
-                    pressButton(Game.gameplay, Game.gameplay.submit);
+                    Game.gameplay.pressButton(Game.gameplay.submit);
                     event.preventDefault();
                     break;
                 case 'Backspace':
-                    removeKeyboardInput(Game.gameplay);
+                    Game.gameplay.removeKeyboardInput();
                     event.preventDefault();
                     break;
                 case 'Period':
                 case 'NumpadDecimal':
-                    getKeyboardInput(Game.gameplay, '.');
+                    Game.gameplay.getKeyboardInput('.');
                     event.preventDefault();
                     break;
                 case 'Digit1':
                 case 'Numpad1':
-                    getKeyboardInput(Game.gameplay, '1');
+                    Game.gameplay.getKeyboardInput('1');
                     event.preventDefault();
                     break;
                 case 'Digit2':
                 case 'Numpad2':
-                    getKeyboardInput(Game.gameplay, '2');
+                    Game.gameplay.getKeyboardInput('2');
                     event.preventDefault();
                     break;
                 case 'Digit3':
                 case 'Numpad3':
-                    getKeyboardInput(Game.gameplay, '3');
+                    Game.gameplay.getKeyboardInput('3');
                     event.preventDefault();
                     break;
                 case 'Digit4':
                 case 'Numpad4':
-                    getKeyboardInput(Game.gameplay, '4');
+                    Game.gameplay.getKeyboardInput('4');
                     event.preventDefault();
                     break;
                 case 'Digit5':
                 case 'Numpad5':
-                    getKeyboardInput(Game.gameplay, '5');
+                    Game.gameplay.getKeyboardInput('5');
                     event.preventDefault();
                     break;
                 case 'Digit6':
                 case 'Numpad6':
-                    getKeyboardInput(Game.gameplay, '6');
+                    Game.gameplay.getKeyboardInput('6');
                     event.preventDefault();
                     break;
                 case 'Digit7':
                 case 'Numpad7':
-                    getKeyboardInput(Game.gameplay, '7');
+                    Game.gameplay.getKeyboardInput('7');
                     event.preventDefault();
                     break;
                 case 'Digit8':
                 case 'Numpad8':
-                    getKeyboardInput(Game.gameplay, '8');
+                    Game.gameplay.getKeyboardInput('8');
                     event.preventDefault();
                     break;
                 case 'Digit9':
                 case 'Numpad9':
-                    getKeyboardInput(Game.gameplay, '9');
+                    Game.gameplay.getKeyboardInput('9');
                     event.preventDefault();
                     break;
                 case 'Digit0':
                 case 'Numpad0':
-                    getKeyboardInput(Game.gameplay, '0');
+                    Game.gameplay.getKeyboardInput('0');
                     event.preventDefault();
                     break;
             }
