@@ -1,5 +1,6 @@
 import { Command } from "../constants.js";
 import { FoodItem } from "../gameplay/fooditem.js";
+import { Pricetag } from "../gameplay/pricetags.js"
 
 const TOTAL_FOOD = 8;
 const FOOD_SIZE = { x: 150, y: 150 };
@@ -40,14 +41,16 @@ export class FoodHandler{
         this.foodItems = [];
         this.foodCopies = [];
 
+        this.priceTags = [];
+
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems.push(new FoodItem(foodID[i].name,
                                 this.prices[i],
                                 assets.getAsset(foodID[i].asset),
                                 FOOD_SIZE,
                                 this.shelfPoints[i].pos));
-        }
-        console.log(this.foodItems);
+                                this.priceTags.push(new Pricetag({x:this.shelfPoints[i].pos.x + 25,y:this.shelfPoints[i].pos.y + 150}, this.prices[i]));
+                            }
 
         this.assignRandomValues();
         this.autoSelectRandom();
@@ -60,12 +63,19 @@ export class FoodHandler{
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].setPosition(this.shelfPoints[i].pos);
             this.foodItems[i].setValue(this.prices[i]);
+            this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
+        
+        console.log(this.foodItems[i].name, this.foodItems[i].value);
+        console.log("Paired Price tag: ", this.priceTags[i].price);
         }
+
+        console.log(this.priceTags);
     }
 
     changeScale(scale){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].changeScale(scale);
+            this.priceTags[i].changeScale(scale);
         }
 
         for(let i = 0; i < this.foodCopies.length; i++){
@@ -134,6 +144,7 @@ export class FoodHandler{
     draw(ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
+            this.priceTags[i].draw(ctx);
         }
     }
 

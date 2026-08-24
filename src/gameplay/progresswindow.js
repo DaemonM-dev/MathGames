@@ -4,9 +4,7 @@ export class ProgressWindow{
         this.pos = pos;
         this.radius = radius;
         this.lineWidth = lineWidth;
-
         this.initial = {size: {...size}, pos: {...pos}, radius: radius, lineWidth: lineWidth};
-
         this.color = {inner: 'white', outer: 'white'};
 
         this.font = 'Arial';
@@ -79,14 +77,14 @@ export class ProgressWindow{
     }
 
     draw(ctx){
-            ctx.fillStyle = this.color.inner;
-            ctx.lineWidth = this.lineWidth;
-            ctx.strokeStyle = this.color.outer;
-            ctx.beginPath();
-            ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
-            ctx.fill();
-            ctx.stroke();
+        ctx.fillStyle = this.color.inner;
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.color.outer;
+        ctx.beginPath();
+        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
+        ctx.fill();
+        ctx.stroke();
 
-            this.drawText(ctx);
-        }
+        this.drawText(ctx);
+    }
 }
