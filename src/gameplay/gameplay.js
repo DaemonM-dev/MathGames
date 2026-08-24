@@ -70,6 +70,10 @@ export class Gameplay {
         this.updateButtons(command, mousePos);
         this.progressWindow.update(this.level, this.question);
 
+        if(this.inputWindow.text !== this.inputBuffer){
+            this.inputWindow.text = this.inputBuffer;
+        }
+
         if(this.viewingMenu){
             if(this.escapeButton.isPressed()){
                 this.viewingMenu = false;
@@ -110,7 +114,6 @@ export class Gameplay {
         this.drawDropZone(ctx);
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
-            this.drawInputDigits(ctx);
             this.foodHandler.drawCopies(ctx);
             this.drawKuro(ctx);
         }
@@ -273,18 +276,6 @@ export class Gameplay {
         this.dialoguePrev.draw(ctx);
         this.help.draw(ctx);
         this.menuboard.draw(ctx);
-    }
-    drawInputDigits(ctx){
-        const text = this.inputBuffer;
-        if(text !== ""){
-            ctx.fillStyle = this.inputWindow.fontColor;
-            ctx.font = `${this.inputWindow.fontSize}px ${this.inputWindow.font}`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            const textX = this.inputWindow.pos.x + this.inputWindow.size.x / 2;
-            const textY = this.inputWindow.pos.y + this.inputWindow.size.y / 2;
-            ctx.fillText(text, textX, textY);
-        }
     }
     drawKuro(ctx){
         const defSize = {x: 100, y: 66};
