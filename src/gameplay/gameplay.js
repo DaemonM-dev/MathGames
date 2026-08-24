@@ -21,21 +21,24 @@ export class Gameplay {
 
         this.level = 1;
         this.question = 1;
-        this.awaitingInput = false;
+
+        // State management
+        this.gameState = 'PLAYING'; // PLAYING, DIALOGUE, MENU, INPUT
+        this.dialogueState = 'QUESTION'; // QUESTION, ANSWER, HELP
+        this.menuOpen = false;
+        this.inputActive = false;
 
         this.answer = 100;
 
         this.scene = null;
 
         // Buttons
-        this.submit = null;
-        this.dialogueNext = null;
-        this.dialoguePrev = null;
-        this.help = null;
-        this.menuboard = null;
+        this.submitButton = null;
+        this.dialogueNextButton = null;
+        this.dialoguePrevButton = null;
+        this.helpButton = null;
+        this.menuboardButton = null;
         this.escapeButton = null;
-
-        this.viewingMenu = false;
 
         this.menuTexture = null;
         this.kuroTexture = null;
@@ -71,40 +74,66 @@ export class Gameplay {
         this.updateButtons(command, mousePos);
         this.progressWindow.update(this.level, this.question);
 
-        if(this.inputWindow.text !== this.inputBuffer){
+        // Handle input buffer updates
+        if (this.inputWindow.text !== this.inputBuffer) {
             this.inputWindow.text = this.inputBuffer;
         }
 
-        if(this.viewingMenu){
-            if(this.escapeButton.isPressed()){
-                this.viewingMenu = false;
-                console.log("Escape button pressed");
+        if (this.menuOpen) {
+            if (this.escapeButton.isPressed()) {
+                this.menuOpen = false;
             }
         } else {
-            if(this.submit.isPressed()){
-                if(this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer){
-                    this.clearInputBuffer();
-                    console.log("Incorrect Answer: Try Again!");
-                }
-                console.log("Submit Button Pressed");
-            } else if (this.dialogueNext.isPressed()){
-                console.log("Next Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.RIGHT);
-            } else if(this.dialoguePrev.isPressed()){
-                console.log("Previous Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.LEFT);
-            } else if(this.help.isPressed()){
-                console.log("Help Button Pressed");
-            } else if(this.menuboard.isPressed()){
-                this.viewingMenu = true;
-            }
-
-            if(this.inputType === InputType.KEYBOARD){
-                this.checkReadyForKeyInputs(command, mousePos);
+            this.handleGameplayInput(command);
+            
+            if (this.inputType === InputType.KEYBOARD){
+                this.handleKeyboardInput(command, mousePos);
             } else {
                 this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
             }
         }
+    }
+
+    handleGameplayInput(command) {
+        const submitPressed = this.submitButton.isPressed();
+        const nextPressed = this.dialogueNextButton.isPressed();
+        const prevPressed = this.dialoguePrevButton.isPressed();
+        const helpPressed = this.helpButton.isPressed();
+        const menuPressed = this.menuboardButton.isPressed();
+
+        if (submitPressed) {
+            this.handleSubmit();
+        } else if (nextPressed) {
+            this.handleDialogueNext();
+        } else if (prevPressed) {
+            this.handleDialoguePrev();
+        } else if (helpPressed) {
+            this.handleHelp();
+        } else if (menuPressed) {
+            this.menuOpen = true;
+        }
+    }
+
+    handleSubmit() {
+        console.log("Submit Button Pressed");
+        if (this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer) {
+            this.clearInputBuffer();
+            console.log("Incorrect Answer: Try Again!");
+        }
+    }
+
+    handleDialogueNext() {
+        console.log("Next Dialogue Button Pressed");
+        this.speechBubble.setDirection(Direction.RIGHT);
+    }
+
+    handleDialoguePrev() {
+        console.log("Previous Dialogue Button Pressed");
+        this.speechBubble.setDirection(Direction.LEFT);
+    }
+
+    handleHelp() {
+        console.log("Help Button Pressed");
     }
 
     draw(ctx){
@@ -121,7 +150,7 @@ export class Gameplay {
         this.foodHandler.draw(ctx);
         this.dialogue.draw(ctx);
 
-        if(this.viewingMenu){
+        if(this.menuOpen){
             this.drawMenu(ctx);
             this.escapeButton.draw(ctx);
         }
@@ -131,13 +160,13 @@ export class Gameplay {
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
             this.scene.changeScale(this.scale);
-            this.submit.changeScale(this.scale);
-            this.dialogueNext.changeScale(this.scale);
-            this.dialoguePrev.changeScale(this.scale);
-            this.help.changeScale(this.scale);
+            this.submitButton.changeScale(this.scale);
+            this.dialogueNextButton.changeScale(this.scale);
+            this.dialoguePrevButton.changeScale(this.scale);
+            this.helpButton.changeScale(this.scale);
             this.speechBubble.changeScale(this.scale);
             this.progressWindow.changeScale(this.scale);
-            this.menuboard.changeScale(this.scale);
+            this.menuboardButton.changeScale(this.scale);
             this.escapeButton.changeScale(this.scale);
             this.dropZone.changeScale(this.scale);
             this.inputWindow.changeScale(this.scale);
@@ -147,32 +176,32 @@ export class Gameplay {
     }
 
     updateButtons(command, mousePos){
-        if(this.viewingMenu){
+        if (this.menuOpen) {
             this.escapeButton.update(mousePos, command);
         } else {
-            this.submit.update(mousePos, command);
-            this.dialogueNext.update(mousePos, command);
-            this.dialoguePrev.update(mousePos, command);
-            this.help.update(mousePos, command);
-            this.menuboard.update(mousePos, command);
+            // Only update necessary buttons when not viewing menu
+            this.submitButton.update(mousePos, command);
+            this.dialogueNextButton.update(mousePos, command);
+            this.dialoguePrevButton.update(mousePos, command);
+            this.helpButton.update(mousePos, command);
+            this.menuboardButton.update(mousePos, command);
         }
     }
 
-    checkReadyForKeyInputs(command, mousePos){
+    handleKeyboardInput(command, mousePos){
         this.inputWindow.update(mousePos, command);
-        if(this.inputWindow.isPressed()){
-            if(!this.awaitingInput){
-                this.awaitingInput = true;
+        
+        if (this.inputWindow.isPressed()) {
+            if (!this.inputActive) {
+                this.inputActive = true;
                 this.inputWindow.toggleVisibleText();
                 console.log("Waiting for input");
             }
         } else {
-            if(this.awaitingInput){
-                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                    this.awaitingInput = false;
-                    console.log("No longer waiting for input");
-                    this.inputWindow.toggleVisibleText();
-                }
+            if (this.inputActive && command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)) {
+                this.inputActive = false;
+                console.log("No longer waiting for input");
+                this.inputWindow.toggleVisibleText();
             }
         }
     }
@@ -225,7 +254,7 @@ export class Gameplay {
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 70, '#000000');
+        this.inputWindow.setText("", 'AlegrayaBold', 50, '#000000');
         this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
     }
 
@@ -235,42 +264,42 @@ export class Gameplay {
         let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 855};
         let radius = 45;
         let lineWidth = 5;
-        this.submit = new Button(size, pos, radius, lineWidth);
-        this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
-        this.submit.setText("Enter", 'AlegrayaBold', 50, '#000000');
-        this.submit.toggleVisibleText();
+        this.submitButton = new Button(size, pos, radius, lineWidth);
+        this.submitButton.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
+        this.submitButton.setText("Enter", 'AlegrayaBold', 50, '#000000');
+        this.submitButton.toggleVisibleText();
 
         size = {x:150, y:75};
         pos = {x: 25, y: 25};
         radius = 30;
-        this.help = new Button(size, pos, radius, lineWidth);
-        this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
-        this.help.setText("Info", 'AlegrayaBold', 50, '#000000');
-        this.help.toggleVisibleText();
+        this.helpButton = new Button(size, pos, radius, lineWidth);
+        this.helpButton.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
+        this.helpButton.setText("Info", 'AlegrayaBold', 50, '#000000');
+        this.helpButton.toggleVisibleText();
 
         size = {x:50, y:50};
         pos = {x: 925, y: GAME_HEIGHT - 75};
         radius = 22;
-        this.dialogueNext = new Button(size, pos, radius, lineWidth);
-        this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialogueNext.setText(">", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialogueNext.toggleVisibleText();
+        this.dialogueNextButton = new Button(size, pos, radius, lineWidth);
+        this.dialogueNextButton.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+        this.dialogueNextButton.setText(">", 'AlegrayaBold', 50, '#9bd7b5');
+        this.dialogueNextButton.toggleVisibleText();
 
         size = {x:50, y:50};
         pos = {x: 300, y: GAME_HEIGHT - 75};
-        this.dialoguePrev = new Button(size, pos, radius, lineWidth);
-        this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialoguePrev.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialoguePrev.toggleVisibleText();
+        this.dialoguePrevButton = new Button(size, pos, radius, lineWidth);
+        this.dialoguePrevButton.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
+        this.dialoguePrevButton.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
+        this.dialoguePrevButton.toggleVisibleText();
 
         size = {x: 250, y: 30};
         pos = {x: 530, y:85};
         radius = 10;
         lineWidth = 5;
-        this.menuboard = new Button(size, pos, radius, lineWidth);
-        this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.menuboard.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
-        this.menuboard.toggleVisibleText();
+        this.menuboardButton = new Button(size, pos, radius, lineWidth);
+        this.menuboardButton.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
+        this.menuboardButton.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
+        this.menuboardButton.toggleVisibleText();
 
         size = {x: 50, y: 50};
         pos = {x: 1407, y:100};
@@ -283,11 +312,11 @@ export class Gameplay {
     }
 
     drawButtons(ctx){
-        this.submit.draw(ctx);
-        this.dialogueNext.draw(ctx);
-        this.dialoguePrev.draw(ctx);
-        this.help.draw(ctx);
-        this.menuboard.draw(ctx);
+        this.submitButton.draw(ctx);
+        this.dialogueNextButton.draw(ctx);
+        this.dialoguePrevButton.draw(ctx);
+        this.helpButton.draw(ctx);
+        this.menuboardButton.draw(ctx);
     }
 
     drawKuro(ctx){
@@ -321,7 +350,7 @@ export class Gameplay {
     }
 
     getKeyboardInput(key){
-        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+        if(this.inputType === InputType.KEYBOARD && this.inputActive){
             if(this.inputBuffer.length < this.maxDigits){
                 this.inputBuffer += key;
             } else {
@@ -331,7 +360,7 @@ export class Gameplay {
     }
 
     removeKeyboardInput(){
-        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+        if(this.inputType === InputType.KEYBOARD && this.inputActive){
             if(this.inputBuffer.length > 0){
                 this.inputBuffer = this.inputBuffer.slice(0, -1);
                 console.log("New Input buffer: ", this.inputBuffer);
@@ -340,7 +369,7 @@ export class Gameplay {
     }
 
     pressButton(button){
-        if(this.inputType === InputType.KEYBOARD && this.awaitingInput){
+        if(this.inputType === InputType.KEYBOARD && this.inputActive){
             if(!button.pressed){
                 button.pressed = true;
             }
