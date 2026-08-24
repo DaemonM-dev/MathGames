@@ -48,7 +48,6 @@ export class AssetHandler{
         img.onerror = (error) => {
             console.error(`Failed to load asset: ${name}`, error);
             console.error(`File path attempted: ${asset.filepath}`);
-            this.loadedCount++;
         };
         img.src = asset.filepath;
     }

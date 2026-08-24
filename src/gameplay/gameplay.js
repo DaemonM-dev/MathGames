@@ -62,7 +62,7 @@ export class Gameplay {
         this.kuroTexture = assets.getAsset('kuro');
 
         this.dialogue = new Dialogue(this.speechBubble.size, this.speechBubble.pos);
-        this.dialogue.setFont('AlegrayaBold', 40, 'black');
+        this.dialogue.setFont('AlegrayaBold', 35, 'black');
         this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
     }
     update(command, mousePos, scale){
@@ -226,7 +226,7 @@ export class Gameplay {
         let lineWidth = 5;
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
-        this.submit.setText("Enter", 'AlegrayaBold', 60, '#000000');
+        this.submit.setText("Enter", 'AlegrayaBold', 50, '#000000');
         this.submit.toggleVisibleText();
 
         size = {x:150, y:75};
@@ -234,7 +234,7 @@ export class Gameplay {
         radius = 30;
         this.help = new Button(size, pos, radius, lineWidth);
         this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
-        this.help.setText("Info", 'AlegrayaBold', 60, '#000000');
+        this.help.setText("Info", 'AlegrayaBold', 50, '#000000');
         this.help.toggleVisibleText();
 
         size = {x:50, y:50};

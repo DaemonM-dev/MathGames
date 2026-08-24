@@ -30,10 +30,11 @@ export function init(){
 }
 
 function gameLoop(timeStamp){
-    if(!Game.running){return;}
+    if(!Game.running){Game.inputHandler.removeEventListeners();return;}
     const deltaTime = (timeStamp - Game.lastTime) / 1000; // Calculating Delta Time in seconds
     Game.lastTime = timeStamp;
     update(deltaTime);
+    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
     draw();
     requestAnimationFrame(gameLoop); // Restart game loop
 }
@@ -62,7 +63,6 @@ function update(deltaTime){
 }
 
 function draw(){
-    Game.ctx.clearRect(0, 0, Game.canvas.width, Game.canvas.height);
     switch(Game.gamestate){
         case GameState.LOADING:
             Game.ctx.fillStyle = "#000";

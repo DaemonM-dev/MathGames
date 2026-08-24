@@ -64,7 +64,7 @@ export class Dialogue{
         const textY = this.boundPos.y + this.boundSize.y / 2;
         
         // Wrap the text
-        const lineHeight = this.fontSize * 1.6;
+        const lineHeight = this.fontSize * 1.4;
         const lines = this.wrapText(ctx, this.activeQuestion, textX, textY, this.boundSize.x - 75, lineHeight);
         
         // Draw each line

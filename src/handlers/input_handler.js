@@ -7,25 +7,25 @@ export class InputHandler{
         this.mousePos = {x: 0.0, y: 0.0};
         this.activeCommand = Command.NONE;
         this.submitButtonPressed = false;
-    }
-
-    initInputs(){
-        Game.canvas.addEventListener('mousedown', (event) => {
+        
+        this.mousedownHandler = (event) => {
             if(this.activeCommand !== Command.MOUSE_DOWN){
                 this.activeCommand = Command.MOUSE_DOWN;
             }
-        });
-        Game.canvas.addEventListener('mouseup', (event) => {
+        };
+        
+        this.mouseupHandler = (event) => {
             if(this.activeCommand !== Command.MOUSE_UP){
                 this.activeCommand = Command.MOUSE_UP;
             }
-        });
-        Game.canvas.addEventListener('mousemove', (event) => {
+        };
+        
+        this.mousemoveHandler = (event) => {
             const screen = Game.canvas.getBoundingClientRect();
             this.mousePos = {x: event.clientX - screen.left, y: event.clientY - screen.top};
-            
-        });
-        document.addEventListener('keydown', (event) => {
+        };
+        
+        this.keydownHandler = (event) => {
             switch(event.code) {
                 case 'Enter':
                     pressButton(Game.gameplay, Game.gameplay.submit);
@@ -91,8 +91,23 @@ export class InputHandler{
                     event.preventDefault();
                     break;
             }
-        });
+        };
+    }
+
+    initInputs(){
+        Game.canvas.addEventListener('mousedown', this.mousedownHandler);
+        Game.canvas.addEventListener('mouseup', this.mouseupHandler);
+        Game.canvas.addEventListener('mousemove', this.mousemoveHandler);
+        document.addEventListener('keydown', this.keydownHandler);
         console.log("Inputs Initialized");
+    }
+
+    removeEventListeners(){
+        Game.canvas.removeEventListener('mousedown', this.mousedownHandler);
+        Game.canvas.removeEventListener('mouseup', this.mouseupHandler);
+        Game.canvas.removeEventListener('mousemove', this.mousemoveHandler);
+        document.removeEventListener('keydown', this.keydownHandler);
+        console.log("Removed event listeners");
     }
 
     getActiveCommand(){
