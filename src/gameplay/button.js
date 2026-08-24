@@ -22,6 +22,13 @@ export class Button{
         this.initialFontSize = 0;
         this.fontColor = 'white';
         this.text = " ";
+
+        this.altTextVisible = true;
+        this.altFont = 'Arial';
+        this.altFontSize = 0;
+        this.initialAltFontSize = 0;
+        this.altFontColor = 'white';
+        this.altText = " ";
     }
 
     setColors(defIn, defOut, hoverIn, hoverOut, clickIn, clickOut){
@@ -37,7 +44,23 @@ export class Button{
         this.fontSize = fontSize;
         this.initialFontSize = fontSize;
         this.fontColor = color;
-        this.textVisible = true;
+    }
+
+    setAltText(text, font, fontSize, color){
+        this.altFont = font;
+        this.altFontSize = fontSize;
+        this.initialAltFontSize = fontSize;
+        this.altFontColor = color;
+        this.altText = text;
+    }
+
+    toggleVisibleText(){
+        if(this.text !== " "){
+            this.textVisible = !this.textVisible;
+        }
+        if(this.altText !== " "){
+            this.altTextVisible = !this.altTextVisible;
+        }
     }
 
     changeScale(scale){
@@ -49,6 +72,8 @@ export class Button{
 
         if(this.textVisible){
             this.fontSize = this.initialFontSize * minScale;
+        } else {
+            this.altFontSize = this.initialAltFontSize * minScale;
         }
     }
 
@@ -114,15 +139,27 @@ export class Button{
         ctx.stroke();
 
         if (this.textVisible && this.text !== " ") {
-            ctx.fillStyle = this.fontColor || 'black'; // Set text color
-            ctx.font = `${this.fontSize}px ${this.font}`; // Set font
-            ctx.textAlign = 'center'; // Center text horizontally
-            ctx.textBaseline = 'middle'; // Center text vertically
+            ctx.fillStyle = this.fontColor || 'black';
+            ctx.font = `${this.fontSize}px ${this.font}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
         
-            // Calculate text position (center of the button)
             const textX = this.pos.x + this.size.x / 2;
             const textY = this.pos.y + this.size.y / 2;
         
-        ctx.fillText(this.text, textX, textY);}
+            ctx.fillText(this.text, textX, textY);
+        } else if(this.altTextVisible && this.altText !== " "){
+
+            ctx.fillStyle = this.altFontColor || 'black';
+            ctx.font = `${this.altFontSize}px ${this.altFont}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+        
+            const textX = this.pos.x + this.size.x / 2;
+            const textY = this.pos.y + this.size.y / 2;
+        
+            ctx.fillText(this.altText, textX, textY);
+
+        }
     }
 }

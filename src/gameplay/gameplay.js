@@ -146,12 +146,13 @@ export class Gameplay {
     checkReadyForKeyInputs(command, mousePos){
         this.inputWindow.update(mousePos, command);
             if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; console.log("Waiting for input");}
+                if(!this.awaitingInput){this.awaitingInput = true; this.inputWindow.toggleVisibleText(); console.log("Waiting for input");}
             } else {
                 if(this.awaitingInput){
                     if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
                         this.awaitingInput = false;
                         console.log("No longer waiting for input");
+                        this.inputWindow.toggleVisibleText();
                     }
                 }
             }
@@ -202,7 +203,8 @@ export class Gameplay {
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 90, 'black');
+        this.inputWindow.setText("", 'AlegrayaBold', 90, '#000000');
+        this.inputWindow.setAltText(" Click to type... ", 'AlegrayaBold', 40, '#00000051');
     }
     initButtons(assets){
          // Submit Button (Below DropZone)
@@ -213,6 +215,7 @@ export class Gameplay {
         this.submit = new Button(size, pos, radius, lineWidth);
         this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
         this.submit.setText("Enter", 'AlegrayaBold', 60, '#000000');
+        this.submit.toggleVisibleText();
 
         size = {x:150, y:75};
         pos = {x: 25, y: 25};
@@ -220,6 +223,7 @@ export class Gameplay {
         this.help = new Button(size, pos, radius, lineWidth);
         this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
         this.help.setText("Info", 'AlegrayaBold', 60, '#000000');
+        this.help.toggleVisibleText();
 
         size = {x:50, y:50};
         pos = {x: 925, y: GAME_HEIGHT - 75};
@@ -227,12 +231,14 @@ export class Gameplay {
         this.dialogueNext = new Button(size, pos, radius, lineWidth);
         this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
         this.dialogueNext.setText(">", 'AlegrayaBold', 50, '#9bd7b5');
+        this.dialogueNext.toggleVisibleText();
 
         size = {x:50, y:50};
         pos = {x: 300, y: GAME_HEIGHT - 75};
         this.dialoguePrev = new Button(size, pos, radius, lineWidth);
         this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
         this.dialoguePrev.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
+        this.dialoguePrev.toggleVisibleText();
 
         size = {x: 250, y: 30};
         pos = {x: 530, y:85};
@@ -241,6 +247,7 @@ export class Gameplay {
         this.menuboard = new Button(size, pos, radius, lineWidth);
         this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
         this.menuboard.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
+        this.menuboard.toggleVisibleText();
 
         size = {x: 50, y: 50};
         pos = {x: 1407, y:100};
@@ -249,6 +256,7 @@ export class Gameplay {
         this.escapeButton = new Button(size, pos, radius, lineWidth);
         this.escapeButton.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
         this.escapeButton.setText("X", 'AlegrayaBold', 40, '#ffffff9d');
+        this.escapeButton.toggleVisibleText();
     }
     drawButtons(ctx){
         this.submit.draw(ctx);
