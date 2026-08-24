@@ -11,6 +11,7 @@ export class FoodItem{
         this.initial = {size: {...size}, pos: {...pos}};
         this.scale = {x:1.0, y: 1.0};
         this.selected = false;
+        this.value = 0;
     }
 
     setPosition(pos){

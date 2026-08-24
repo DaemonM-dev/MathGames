@@ -5,6 +5,7 @@ import { SpeechBubble } from './speechbubble.js';
 import { Button } from './button.js';
 import { ProgressWindow } from "./progresswindow.js";
 import { FoodHandler } from "../handlers/food_handler.js";
+import { Dialogue } from './dialogue.js';
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -46,6 +47,8 @@ export class Gameplay {
         this.inputWindow = null;
 
         this.foodHandler = null;
+
+        this.dialogue = null
     }
 
     init(assets){
@@ -57,6 +60,10 @@ export class Gameplay {
         this.foodHandler = new FoodHandler(assets);
         this.menuTexture = assets.getAsset('menuboard');
         this.kuroTexture = assets.getAsset('kuro');
+
+        this.dialogue = new Dialogue(this.speechBubble.size, this.speechBubble.pos);
+        this.dialogue.setFont('AlegrayaBold', 40, 'black');
+        this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -108,6 +115,7 @@ export class Gameplay {
             this.drawKuro(ctx);
         }
         this.foodHandler.draw(ctx);
+        this.dialogue.draw(ctx);
 
         if(this.viewingMenu){
             this.drawMenu(ctx);
@@ -130,6 +138,7 @@ export class Gameplay {
             this.dropZone.changeScale(this.scale);
             this.inputWindow.changeScale(this.scale);
             this.foodHandler.changeScale(this.scale);
+            this.dialogue.changeScale(this.scale);
         }
     }
     updateButtons(command, mousePos){
@@ -195,7 +204,7 @@ export class Gameplay {
         lineWidth = 8;
         this.progressWindow = new ProgressWindow(size, pos, radius, lineWidth);
         this.progressWindow.setColors('white', 'black');
-        this.progressWindow.setFont('AlegrayaBold', 70, 'black');
+        this.progressWindow.setFont('AlegrayaBold', 60, 'black');
 
         size = {x: 500, y:85};
         pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
@@ -203,8 +212,8 @@ export class Gameplay {
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 90, '#000000');
-        this.inputWindow.setAltText(" Click to type... ", 'AlegrayaBold', 40, '#00000051');
+        this.inputWindow.setText("", 'AlegrayaBold', 70, '#000000');
+        this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
     }
     initButtons(assets){
          // Submit Button (Below DropZone)

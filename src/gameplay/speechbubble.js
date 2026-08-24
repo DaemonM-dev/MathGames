@@ -1,4 +1,4 @@
-import { Direction } from '../constants.js'
+import { Direction } from '../constants.js';
 
 export class SpeechBubble{
     constructor(size, pos, radius, lineWidth){
@@ -10,15 +10,8 @@ export class SpeechBubble{
         this.initial = {size: {...size}, pos: {...pos}, radius: radius, lineWidth: lineWidth};
 
         this.color = {inner: 'white', outer: 'white'};
-        this.dir = Direction.NONE;
+        this.dir = Direction.RIGHT;
         this.visible = true;
-
-        this.textVisible = false;
-        this.font = 'Arial';
-        this.fontSize = 0;
-        this.initialFontSize = 0;
-        this.fontColor = 'white';
-        this.text = " ";
     }
 
     setColors(defIn, defOut){

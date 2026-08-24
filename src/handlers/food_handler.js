@@ -9,14 +9,14 @@ export class FoodHandler{
     constructor(assets){
 
         const foodID = [
-            { name: "chocolateCake", asset: 'chocolatecake' },
-            { name: "cupcake", asset: 'cupcakes' },
-            { name: "fruitBowl", asset: 'fruitbowl' },
-            { name: "fruitCake", asset: 'fruitcake' },
-            { name: "mintCake", asset: 'mintcake' },
-            { name: "onigiri", asset: 'onigiri' },
-            { name: "salad", asset: 'salad' },
-            { name: "tofu", asset: 'tofu' }
+            { name: "Chocolate Cake", asset: 'chocolatecake' },
+            { name: "Cupcake", asset: 'cupcakes' },
+            { name: "Fruit Bowl", asset: 'fruitbowl' },
+            { name: "Fruit Cake", asset: 'fruitcake' },
+            { name: "Macha Cake", asset: 'mintcake' },
+            { name: "Rice Cake", asset: 'onigiri' },
+            { name: "Salad", asset: 'salad' },
+            { name: "Tofu", asset: 'tofu' }
         ];
 
         this.shelfPoints = [
@@ -39,7 +39,7 @@ export class FoodHandler{
         this.prices = [ 3.50, 4.00, 4.75, 5.25, 5.00, 4.50, 4.25, 3.75, ];
 
         this.foodItems = [];
-        this.foodCopies = [];
+        this.foodCopies = [null, null, null];
 
         this.priceTags = [];
 
@@ -64,12 +64,7 @@ export class FoodHandler{
             this.foodItems[i].setPosition(this.shelfPoints[i].pos);
             this.foodItems[i].setValue(this.prices[i]);
             this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
-        
-        console.log(this.foodItems[i].name, this.foodItems[i].value);
-        console.log("Paired Price tag: ", this.priceTags[i].price);
         }
-
-        console.log(this.priceTags);
     }
 
     changeScale(scale){
@@ -79,7 +74,9 @@ export class FoodHandler{
         }
 
         for(let i = 0; i < this.foodCopies.length; i++){
-            this.foodCopies[i].changeScale(scale);
+            if(this.foodCopies[i] !== null){
+                this.foodCopies[i].changeScale(scale);
+            }
         }
     }
 
@@ -150,7 +147,9 @@ export class FoodHandler{
 
     drawCopies(ctx){
         for(let i = 0; i < this.foodCopies.length; i++){
-            this.foodCopies[i].draw(ctx);
+            if(this.foodCopies[i] !== null){
+                this.foodCopies[i].draw(ctx);
+            }
         }
     }
 }
