@@ -1,6 +1,9 @@
-import { CANVAS_ID, GAME_WIDTH, GAME_HEIGHT, Command, GameState } from './constants.js';
-import { AssetHandler } from './handlers/asset_handler.js';
-import { InputHandler } from './handlers/input_handler.js';
+import { CANVAS_ID, GAME_SIZE} from './globals.js'
+import { Command } from './enums/commands.js'
+import { GameState } from './enums/game_states.js'
+
+import { AssetHandler } from './handlers/asset_handler.js'
+import { InputHandler } from './handlers/input_handler.js'
 import { Gameplay } from './gameplay/gameplay.js'
 
 let screenCenter = {x: 0, y: 0};
@@ -91,7 +94,7 @@ export function resizeCanvas(){
         Game.canvas.width = displayWidth;
         Game.canvas.height = displayHeight;
 
-        Game.scale = {x: displayWidth / GAME_WIDTH, y: displayHeight / GAME_HEIGHT};
+        Game.scale = {x: displayWidth / GAME_SIZE.x, y: displayHeight / GAME_SIZE.y};
 
         screenCenter = {x: displayWidth / 2, y: displayHeight / 2};
     }

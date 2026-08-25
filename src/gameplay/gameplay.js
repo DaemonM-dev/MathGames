@@ -1,11 +1,9 @@
-import { GAME_WIDTH, GAME_HEIGHT, Command, Maths, InputType, Speaker, Direction } from "../constants.js";
-import { GameObject } from "./gameobjects.js";;
-import { Scene } from './scene.js';
-import { SpeechBubble } from './speechbubble.js';
-import { Button } from './button.js';
-import { ProgressWindow } from "./progresswindow.js";
-import { FoodHandler } from "../handlers/food_handler.js";
-import { Dialogue } from './dialogue.js';
+import { GAME_SIZE } from "../globals.js"
+import { Command } from '../enums/commands.js'
+import { InputType } from '../enums/input_types.js'
+
+import { Scene } from './elements/scene.js'
+import { ProgressWindow } from "./elements/progress_window.js"
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -23,10 +21,12 @@ export class Gameplay {
         this.question = 1;
         this.awaitingInput = false;
 
-        this.answer = 100;
-
         this.scene = null;
+        this.progressWindow = null;
 
+        /*
+        this.answer = 100;
+        this.scene = null;
         // Buttons
         this.submit = null;
         this.dialogueNext = null;
@@ -34,114 +34,53 @@ export class Gameplay {
         this.help = null;
         this.menuboard = null;
         this.escapeButton = null;
-
         this.viewingMenu = false;
-
         this.menuTexture = null;
         this.kuroTexture = null;
-
         this.speechBubble = null;
-
         this.progressWindow = null;
         this.dropZone = null;
         this.inputWindow = null;
-
         this.foodHandler = null;
-
         this.dialogue = null
+        */
     }
 
     init(assets){
+        this.initScene(assets);
+        this.initProgWindow();
+    }
+
+    initScene(assets){
         this.scene = new Scene();
         this.scene.init(assets);
-        this.initDropZone();
-        this.initSpeechBubble();
-        this.initButtons(assets);
-        this.foodHandler = new FoodHandler(assets);
-        this.menuTexture = assets.getAsset('menuboard');
-        this.kuroTexture = assets.getAsset('kuro');
-
-        this.dialogue = new Dialogue(this.speechBubble.size, this.speechBubble.pos);
-        this.dialogue.setFont('AlegrayaBold', 35, 'black');
-        this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
     }
+    initProgWindow(){
+        this.progressWindow = new ProgressWindow();
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y:175};
+        const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:20};
+        const RADIUS = 35;
+        const LINEWIDTH = 8;
+        this.progressWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+        this.progressWindow.initText('AlegreyaBold', 70, 'black')
+    }
+
+
     update(command, mousePos, scale){
         this.changeScale(scale);
-        this.updateButtons(command, mousePos);
-        this.progressWindow.update(this.level, this.question);
-
-        if(this.inputWindow.text !== this.inputBuffer){
-            this.inputWindow.text = this.inputBuffer;
-        }
-
-        if(this.viewingMenu){
-            if(this.escapeButton.isPressed()){
-                this.viewingMenu = false;
-                console.log("Escape button pressed");
-            }
-        } else {
-            if(this.submit.isPressed()){
-                if(this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer){
-                    clearInputBuffer(this);
-                    console.log("Incorrect Answer: Try Again!");
-                }
-                console.log("Submit Button Pressed");
-            } else if (this.dialogueNext.isPressed()){
-                console.log("Next Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.RIGHT);
-            } else if(this.dialoguePrev.isPressed()){
-                console.log("Previous Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.LEFT);
-            } else if(this.help.isPressed()){
-                console.log("Help Button Pressed");
-            } else if(this.menuboard.isPressed()){
-                this.viewingMenu = true;
-            }
-
-            if(this.inputType === InputType.KEYBOARD){
-                this.checkReadyForKeyInputs(command, mousePos);
-            } else {
-            this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
-            }
-        }
     }
 
     draw(ctx){
         this.scene.draw(ctx);
-        this.drawButtons(ctx);
-        this.speechBubble.draw(ctx);
         this.progressWindow.draw(ctx);
-        this.drawDropZone(ctx);
-        if(this.inputType === InputType.KEYBOARD){
-            this.inputWindow.draw(ctx);
-            this.foodHandler.drawCopies(ctx);
-            this.drawKuro(ctx);
-        }
-        this.foodHandler.draw(ctx);
-        this.dialogue.draw(ctx);
-
-        if(this.viewingMenu){
-            this.drawMenu(ctx);
-            this.escapeButton.draw(ctx);
-        }
     }
 
     changeScale(scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
-            this.scene.changeScale(this.scale);
-            this.submit.changeScale(this.scale);
-            this.dialogueNext.changeScale(this.scale);
-            this.dialoguePrev.changeScale(this.scale);
-            this.help.changeScale(this.scale);
-            this.speechBubble.changeScale(this.scale);
-            this.progressWindow.changeScale(this.scale);
-            this.menuboard.changeScale(this.scale);
-            this.escapeButton.changeScale(this.scale);
-            this.dropZone.changeScale(this.scale);
-            this.inputWindow.changeScale(this.scale);
-            this.foodHandler.changeScale(this.scale);
-            this.dialogue.changeScale(this.scale);
+            this.scene.changeScale(scale);
+            if(this.progressWindow){this.progressWindow.changeScale(scale);}
         }
     }
     updateButtons(command, mousePos){
@@ -149,10 +88,10 @@ export class Gameplay {
             this.escapeButton.update(mousePos, command);
         } else {
             this.submit.update(mousePos, command);
-        this.dialogueNext.update(mousePos, command);
-        this.dialoguePrev.update(mousePos, command);
-        this.help.update(mousePos, command);
-        this.menuboard.update(mousePos, command);
+            this.dialogueNext.update(mousePos, command);
+            this.dialoguePrev.update(mousePos, command);
+            this.help.update(mousePos, command);
+            this.menuboard.update(mousePos, command);
         }
     }
     checkReadyForKeyInputs(command, mousePos){

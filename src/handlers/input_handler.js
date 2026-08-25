@@ -1,5 +1,5 @@
 import { Game } from '../game.js';
-import { Command } from '../constants.js';
+import { Command } from '../enums/commands.js';
 import { getKeyboardInput, removeKeyboardInput, pressButton } from '../gameplay/gameplay.js';
 
 export class InputHandler{
