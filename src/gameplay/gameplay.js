@@ -8,6 +8,7 @@ import { Dropzone } from './elements/dropzone.js'
 import { SpeechBubble } from './elements/speech_bubble.js'
 import { InputWindow } from './elements/input_window.js'
 import { Button } from './elements/button.js'
+import { FoodHandler } from '../handlers/food_handler.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -30,8 +31,8 @@ export class Gameplay {
         this.dropzone = null;
         this.speechBubble = null;
         this.inputWindow = null;
-
         this.buttons = [];
+        this.food = null;
 
         /*
         this.answer = 100;
@@ -62,6 +63,7 @@ export class Gameplay {
         this.initSpeechBubble();
         this.initInputWindow();
         this.initButtons();
+        this.initFoods(assets);
     }
     initScene(assets){
         this.scene = new Scene();
@@ -167,6 +169,10 @@ export class Gameplay {
         this.buttons[4].initText('AlegrayaBold', 40, '#ffffff9d');
         this.buttons[4].setText("X");
     }
+    initFoods(assets){
+        this.food = new FoodHandler();
+        this.food.init(assets);
+    }
 
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -174,6 +180,7 @@ export class Gameplay {
         for(let i = 0; i < this.buttons.length; i++){
             this.buttons[i].update(command, mousePos);
         }
+        this.food.update(command,mousePos);
     }
 
     draw(ctx){
@@ -182,9 +189,11 @@ export class Gameplay {
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(ctx);
+        for(let i = 0; i < this.buttons.length; i++){ this.buttons[i].draw(ctx); }
+        this.food.draw(ctx);
 
-        for(let i = 0; i < this.buttons.length; i++){
-            this.buttons[i].draw(ctx);
+        if(this.inputType === InputType.KEYBOARD){
+            this.food.drawCopies(ctx);
         }
     }
 
@@ -199,6 +208,7 @@ export class Gameplay {
             for(let i = 0; i < this.buttons.length; i++){
                 if(this.buttons[i]){this.buttons[i].changeScale(scale);}
             }
+            this.food.changeScale(scale);
         }
     }
     checkReadyForKeyInputs(command, mousePos){
