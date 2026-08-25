@@ -9,6 +9,7 @@ import { SpeechBubble } from './elements/speech_bubble.js'
 import { InputWindow } from './elements/input_window.js'
 import { Button } from './elements/button.js'
 import { FoodHandler } from '../handlers/food_handler.js'
+import { Dialogue } from './elements/dialogue.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -25,7 +26,7 @@ export class Gameplay {
         this.level = 1;
         this.question = 1;
         this.awaitingInput = false;
-        this.viewingMenu = true;
+        this.viewingMenu = false;
 
         this.scene = null;
         this.progressWindow = null;
@@ -34,6 +35,7 @@ export class Gameplay {
         this.inputWindow = null;
         this.buttons = [];
         this.food = null;
+        this.dialogue = null;
 
         /*
         this.answer = 100;
@@ -58,6 +60,21 @@ export class Gameplay {
     }
 
     init(assets){
+        this.scene = new Scene();
+        this.progressWindow = new ProgressWindow();
+        this.dropzone = new Dropzone();
+        this.speechBubble = new SpeechBubble();
+        this.inputWindow = new InputWindow();
+        this.buttons = [
+            new Button("Submit"),
+            new Button("Menu"),
+            new Button("Next"),
+            new Button("Prev"),
+            new Button("Return")
+        ];
+        this.food = new FoodHandler();
+        this.dialogue = new Dialogue();
+
         this.initScene(assets);
         this.initProgWindow();
         this.initDropzone();
@@ -65,13 +82,12 @@ export class Gameplay {
         this.initInputWindow();
         this.initButtons();
         this.initFoods(assets);
+        this.initDialogue();
     }
     initScene(assets){
-        this.scene = new Scene();
         this.scene.init(assets);
     }
     initProgWindow(){
-        this.progressWindow = new ProgressWindow();
         const BG_SIZE = {x: 1280, y: 720};
         const SIZE = {x: 500, y:175};
         const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:20};
@@ -81,7 +97,6 @@ export class Gameplay {
         this.progressWindow.initText('AlegreyaBold', 70, 'black')
     }
     initDropzone(){
-        this.dropzone = new Dropzone();
         const BG_SIZE = {x: 1280, y: 720};
         const SIZE = {x: 500, y: 500};
         const POS = {
@@ -93,7 +108,6 @@ export class Gameplay {
         this.dropzone.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
     }
     initSpeechBubble(){
-        this.speechBubble = new SpeechBubble();
         const SIZE = {x: 600, y:300};
         const POS = {x: 338, y:755};
         const RADIUS = 125;
@@ -101,7 +115,6 @@ export class Gameplay {
         this.speechBubble.initShape(SIZE, POS, RADIUS, LINEWIDTH, '#f0b155', 'black');
     }
     initInputWindow(){
-        this.inputWindow = new InputWindow();
         const BG_SIZE = {x: 1280, y: 720};
         const SIZE = {x: 500, y:85};
         const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:745};
@@ -117,14 +130,6 @@ export class Gameplay {
         this.inputWindow.setAltText("123456..");
     }
     initButtons(){
-        this.buttons = [
-            new Button("Submit"),
-            new Button("Menu"),
-            new Button("Next"),
-            new Button("Prev"),
-            new Button("Return")
-        ];
-
         let SIZE = {x: 200, y:100 };
         let POS = { x: this.dropzone.pos.x + (this.dropzone.size.x / 2) - (SIZE.x / 2), y: 855};
         let RADIUS = 45;
@@ -171,10 +176,15 @@ export class Gameplay {
         this.buttons[4].setText("X");
     }
     initFoods(assets){
-        this.food = new FoodHandler();
         this.food.init(assets);
     }
-
+    initDialogue(){
+        this.dialogue.initFont('Arial', 30, 'black');
+        this.dialogue.initBounds(this.speechBubble.size.x, {...this.speechBubble.size}, {
+            x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
+            y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)
+    });
+    }
     update(command, mousePos, scale){
         this.changeScale(scale);
 
@@ -221,7 +231,6 @@ export class Gameplay {
             }
         }
     }
-
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
@@ -230,6 +239,8 @@ export class Gameplay {
         this.inputWindow.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.scene.drawKuro(ctx);
+        this.dialogue.draw(ctx);
+
         this.food.draw(ctx);
         if(this.inputType === InputType.KEYBOARD){
             this.food.drawCopies(ctx);
@@ -239,7 +250,6 @@ export class Gameplay {
             this.buttons[4].draw(ctx);
         }
     }
-
     changeScale(scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
@@ -252,6 +262,7 @@ export class Gameplay {
                 if(this.buttons[i]){this.buttons[i].changeScale(scale);}
             }
             this.food.changeScale(scale);
+            this.dialogue.changeScale(scale);
         }
     }
     checkReadyForKeyInputs(command, mousePos){
