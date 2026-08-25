@@ -7,7 +7,7 @@ export class Pricetag{
         this.color = {infill: '#fde8d7', outline: 'black'};
         this.initial = {size: {x:100, y:50}, pos: {...pos}, radius: 5, lineWidth: 2};
 
-        this.font = 'Arial';
+        this.font = 'PoppinsBold';
         this.fontSize = 35;
         this.initialFontSize = 35;
         this.fontColor = 'black';
