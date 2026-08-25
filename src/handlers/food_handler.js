@@ -1,5 +1,6 @@
 import { Command } from '../enums/commands.js'
-import { FoodItem } from '../gameplay/elements/food_item.js';
+import { FoodItem } from '../gameplay/elements/food_item.js'
+import { Pricetag } from '../gameplay/elements/pricetag.js'
 
 const TOTAL_FOOD = 8;
 const FOOD_SIZE = { x: 150, y: 150 };
