@@ -70,6 +70,10 @@ export class InputWindow{
         this.altText = text;
     }
 
+    clearAltText(){
+        this.altText = "";
+    }
+
     setActionColors(hoverInfill, hoverOutline, pressInfill, pressOutline){
         this.hoverColor.infill = hoverInfill;
         this.hoverColor.outline = hoverOutline;

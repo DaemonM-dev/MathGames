@@ -25,6 +25,7 @@ export class Gameplay {
 
         this.level = 1;
         this.question = 1;
+        this.correctAnswer = 0;
         this.awaitingInput = false;
         this.viewingMenu = false;
 
@@ -164,6 +165,7 @@ export class Gameplay {
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)
         });
         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.correctAnswer = this.dialogue.getNewAnswer();
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -247,19 +249,26 @@ export class Gameplay {
         if(activeButton !== " "){
             switch(activeButton){
                 case "Submit":
-                    this.food.assignRandomValues();
-                    this.food.autoSelectRandom();
-                    this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
-                    this.speechBubble.changeDirection();
-                    this.question++;
-                    console.log("Submit button pressed!");
-                    console.log(this.question);
+                    if(parseFloat(this.inputBuffer) === this.correctAnswer){
+                        this.food.assignRandomValues();
+                        this.food.autoSelectRandom();
+                        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+                        this.correctAnswer = this.dialogue.getNewAnswer();
+                        this.speechBubble.changeDirection();
+                        clearInputBuffer(this);
+                        this.question++;
+                        console.log("Congratulations!! Next Level!");
+                    } else {
+                        clearInputBuffer(this);
+                        console.log("So close, try again!")
+                    }
+
+
                 break;
                 case "Menu":
                     if(!this.viewingMenu){
                         this.viewingMenu = true;
                     }
-                    console.log("Menu button pressed!");
                 break;
                 case "Next":
                 case "Prev":
@@ -270,11 +279,9 @@ export class Gameplay {
                     if(this.viewingMenu){
                         this.viewingMenu = false;
                     }
-                    console.log("Return button pressed!");
                 break;
                 case "Submit_Window":
                     this.awaitingInput = true;
-                    console.log("Input_Window pressed");
                 break;
             }
         }
@@ -282,7 +289,7 @@ export class Gameplay {
 }
 
 function clearInputBuffer(object){
-    if(object.inputBuffer !== ""){object.inputBuffer = ""; console.log("Buffer Cleared!");}
+    if(object.inputBuffer !== ""){object.inputBuffer = "";}
 }
 export function getKeyboardInput(object, key){
     if(object.inputType === InputType.KEYBOARD && object.awaitingInput){

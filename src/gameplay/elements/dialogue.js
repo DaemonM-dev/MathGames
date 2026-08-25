@@ -28,7 +28,7 @@ export class Dialogue{
 
         this.activeText = " ";
         this.cachedText = " ";
-        this.activeAnswer = " ";
+        this.activeAnswer = 0.0;
     }
 
     initFont(font, fontSize, fontColor){
@@ -110,6 +110,11 @@ export class Dialogue{
                 this.activeAnswer = food1.value + food2.value + food3.value;
             }
         }
+    }
+
+    getNewAnswer(){
+        console.log("Active Answer: ", this.activeAnswer);
+        return this.activeAnswer;
     }
 
     toggleKeyboardInputHelpMsg(){
