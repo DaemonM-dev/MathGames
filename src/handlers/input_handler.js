@@ -1,5 +1,5 @@
 import { Game } from '../game.js';
-import { Command } from '../constants.js';
+import { Command } from '../enums/commands.js';
 import { getKeyboardInput, removeKeyboardInput, pressButton } from '../gameplay/gameplay.js';
 
 export class InputHandler{
@@ -28,7 +28,7 @@ export class InputHandler{
         this.keydownHandler = (event) => {
             switch(event.code) {
                 case 'Enter':
-                    pressButton(Game.gameplay, Game.gameplay.submit);
+                    pressButton(Game.gameplay, Game.gameplay.buttons[0]);
                     event.preventDefault();
                     break;
                 case 'Backspace':

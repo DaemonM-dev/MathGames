@@ -1,11 +1,15 @@
-import { GAME_WIDTH, GAME_HEIGHT, Command, Maths, InputType, Speaker, Direction } from "../constants.js";
-import { GameObject } from "./gameobjects.js";;
-import { Scene } from './scene.js';
-import { SpeechBubble } from './speechbubble.js';
-import { Button } from './button.js';
-import { ProgressWindow } from "./progresswindow.js";
-import { FoodHandler } from "../handlers/food_handler.js";
-import { Dialogue } from './dialogue.js';
+import { GAME_SIZE } from "../globals.js"
+import { Command } from '../enums/commands.js'
+import { InputType } from '../enums/input_types.js'
+
+import { Scene } from './elements/scene.js'
+import { ProgressWindow } from './elements/progress_window.js'
+import { Dropzone } from './elements/dropzone.js'
+import { SpeechBubble } from './elements/speech_bubble.js'
+import { InputWindow } from './elements/input_window.js'
+import { Button } from './elements/button.js'
+import { FoodHandler } from '../handlers/food_handler.js'
+import { Dialogue } from './elements/dialogue.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -21,339 +25,272 @@ export class Gameplay {
 
         this.level = 1;
         this.question = 1;
+        this.correctAnswer = 0;
         this.awaitingInput = false;
-
-        this.answer = 100;
-
-        this.scene = null;
-
-        // Buttons
-        this.submit = null;
-        this.dialogueNext = null;
-        this.dialoguePrev = null;
-        this.help = null;
-        this.menuboard = null;
-        this.escapeButton = null;
-
         this.viewingMenu = false;
 
-        this.menuTexture = null;
-        this.kuroTexture = null;
-
-        this.speechBubble = null;
-
+        this.scene = null;
         this.progressWindow = null;
-        this.dropZone = null;
+        this.dropzone = null;
+        this.speechBubble = null;
         this.inputWindow = null;
-
-        this.foodHandler = null;
-
-        this.dialogue = null
+        this.buttons = [];
+        this.food = null;
+        this.dialogue = null;
     }
 
     init(assets){
         this.scene = new Scene();
-        this.scene.init(assets);
-        this.initDropZone();
+        this.progressWindow = new ProgressWindow();
+        this.dropzone = new Dropzone();
+        this.speechBubble = new SpeechBubble();
+        this.inputWindow = new InputWindow();
+        this.buttons = [
+            new Button("Submit"),
+            new Button("Menu"),
+            new Button("Next"),
+            new Button("Prev"),
+            new Button("Return")
+        ];
+        this.food = new FoodHandler();
+        this.dialogue = new Dialogue();
+
+        this.initScene(assets);
+        this.initProgWindow();
+        this.initDropzone();
         this.initSpeechBubble();
-        this.initButtons(assets);
-        this.foodHandler = new FoodHandler(assets);
-        this.menuTexture = assets.getAsset('menuboard');
-        this.kuroTexture = assets.getAsset('kuro');
-
-        this.dialogue = new Dialogue(this.speechBubble.size, this.speechBubble.pos);
-        this.dialogue.setFont('AlegrayaBold', 35, 'black');
-        this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
-
-        this.answer = this.calculateAnswer();
+        this.initInputWindow();
+        this.initButtons();
+        this.initFoods(assets);
+        this.initDialogue();
     }
-    // Re-randomizes the shelf items and drop-zone copies, generates a
-    // fresh question, and resets input state. Call this whenever the
-    // player answers correctly and should move on to the next question.
-    startNewQuestion(){
-        // Advance the question counter; once we've hit the last
-        // question for this level, roll over into the next level.
-        if(this.question >= Q_LVL_LIMIT){
-            this.level = Math.min(this.level + 1, MAX_LEVELS);
-            this.question = 1;
-        } else {
-            this.question++;
-        }
-
-        // Re-picks shelf positions/values and the 3 drop-zone copies,
-        // scaling only the freshly-created objects internally. Do NOT
-        // call foodHandler.changeScale() again here — reset() already
-        // handles scaling, and re-applying it on top would compound
-        // the food items' size smaller on every single call.
-        this.foodHandler.reset();
-
-        this.answer = this.calculateAnswer();
-
-        this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
-        this.dialogue.changeScale(this.scale);
-
-        // Refresh the progress window text immediately rather than
-        // waiting for the next frame's automatic update() call.
-        this.progressWindow.update(this.level, this.question);
-
-        clearInputBuffer(this);
-        this.awaitingInput = false;
-        this.inputWindow.text = "";
+    initScene(assets){
+        this.scene.init(assets);
     }
-    // Sums the values of the current (non-null) drop-zone copies to
-    // determine the correct answer for this round. Prices are dollar
-    // floats (e.g. 3.50), but the player types digits only with no
-    // decimal point, so the total is expressed in whole cents (e.g.
-    // $12.25 -> 1225) to match parseInt(this.inputBuffer) and avoid
-    // floating point rounding issues from summing decimals directly.
-    calculateAnswer(){
-        return this.foodHandler.foodCopies.reduce((sum, item) => {
-            return item !== null ? sum + Math.round(item.value * 100) : sum;
-        }, 0);
+    initProgWindow(){
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y:175};
+        const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:20};
+        const RADIUS = 35;
+        const LINEWIDTH = 8;
+        this.progressWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+        this.progressWindow.initText('PoppinsBold', 70, 'black')
+    }
+    initDropzone(){
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y: 500};
+        const POS = {
+            x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2,
+            y: BG_SIZE.y - SIZE.y
+        };
+        const RADIUS = 45;
+        const LINEWIDTH = 8;
+        this.dropzone.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+    }
+    initSpeechBubble(){
+        const SIZE = {x: 600, y:300};
+        const POS = {x: 338, y:755};
+        const RADIUS = 125;
+        const LINEWIDTH = 10;
+        this.speechBubble.initShape(SIZE, POS, RADIUS, LINEWIDTH, '#f0b155', 'black');
+    }
+    initInputWindow(){
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y:85};
+        const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:745};
+        const RADIUS = 30;
+        const LINEWIDTH = 8;
+        this.inputWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+        const HOVER = {infill:'#e0e0e0' , outline: 'black'};
+        const PRESS = {infill:'#e0e0e0' , outline: '#ffffff00'};
+        this.inputWindow.setActionColors(HOVER.infill, HOVER.outline, PRESS.infill, PRESS.outline);
+        this.inputWindow.initText('PoppinsBold', 30, '#0000005c');
+        this.inputWindow.initAltText(60, '#000000');
+        this.inputWindow.setText("Click to type...");
+        this.inputWindow.setAltText("123456..");
+    }
+    initButtons(){
+        let SIZE = {x: 200, y:100 };
+        let POS = { x: this.dropzone.pos.x + (this.dropzone.size.x / 2) - (SIZE.x / 2), y: 855};
+        let RADIUS = 45;
+        let LINEWIDTH = 5;
+        this.buttons[0].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#f3b15576','#f3b255');
+        this.buttons[0].setActionColors('#f3b155bb', '#f3b255', '#f3b15576', '#f3b15500');
+        this.buttons[0].initText('PoppinsBold', 50, '#000000');
+        this.buttons[0].setText("Enter");
+
+        SIZE = {x: 250, y:30 };
+        POS = { x: 530, y: 85};
+        RADIUS = 10;
+        LINEWIDTH = 5;
+        this.buttons[1].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
+        this.buttons[1].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
+        this.buttons[1].initText('PoppinsBold', 20, '#ffffff9d');
+        this.buttons[1].setText("Today's Menu +");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 925, y: GAME_SIZE.y - 75};
+        RADIUS = 22;
+        LINEWIDTH = 5;
+        this.buttons[2].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
+        this.buttons[2].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
+        this.buttons[2].initText('PoppinsBold', 50, '#9bd7b5');
+        this.buttons[2].setText(">");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 300, y: GAME_SIZE.y - 75};
+        RADIUS = 22;
+        LINEWIDTH = 5;
+        this.buttons[3].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
+        this.buttons[3].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
+        this.buttons[3].initText('PoppinsBold', 50, '#9bd7b5');
+        this.buttons[3].setText("<");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 1407, y: 75};
+        RADIUS = 10;
+        LINEWIDTH = 5;
+        this.buttons[4].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
+        this.buttons[4].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
+        this.buttons[4].initText('PoppinsBold', 40, '#ffffff9d');
+        this.buttons[4].setText("X");
+    }
+    initFoods(assets){
+        this.food.init(assets);
+    }
+    initDialogue(){
+        this.dialogue.initFont('PoppinsBold', 45, 'black');
+        this.dialogue.initBounds({...this.speechBubble.size}, {
+            x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
+            y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)
+        });
+        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.correctAnswer = this.dialogue.getNewAnswer();
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
-        this.updateButtons(command, mousePos);
+        this.checkForButtonPress(command, mousePos);
+        this.useActiveButtons();
+
+        this.inputWindow.displayLiveInput(this.inputBuffer);
         this.progressWindow.update(this.level, this.question);
-
-        if(this.inputWindow.text !== this.inputBuffer){
-            this.inputWindow.text = this.inputBuffer;
-        }
-
-        if(this.viewingMenu){
-            if(this.escapeButton.isPressed()){
-                this.viewingMenu = false;
-                console.log("Escape button pressed");
-            }
-        } else {
-            if(this.submit.isPressed()){
-                if(this.inputBuffer !== ""){
-                    const correctAnswer = this.calculateAnswer();
-                    if(parseInt(this.inputBuffer) !== correctAnswer){
-                        clearInputBuffer(this);
-                        console.log("Incorrect Answer: Try Again!");
-                    } else {
-                        console.log("Correct Answer!");
-                        this.startNewQuestion();
-                    }
-                }
-                console.log("Submit Button Pressed");
-            } else if (this.dialogueNext.isPressed()){
-                console.log("Next Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.RIGHT);
-            } else if(this.dialoguePrev.isPressed()){
-                console.log("Previous Dialogue Button Pressed");
-                this.speechBubble.setDirection(Direction.LEFT);
-            } else if(this.help.isPressed()){
-                console.log("Help Button Pressed");
-            } else if(this.menuboard.isPressed()){
-                this.viewingMenu = true;
-            }
-
-            if(this.inputType === InputType.KEYBOARD){
-                this.checkReadyForKeyInputs(command, mousePos);
-            } else {
-            this.foodHandler.dragFood(command, mousePos, this.dropZone.size, this.dropZone.pos);
-            }
-        }
     }
-
     draw(ctx){
         this.scene.draw(ctx);
-        this.drawButtons(ctx);
-        this.speechBubble.draw(ctx);
         this.progressWindow.draw(ctx);
-        this.drawDropZone(ctx);
-        if(this.inputType === InputType.KEYBOARD){
-            this.inputWindow.draw(ctx);
-            this.foodHandler.drawCopies(ctx);
-            this.drawKuro(ctx);
-        }
-        this.foodHandler.draw(ctx);
+        this.dropzone.draw(ctx);
+        this.speechBubble.draw(ctx);
+        this.inputWindow.draw(ctx);
+        for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
+        this.scene.drawKuro(ctx);
         this.dialogue.draw(ctx);
 
+        this.food.draw(ctx);
+        if(this.inputType === InputType.KEYBOARD){
+            this.food.drawCopies(ctx);
+        }
         if(this.viewingMenu){
-            this.drawMenu(ctx);
-            this.escapeButton.draw(ctx);
+            this.scene.drawMenu(ctx);
+            this.buttons[4].draw(ctx);
         }
     }
-
     changeScale(scale){
         if(scale.x !== this.scale.x || scale.y !== this.scale.y){
             this.scale = scale;
-            this.scene.changeScale(this.scale);
-            this.submit.changeScale(this.scale);
-            this.dialogueNext.changeScale(this.scale);
-            this.dialoguePrev.changeScale(this.scale);
-            this.help.changeScale(this.scale);
-            this.speechBubble.changeScale(this.scale);
-            this.progressWindow.changeScale(this.scale);
-            this.menuboard.changeScale(this.scale);
-            this.escapeButton.changeScale(this.scale);
-            this.dropZone.changeScale(this.scale);
-            this.inputWindow.changeScale(this.scale);
-            this.foodHandler.changeScale(this.scale);
-            this.dialogue.changeScale(this.scale);
+            this.scene.changeScale(scale);
+            if(this.progressWindow){this.progressWindow.changeScale(scale);}
+            if(this.dropzone){this.dropzone.changeScale(scale);}
+            if(this.speechBubble){this.speechBubble.changeScale(scale);}
+            if(this.inputWindow){this.inputWindow.changeScale(scale);}
+            for(let i = 0; i < this.buttons.length; i++){
+                if(this.buttons[i]){this.buttons[i].changeScale(scale);}
+            }
+            this.food.changeScale(scale);
+            this.dialogue.changeScale(scale);
         }
     }
-    updateButtons(command, mousePos){
+    
+    checkForButtonPress(command, mousePos){
         if(this.viewingMenu){
-            this.escapeButton.update(mousePos, command);
+            this.buttons[4].update(command,mousePos);
         } else {
-            this.submit.update(mousePos, command);
-        this.dialogueNext.update(mousePos, command);
-        this.dialoguePrev.update(mousePos, command);
-        this.help.update(mousePos, command);
-        this.menuboard.update(mousePos, command);
-        }
-    }
-    checkReadyForKeyInputs(command, mousePos){
-        this.inputWindow.update(mousePos, command);
-            if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; this.inputWindow.toggleVisibleText(); console.log("Waiting for input");}
-            } else {
-                if(this.awaitingInput){
-                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                        this.awaitingInput = false;
-                        console.log("No longer waiting for input");
-                        this.inputWindow.toggleVisibleText();
-                    }
+            this.inputWindow.update(command, mousePos);
+            for(let i = 0; i < this.buttons.length; i++){
+                if(i === 4){
+                    continue;
+                }
+                this.buttons[i].update(command, mousePos);
+            }
+            if(this.inputType === InputType.DRAG_DROP){
+                this.food.update(command,mousePos);
+            }
+            if(this.awaitingInput){
+                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                this.awaitingInput = false;
                 }
             }
+        }
     }
-    initDropZone(){
-        const BG_SIZE = {x: 1280, y: 720};
-        const DZ_SIZE = { x: 500, y: 500 };
-        const DZ_POS = {
-            x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - DZ_SIZE.x) / 2,
-            y: BG_SIZE.y - DZ_SIZE.y
-        };
-        this.dropZone = new GameObject(null, DZ_SIZE, DZ_POS);
-        this.dropZone.setColor('white');
-        this.dropZone.setOutlineColor('black');
-        this.dropZone.setOutlineWidth(8);
-        this.dropZone.setRadius(45);
+    getActiveButton(){
+        let activeButton = " ";
+        if(this.inputWindow.isPressed()){
+            activeButton = "Submit_Window";
+        } else {
+            for(let i = 0; i < this.buttons.length; i++){
+                if(this.buttons[i].isPressed()){
+                    activeButton = this.buttons[i].name;
+                }
+            }
+        }
+        return activeButton;
     }
-    drawDropZone(ctx){
-        ctx.fillStyle = this.dropZone.color;
-        ctx.lineWidth = this.dropZone.outlineWidth;
-        ctx.strokeStyle = this.dropZone.outlineColor;
-        ctx.beginPath();
-        ctx.roundRect(this.dropZone.pos.x, this.dropZone.pos.y, this.dropZone.size.x, this.dropZone.size.y, this.dropZone.radius);
-        ctx.fill();
-        ctx.stroke();
-    }
-    initSpeechBubble(){
-        let size = {x: 600, y:300};
-        let pos = {x: 338, y:755};
-        let radius = 125;
-        let lineWidth = 10;
-        this.speechBubble = new SpeechBubble(size,pos,radius,lineWidth);
-        this.speechBubble.setColors('#f0b155', 'black');
+    useActiveButtons(){
+        let activeButton = this.getActiveButton();
+        if(activeButton !== " "){
+            switch(activeButton){
+                case "Submit":
+                    if(parseFloat(this.inputBuffer) === this.correctAnswer){
+                        console.log("Congratulations!! Next Level!");
+                        this.food.assignRandomValues();
+                        this.food.autoSelectRandom();
+                        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+                        this.correctAnswer = this.dialogue.getNewAnswer();
+                        this.speechBubble.changeDirection();
+                        clearInputBuffer(this);
+                        this.question++;
+                        console.log("Congratulations!! Next Level!");
+                    } else {
+                        clearInputBuffer(this);
+                        console.log("So close, try again!")
+                    }
 
-        const BG_SIZE = {x: 1280, y: 720};
 
-        size = {x: 500, y:175};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:20};
-        radius = 35;
-        lineWidth = 8;
-        this.progressWindow = new ProgressWindow(size, pos, radius, lineWidth);
-        this.progressWindow.setColors('white', 'black');
-        this.progressWindow.setFont('AlegrayaBold', 60, 'black');
-
-        size = {x: 500, y:85};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
-        radius = 30;
-        lineWidth = 8;
-        this.inputWindow = new Button(size, pos, radius, lineWidth);
-        this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 60, '#000000');
-        this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
-    }
-    initButtons(assets){
-         // Submit Button (Below DropZone)
-        let size = {x: 200, y:100 };
-        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 855};
-        let radius = 45;
-        let lineWidth = 5;
-        this.submit = new Button(size, pos, radius, lineWidth);
-        this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
-        this.submit.setText("Enter", 'AlegrayaBold', 50, '#000000');
-        this.submit.toggleVisibleText();
-
-        size = {x:150, y:75};
-        pos = {x: 25, y: 25};
-        radius = 30;
-        this.help = new Button(size, pos, radius, lineWidth);
-        this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
-        this.help.setText("Info", 'AlegrayaBold', 50, '#000000');
-        this.help.toggleVisibleText();
-
-        size = {x:50, y:50};
-        pos = {x: 925, y: GAME_HEIGHT - 75};
-        radius = 22;
-        this.dialogueNext = new Button(size, pos, radius, lineWidth);
-        this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialogueNext.setText(">", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialogueNext.toggleVisibleText();
-
-        size = {x:50, y:50};
-        pos = {x: 300, y: GAME_HEIGHT - 75};
-        this.dialoguePrev = new Button(size, pos, radius, lineWidth);
-        this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialoguePrev.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialoguePrev.toggleVisibleText();
-
-        size = {x: 250, y: 30};
-        pos = {x: 530, y:85};
-        radius = 10;
-        lineWidth = 5;
-        this.menuboard = new Button(size, pos, radius, lineWidth);
-        this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.menuboard.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
-        this.menuboard.toggleVisibleText();
-
-        size = {x: 50, y: 50};
-        pos = {x: 1407, y:100};
-        radius = 10;
-        lineWidth = 5;
-        this.escapeButton = new Button(size, pos, radius, lineWidth);
-        this.escapeButton.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.escapeButton.setText("X", 'AlegrayaBold', 40, '#ffffff9d');
-        this.escapeButton.toggleVisibleText();
-    }
-    drawButtons(ctx){
-        this.submit.draw(ctx);
-        this.dialogueNext.draw(ctx);
-        this.dialoguePrev.draw(ctx);
-        this.help.draw(ctx);
-        this.menuboard.draw(ctx);
-    }
-    drawKuro(ctx){
-        const defSize = {x: 100, y: 66};
-        const size = {x: defSize.x * this.scale.x, y: defSize.y * this.scale.y};
-        const pos = {
-            x: this.inputWindow.pos.x + (10 * this.scale.x),
-            y: this.inputWindow.pos.y + (this.inputWindow.size.y / 2) - (size.y / 2) - (5 * this.scale.y)
-            };
-
-        ctx.drawImage(this.kuroTexture, pos.x, pos.y, size.x, size.y);
-    }
-    drawMenu(ctx){
-        const extra = 50;
-        const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
-        const pos = {x: ((GAME_WIDTH / 2) - ((this.menuTexture.width + extra) / 2)) * this.scale.x,
-                y: ((GAME_HEIGHT / 2) - ((this.menuTexture.height + extra) / 2)) * this.scale.y
-            };
-
-        ctx.fillStyle = '#000000c7';
-        ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
+                break;
+                case "Menu":
+                    if(!this.viewingMenu){
+                        this.viewingMenu = true;
+                    }
+                break;
+                case "Next":
+                case "Prev":
+                    this.dialogue.toggleKeyboardInputHelpMsg();
+                    this.speechBubble.changeDirection();
+                break;
+                case "Return":
+                    if(this.viewingMenu){
+                        this.viewingMenu = false;
+                    }
+                break;
+                case "Submit_Window":
+                    this.awaitingInput = true;
+                break;
+            }
+        }
     }
 }
 
 function clearInputBuffer(object){
-    if(object.inputBuffer !== ""){object.inputBuffer = ""; console.log("Buffer Cleared!");}
+    if(object.inputBuffer !== ""){object.inputBuffer = "";}
 }
 export function getKeyboardInput(object, key){
     if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
