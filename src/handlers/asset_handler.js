@@ -48,7 +48,6 @@ export class AssetHandler{
         img.onerror = (error) => {
             console.error(`Failed to load asset: ${name}`, error);
             console.error(`File path attempted: ${asset.filepath}`);
-            this.loadedCount++;
         };
         img.src = asset.filepath;
     }
@@ -80,7 +79,8 @@ export class AssetHandler{
         this.addAsset('onigiri', basePath + 'onigiri.png');
         this.addAsset('salad', basePath + 'salad.png');
         this.addAsset('tofu', basePath + 'tofu.png');
-        this.addAsset('money', basePath + 'money.png');
+        this.addAsset('kuro', basePath + 'kuro.png');
         this.addAsset('sign', basePath + 'sign.png');
+        this.addAsset('menuboard', basePath + 'menuboard.png');
     }
 }

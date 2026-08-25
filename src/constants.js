@@ -2,32 +2,44 @@ export const CANVAS_ID = 'game_canvas';
 export const GAME_WIDTH = 1920;
 export const GAME_HEIGHT = 1080;
 
-export const Commands = {
+export const Command = {
     NONE: 'none',
     MOUSE_DOWN: 'mouse_down',
     MOUSE_UP: 'mouse_up',
-    SPACEBAR_DOWN: 'spacebar_down',
-    RIGHT_ARROW_DOWN: 'right_arrow_down',
-    SUBMIT_PRESSED: 'submit_pressed'
 }
 
-export const GameStates = {
+export const GameState = {
     LOADING: 'loading',
     INITIALIZING: 'initializing',
     GAMEPLAY: 'gameplay',
-    RESTARTING: 'restarting',
     GAME_COMPLETE: 'game_complete'
 }
 
-export const Levels = {
-    LEVEL_1: 'level_1',
-    LEVEL_2: 'level_2',
-    LEVEL_3: 'level_3',
-    LEVEL_4: 'level_4',
-    LEVEL_5: 'level_5',
-    LEVEL_6: 'level_6',
-    LEVEL_7: 'level_7',
-    LEVEL_8: 'level_8',
-    LEVEL_9: 'level_9',
-    LEVEL_10: 'level_10'
+export const Maths = {
+    ADDITION: 'addition',
+    ADD_SUB: 'add_sub',
+    MULTIPLICATION: 'multiplication',
+    FRACTIONS: 'fractions'
+}
+
+export const InputType = {
+    KEYBOARD: 'keyboard',
+    DRAG_DROP: 'drag_drop'
+}
+
+export const Speaker = {
+    BOY: 'boy',
+    GIRL: 'girl'
+}
+
+export const ButtonState = {
+    NONE: 'none',
+    HOVER: 'hover',
+    PRESSED: 'pressed'
+}
+
+export const Direction = {
+    NONE: 'none',
+    LEFT: 'left',
+    RIGHT: 'right'
 }
