@@ -148,6 +148,12 @@ export class InputWindow{
         return false;
     }
 
+    displayLiveInput(input){
+        if(input !== this.altText){
+            this.altText = input;
+        }
+    }
+
     update(command, mousePos){
         switch(this.state){
             case ButtonState.NONE:

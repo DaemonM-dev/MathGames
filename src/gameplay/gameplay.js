@@ -170,6 +170,7 @@ export class Gameplay {
         this.checkForButtonPress(command, mousePos);
         this.useActiveButtons();
 
+        this.inputWindow.displayLiveInput(this.inputBuffer);
         this.progressWindow.update(this.level, this.question);
     }
     draw(ctx){

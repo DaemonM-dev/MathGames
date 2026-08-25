@@ -28,7 +28,7 @@ export class InputHandler{
         this.keydownHandler = (event) => {
             switch(event.code) {
                 case 'Enter':
-                    pressButton(Game.gameplay, Game.gameplay.submit);
+                    pressButton(Game.gameplay, Game.gameplay.buttons[0]);
                     event.preventDefault();
                     break;
                 case 'Backspace':

@@ -51,10 +51,6 @@ export class Dialogue{
         this.fontSize = this.initial.fontSize * minScale;
         this.boundSize = { x:this.initial.boundSize.x * scale.x, y: this.initial.boundSize.y * scale.y };
         this.boundPos = { x:this.initial.boundPos.x * scale.x, y: this.initial.boundPos.y * scale.y };
-
-        console.log("Font Size:",this.fontSize);
-        console.log("BoundSize:",this.boundSize);
-        console.log("BoundPos:",this.boundPos);
     }
 
    draw(ctx){
@@ -113,8 +109,6 @@ export class Dialogue{
                 this.activeText = "I would like to buy a " + food1.name + ", a " + food2.name + ", and a " + food3.name + ". How much will it cost?";
                 this.activeAnswer = food1.value + food2.value + food3.value;
             }
-            console.log("New Lvl 1 Question: ", this.activeText);
-            console.log("New answer: ", this.activeAnswer)
         }
     }
 
@@ -126,5 +120,4 @@ export class Dialogue{
             this.activeText = this.cachedMessage;
         }
     }
-
 }
