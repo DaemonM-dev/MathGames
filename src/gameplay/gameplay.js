@@ -3,7 +3,8 @@ import { Command } from '../enums/commands.js'
 import { InputType } from '../enums/input_types.js'
 
 import { Scene } from './elements/scene.js'
-import { ProgressWindow } from "./elements/progress_window.js"
+import { ProgressWindow } from './elements/progress_window.js'
+import { Dropzone } from './elements/dropzone.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -23,6 +24,7 @@ export class Gameplay {
 
         this.scene = null;
         this.progressWindow = null;
+        this.dropzone = null;
 
         /*
         this.answer = 100;
@@ -49,6 +51,7 @@ export class Gameplay {
     init(assets){
         this.initScene(assets);
         this.initProgWindow();
+        this.initDropzone();
     }
 
     initScene(assets){
@@ -65,6 +68,18 @@ export class Gameplay {
         this.progressWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
         this.progressWindow.initText('AlegreyaBold', 70, 'black')
     }
+    initDropzone(){
+        this.dropzone = new Dropzone();
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y: 500};
+        const POS = {
+            x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2,
+            y: BG_SIZE.y - SIZE.y
+        };
+        const RADIUS = 45;
+        const LINEWIDTH = 8;
+        this.dropzone.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+    }
 
 
     update(command, mousePos, scale){
@@ -74,6 +89,7 @@ export class Gameplay {
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
+        this.dropzone.draw(ctx);
     }
 
     changeScale(scale){
@@ -81,6 +97,7 @@ export class Gameplay {
             this.scale = scale;
             this.scene.changeScale(scale);
             if(this.progressWindow){this.progressWindow.changeScale(scale);}
+            if(this.dropzone){this.dropzone.changeScale(scale);}
         }
     }
     updateButtons(command, mousePos){
@@ -107,19 +124,6 @@ export class Gameplay {
                     }
                 }
             }
-    }
-    initDropZone(){
-        const BG_SIZE = {x: 1280, y: 720};
-        const DZ_SIZE = { x: 500, y: 500 };
-        const DZ_POS = {
-            x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - DZ_SIZE.x) / 2,
-            y: BG_SIZE.y - DZ_SIZE.y
-        };
-        this.dropZone = new GameObject(null, DZ_SIZE, DZ_POS);
-        this.dropZone.setColor('white');
-        this.dropZone.setOutlineColor('black');
-        this.dropZone.setOutlineWidth(8);
-        this.dropZone.setRadius(45);
     }
     drawDropZone(ctx){
         ctx.fillStyle = this.dropZone.color;
