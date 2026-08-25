@@ -1,4 +1,9 @@
-export class ProgressWindow{
+const Direction = {
+    LEFT: 'left',
+    RIGHT: 'right'
+}
+
+export class SpeechBubble{
     constructor(){
         this.size = null;
         this.pos = null;
@@ -13,9 +18,8 @@ export class ProgressWindow{
         this.currentLvl = 1;
         this.currentQuestion = 1;
 
-        this.levelMsg = "Level " + this.currentLvl;
-        this.questionMsg = "Question " + this.currentQuestion;
-
+        this.activeMsg = " ";
+        this.direction = Direction.RIGHT;
         this.scale = {x:1.0,y:1.0};
         this.minScale = 1.0;
     }
@@ -53,7 +57,16 @@ export class ProgressWindow{
         ctx.lineWidth = this.lineWidth;
         ctx.strokeStyle = this.color.outline;
         ctx.beginPath();
-        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
+        switch(this.direction){
+            case Direction.LEFT:
+                ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, 
+                    [0, this.radius, this.radius, this.radius]);
+                break;
+            case Direction.RIGHT:
+                ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, 
+                    [this.radius, 0, this.radius, this.radius]);
+                break;
+        }
         ctx.fill();
         ctx.stroke();
     }
@@ -86,5 +99,16 @@ export class ProgressWindow{
         this.lineWidth = this.initial.lineWidth * this.minScale;
         this.fontSize = this.initial.fontSize * this.minScale;
         this.findCenterPoint();
+    }
+
+    changeDirection(){
+        switch(this.direction){
+            case Direction.LEFT:
+                this.direction = Direction.RIGHT;
+            break;
+            case Direction.RIGHT:
+                this.direction = Direction.LEFT;
+            break;
+        }
     }
 }

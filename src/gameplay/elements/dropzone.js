@@ -18,7 +18,6 @@ export class Dropzone{
         this.lineWidth = lineWidth;
         this.color.infill = infillColor;
         this.color.outline = outlineColor;
-
         this.initial.size = {...size};
         this.initial.pos = {...pos};
         this.initial.radius = radius;
@@ -38,7 +37,7 @@ export class Dropzone{
     changeScale(scale){
         this.scale = scale;
         this.minScale = Math.min(scale.x, scale.y);
-        this.size = {x: this.initial.size.x * scale.x ,y: this.initial.size.y * this.minScale};
+        this.size = {x: this.initial.size.x * scale.x ,y: this.initial.size.y * scale.y};
         this.pos = {x: this.initial.pos.x * scale.x ,y: this.initial.pos.y * scale.y};
         this.radius = this.initial.radius * this.minScale;
         this.lineWidth = this.initial.lineWidth * this.minScale;

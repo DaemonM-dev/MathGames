@@ -5,6 +5,8 @@ import { InputType } from '../enums/input_types.js'
 import { Scene } from './elements/scene.js'
 import { ProgressWindow } from './elements/progress_window.js'
 import { Dropzone } from './elements/dropzone.js'
+import { SpeechBubble } from './elements/speech_bubble.js'
+import { InputWindow } from './elements/input_window.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -25,6 +27,8 @@ export class Gameplay {
         this.scene = null;
         this.progressWindow = null;
         this.dropzone = null;
+        this.speechBubble = null;
+        this.inputWindow = null;
 
         /*
         this.answer = 100;
@@ -52,8 +56,9 @@ export class Gameplay {
         this.initScene(assets);
         this.initProgWindow();
         this.initDropzone();
+        this.initSpeechBubble();
+        this.initInputWindow();
     }
-
     initScene(assets){
         this.scene = new Scene();
         this.scene.init(assets);
@@ -80,16 +85,42 @@ export class Gameplay {
         const LINEWIDTH = 8;
         this.dropzone.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
     }
-
+    initSpeechBubble(){
+        this.speechBubble = new SpeechBubble();
+        const SIZE = {x: 600, y:300};
+        const POS = {x: 338, y:755};
+        const RADIUS = 125;
+        const LINEWIDTH = 10;
+        this.speechBubble.initShape(SIZE, POS, RADIUS, LINEWIDTH, '#f0b155', 'black');
+    }
+    initInputWindow(){
+        this.inputWindow = new InputWindow();
+        const BG_SIZE = {x: 1280, y: 720};
+        const SIZE = {x: 500, y:85};
+        const POS = { x: (GAME_SIZE.x - (GAME_SIZE.x - BG_SIZE.x)) + ((GAME_SIZE.x - BG_SIZE.x) - SIZE.x) / 2, y:745};
+        const RADIUS = 30;
+        const LINEWIDTH = 8;
+        this.inputWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
+        const HOVER = {infill:'#e0e0e0' , outline: 'black'};
+        const PRESS = {infill:'#e0e0e0' , outline: '#ffffff00'};
+        this.inputWindow.setActionColors(HOVER.infill, HOVER.outline, PRESS.infill, PRESS.outline);
+        this.inputWindow.initText('AlegrayaBold', 30, '#0000005c');
+        this.inputWindow.initAltText(60, '#000000');
+        this.inputWindow.setText("Click to type...");
+        this.inputWindow.setAltText("123456..");
+    }
 
     update(command, mousePos, scale){
         this.changeScale(scale);
+        this.inputWindow.update(command, mousePos);
     }
 
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
+        this.speechBubble.draw(ctx);
+        this.inputWindow.draw(ctx);
     }
 
     changeScale(scale){
@@ -98,6 +129,8 @@ export class Gameplay {
             this.scene.changeScale(scale);
             if(this.progressWindow){this.progressWindow.changeScale(scale);}
             if(this.dropzone){this.dropzone.changeScale(scale);}
+            if(this.speechBubble){this.speechBubble.changeScale(scale);}
+            if(this.inputWindow){this.inputWindow.changeScale(scale);}
         }
     }
     updateButtons(command, mousePos){
@@ -125,42 +158,7 @@ export class Gameplay {
                 }
             }
     }
-    drawDropZone(ctx){
-        ctx.fillStyle = this.dropZone.color;
-        ctx.lineWidth = this.dropZone.outlineWidth;
-        ctx.strokeStyle = this.dropZone.outlineColor;
-        ctx.beginPath();
-        ctx.roundRect(this.dropZone.pos.x, this.dropZone.pos.y, this.dropZone.size.x, this.dropZone.size.y, this.dropZone.radius);
-        ctx.fill();
-        ctx.stroke();
-    }
-    initSpeechBubble(){
-        let size = {x: 600, y:300};
-        let pos = {x: 338, y:755};
-        let radius = 125;
-        let lineWidth = 10;
-        this.speechBubble = new SpeechBubble(size,pos,radius,lineWidth);
-        this.speechBubble.setColors('#f0b155', 'black');
 
-        const BG_SIZE = {x: 1280, y: 720};
-
-        size = {x: 500, y:175};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:20};
-        radius = 35;
-        lineWidth = 8;
-        this.progressWindow = new ProgressWindow(size, pos, radius, lineWidth);
-        this.progressWindow.setColors('white', 'black');
-        this.progressWindow.setFont('AlegrayaBold', 60, 'black');
-
-        size = {x: 500, y:85};
-        pos = { x: (GAME_WIDTH - (GAME_WIDTH - BG_SIZE.x)) + ((GAME_WIDTH - BG_SIZE.x) - size.x) / 2, y:745};
-        radius = 30;
-        lineWidth = 8;
-        this.inputWindow = new Button(size, pos, radius, lineWidth);
-        this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 70, '#000000');
-        this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
-    }
     initButtons(assets){
          // Submit Button (Below DropZone)
         let size = {x: 200, y:100 };
