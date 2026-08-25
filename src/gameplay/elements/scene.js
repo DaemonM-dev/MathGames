@@ -8,6 +8,7 @@ export class Scene{
         this.blackHorizBox = null;
         this.boy = null;
         this.girl = null;
+        this.kuro = null;
     }
 
     changeScale(scale){
@@ -17,6 +18,7 @@ export class Scene{
         changeScale(this.blackHorizBox, scale);
         changeScale(this.boy, scale);
         changeScale(this.girl, scale);
+        changeScale(this.kuro, scale);
     }
 
     init(assets){
@@ -77,6 +79,16 @@ export class Scene{
                 pos: {x: this.bg.size.x - CHAR_SIZE.x, y: GAME_SIZE.y - CHAR_SIZE.y}
             }
         }
+
+        this.kuro = {
+            texture: assets.getAsset('kuro'),
+            size: {x: 100, y: 66},
+            pos: {x: 1360, y: 750}, 
+            initial: {
+                size: {x:100, y: 66},
+                pos:{x: 1360,y: 750}
+            }
+        }
     }
 
     draw(ctx){
@@ -90,6 +102,10 @@ export class Scene{
         ctx.fillRect(this.blackHorizBox.pos.x, this.blackHorizBox.pos.y, this.blackHorizBox.size.x, this.blackHorizBox.size.y);
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
+    }
+
+    drawKuro(ctx){
+        ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);
     }
 }
 

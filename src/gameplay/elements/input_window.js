@@ -27,6 +27,7 @@ export class InputWindow{
         this.viewingAltText = false;
 
         this.state = ButtonState.NONE;
+        this.pressed = false;
 
         this.scale = {x:1.0,y:1.0};
         this.minScale = 1.0;
@@ -108,6 +109,14 @@ export class InputWindow{
                 ctx.fillText(this.altText, this.centerPoint.x, this.centerPoint.y);
             break;
         }
+    }
+
+    isPressed(){
+        const pressed = this.pressed;
+        if(this.pressed === true){
+            this.pressed = false;
+        }
+        return pressed;
     }
 
     findCenterPoint(){

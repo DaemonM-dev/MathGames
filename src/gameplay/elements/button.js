@@ -24,11 +24,13 @@ export class Button{
         this.text = " ";
 
         this.state = ButtonState.NONE;
+        this.pressed = false;
 
         this.scale = {x:1.0,y:1.0};
         this.minScale = 1.0;
     }
-initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
+
+    initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
         this.size = size;
         this.pos = pos;
         this.radius = radius;
@@ -83,6 +85,14 @@ initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.text, this.centerPoint.x, this.centerPoint.y);
+    }
+
+    isPressed(){
+        const pressed = this.pressed;
+        if(this.pressed === true){
+            this.pressed = false;
+        }
+        return pressed;
     }
 
     findCenterPoint(){

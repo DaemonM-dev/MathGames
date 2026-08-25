@@ -176,11 +176,37 @@ export class Gameplay {
 
     update(command, mousePos, scale){
         this.changeScale(scale);
-        this.inputWindow.update(command, mousePos);
         for(let i = 0; i < this.buttons.length; i++){
             this.buttons[i].update(command, mousePos);
         }
-        this.food.update(command,mousePos);
+
+        if(this.inputType === InputType.DRAG_DROP){
+            this.food.update(command,mousePos);
+        } else {
+            this.inputWindow.update(command, mousePos);
+        }
+
+        let activeButton = this.getActiveButton();
+        if(activeButton !== " "){
+            switch(activeButton){
+                case "Submit":
+                    console.log("Submit button pressed!");
+                break;
+                case "Menu":
+                    console.log("Menu button pressed!");
+                break;
+                case "Next":
+                case "Prev":
+                    this.speechBubble.changeDirection();
+                break;
+                case "Return":
+                    console.log("Return button pressed!");
+                break;
+                case "Submit_Window":
+                    console.log("Submit_Window pressed");
+                break;
+            }
+        }
     }
 
     draw(ctx){
@@ -190,8 +216,8 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ this.buttons[i].draw(ctx); }
+        this.scene.drawKuro(ctx);
         this.food.draw(ctx);
-
         if(this.inputType === InputType.KEYBOARD){
             this.food.drawCopies(ctx);
         }
@@ -225,16 +251,6 @@ export class Gameplay {
                 }
             }
     }
-    drawKuro(ctx){
-        const defSize = {x: 100, y: 66};
-        const size = {x: defSize.x * this.scale.x, y: defSize.y * this.scale.y};
-        const pos = {
-            x: this.inputWindow.pos.x + (10 * this.scale.x),
-            y: this.inputWindow.pos.y + (this.inputWindow.size.y / 2) - (size.y / 2) - (5 * this.scale.y)
-            };
-
-        ctx.drawImage(this.kuroTexture, pos.x, pos.y, size.x, size.y);
-    }
     drawMenu(ctx){
         const extra = 50;
         const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
@@ -245,6 +261,19 @@ export class Gameplay {
         ctx.fillStyle = '#000000c7';
         ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
+    }
+    getActiveButton(){
+        let activeButton = " ";
+        if(this.inputWindow.isPressed()){
+            activeButton = "Submit_Window";
+        } else {
+            for(let i = 0; i < this.buttons.length; i++){
+                if(this.buttons[i].isPressed()){
+                    activeButton = this.buttons[i].name;
+                }
+            }
+        }
+        return activeButton;
     }
 }
 

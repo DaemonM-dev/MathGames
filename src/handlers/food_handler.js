@@ -59,11 +59,6 @@ export class FoodHandler{
         for(let i = 0; i < this.foodItems.length; i++){
             this.foodItems[i].update(command, mousePos);
         }
-
-        if(command === Command.MOUSE_UP){
-            this.assignRandomValues();
-            this.autoSelectRandom();
-        }
     }
 
     assignRandomValues(){
