@@ -25,6 +25,7 @@ export class Gameplay {
         this.level = 1;
         this.question = 1;
         this.awaitingInput = false;
+        this.viewingMenu = true;
 
         this.scene = null;
         this.progressWindow = null;
@@ -161,7 +162,7 @@ export class Gameplay {
         this.buttons[3].setText("<");
 
         SIZE = {x: 50, y:50 };
-        POS = { x: 1407, y: GAME_SIZE.y - 75};
+        POS = { x: 1407, y: 75};
         RADIUS = 10;
         LINEWIDTH = 5;
         this.buttons[4].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
@@ -176,14 +177,20 @@ export class Gameplay {
 
     update(command, mousePos, scale){
         this.changeScale(scale);
-        for(let i = 0; i < this.buttons.length; i++){
-            this.buttons[i].update(command, mousePos);
-        }
 
-        if(this.inputType === InputType.DRAG_DROP){
-            this.food.update(command,mousePos);
+        if(this.viewingMenu){
+            this.buttons[4].update(command,mousePos);
         } else {
-            this.inputWindow.update(command, mousePos);
+            for(let i = 0; i < this.buttons.length; i++){
+                if(i === 4){continue;}
+                this.buttons[i].update(command, mousePos);
+            }
+
+            if(this.inputType === InputType.DRAG_DROP){
+                    this.food.update(command,mousePos);
+                } else {
+                this.inputWindow.update(command, mousePos);
+            }
         }
 
         let activeButton = this.getActiveButton();
@@ -193,6 +200,9 @@ export class Gameplay {
                     console.log("Submit button pressed!");
                 break;
                 case "Menu":
+                    if(!this.viewingMenu){
+                        this.viewingMenu = true;
+                    }
                     console.log("Menu button pressed!");
                 break;
                 case "Next":
@@ -200,6 +210,9 @@ export class Gameplay {
                     this.speechBubble.changeDirection();
                 break;
                 case "Return":
+                    if(this.viewingMenu){
+                        this.viewingMenu = false;
+                    }
                     console.log("Return button pressed!");
                 break;
                 case "Submit_Window":
@@ -215,11 +228,15 @@ export class Gameplay {
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(ctx);
-        for(let i = 0; i < this.buttons.length; i++){ this.buttons[i].draw(ctx); }
+        for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.scene.drawKuro(ctx);
         this.food.draw(ctx);
         if(this.inputType === InputType.KEYBOARD){
             this.food.drawCopies(ctx);
+        }
+        if(this.viewingMenu){
+            this.scene.drawMenu(ctx);
+            this.buttons[4].draw(ctx);
         }
     }
 
@@ -250,17 +267,6 @@ export class Gameplay {
                     }
                 }
             }
-    }
-    drawMenu(ctx){
-        const extra = 50;
-        const size = {x: (this.menuTexture.width + extra) * this.scale.x, y: (this.menuTexture.height + extra) * this.scale.y};
-        const pos = {x: ((GAME_WIDTH / 2) - ((this.menuTexture.width + extra) / 2)) * this.scale.x,
-                y: ((GAME_HEIGHT / 2) - ((this.menuTexture.height + extra) / 2)) * this.scale.y
-            };
-
-        ctx.fillStyle = '#000000c7';
-        ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(this.menuTexture, pos.x, pos.y, size.x, size.y);
     }
     getActiveButton(){
         let activeButton = " ";

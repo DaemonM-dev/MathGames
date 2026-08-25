@@ -9,6 +9,7 @@ export class Scene{
         this.boy = null;
         this.girl = null;
         this.kuro = null;
+        this.menu = null;
     }
 
     changeScale(scale){
@@ -19,6 +20,7 @@ export class Scene{
         changeScale(this.boy, scale);
         changeScale(this.girl, scale);
         changeScale(this.kuro, scale);
+        changeScale(this.menu, scale);
     }
 
     init(assets){
@@ -89,6 +91,22 @@ export class Scene{
                 pos:{x: 1360,y: 750}
             }
         }
+
+        this.menu = {
+            texture: assets.getAsset('menuboard'),
+            size: {x: 1050, y: 1050},
+            pos: {
+                x:(GAME_SIZE.x / 2) - 525, 
+                y:(GAME_SIZE.y / 2) - 525
+            }, 
+            initial: {
+                size:{x: 1050,y: 1050}, 
+                pos: {
+                    x:(GAME_SIZE.x / 2) - 525, 
+                    y:(GAME_SIZE.y / 2) - 525
+                }
+            }
+        }
     }
 
     draw(ctx){
@@ -106,6 +124,12 @@ export class Scene{
 
     drawKuro(ctx){
         ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);
+    }
+
+    drawMenu(ctx){
+        ctx.fillStyle = '#000000c7';
+        ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(this.menu.texture, this.menu.pos.x, this.menu.pos.y, this.menu.size.x, this.menu.size.y);
     }
 }
 
