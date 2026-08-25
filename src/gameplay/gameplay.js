@@ -7,6 +7,7 @@ import { ProgressWindow } from './elements/progress_window.js'
 import { Dropzone } from './elements/dropzone.js'
 import { SpeechBubble } from './elements/speech_bubble.js'
 import { InputWindow } from './elements/input_window.js'
+import { Button } from './elements/button.js'
 
 const MAX_LEVELS = 10;
 const Q_LVL_LIMIT = 5;
@@ -29,6 +30,8 @@ export class Gameplay {
         this.dropzone = null;
         this.speechBubble = null;
         this.inputWindow = null;
+
+        this.buttons = [];
 
         /*
         this.answer = 100;
@@ -58,6 +61,7 @@ export class Gameplay {
         this.initDropzone();
         this.initSpeechBubble();
         this.initInputWindow();
+        this.initButtons();
     }
     initScene(assets){
         this.scene = new Scene();
@@ -109,10 +113,67 @@ export class Gameplay {
         this.inputWindow.setText("Click to type...");
         this.inputWindow.setAltText("123456..");
     }
+    initButtons(){
+        this.buttons = [
+            new Button("Submit"),
+            new Button("Menu"),
+            new Button("Next"),
+            new Button("Prev"),
+            new Button("Return")
+        ];
+
+        let SIZE = {x: 200, y:100 };
+        let POS = { x: this.dropzone.pos.x + (this.dropzone.size.x / 2) - (SIZE.x / 2), y: 855};
+        let RADIUS = 45;
+        let LINEWIDTH = 5;
+        this.buttons[0].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#f3b15576','#f3b255');
+        this.buttons[0].setActionColors('#f3b155bb', '#f3b255', '#f3b15576', '#f3b15500');
+        this.buttons[0].initText('AlegrayaBold', 50, '#000000');
+        this.buttons[0].setText("Enter");
+
+        SIZE = {x: 250, y:30 };
+        POS = { x: 530, y: 85};
+        RADIUS = 10;
+        LINEWIDTH = 5;
+        this.buttons[1].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
+        this.buttons[1].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
+        this.buttons[1].initText('AlegrayaBold', 20, '#ffffff9d');
+        this.buttons[1].setText("Today's Menu +");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 925, y: GAME_SIZE.y - 75};
+        RADIUS = 22;
+        LINEWIDTH = 5;
+        this.buttons[2].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
+        this.buttons[2].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
+        this.buttons[2].initText('AlegrayaBold', 50, '#9bd7b5');
+        this.buttons[2].setText(">");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 300, y: GAME_SIZE.y - 75};
+        RADIUS = 22;
+        LINEWIDTH = 5;
+        this.buttons[3].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
+        this.buttons[3].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
+        this.buttons[3].initText('AlegrayaBold', 50, '#9bd7b5');
+        this.buttons[3].setText("<");
+
+        SIZE = {x: 50, y:50 };
+        POS = { x: 1407, y: GAME_SIZE.y - 75};
+        RADIUS = 10;
+        LINEWIDTH = 5;
+        this.buttons[4].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
+        this.buttons[4].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
+        this.buttons[4].initText('AlegrayaBold', 40, '#ffffff9d');
+        this.buttons[4].setText("X");
+    }
 
     update(command, mousePos, scale){
         this.changeScale(scale);
         this.inputWindow.update(command, mousePos);
+        for(let i = 0; i < this.buttons.length; i++){
+            this.buttons[i].update(command, mousePos);
+        }
     }
 
     draw(ctx){
@@ -121,6 +182,10 @@ export class Gameplay {
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(ctx);
+
+        for(let i = 0; i < this.buttons.length; i++){
+            this.buttons[i].draw(ctx);
+        }
     }
 
     changeScale(scale){
@@ -131,17 +196,9 @@ export class Gameplay {
             if(this.dropzone){this.dropzone.changeScale(scale);}
             if(this.speechBubble){this.speechBubble.changeScale(scale);}
             if(this.inputWindow){this.inputWindow.changeScale(scale);}
-        }
-    }
-    updateButtons(command, mousePos){
-        if(this.viewingMenu){
-            this.escapeButton.update(mousePos, command);
-        } else {
-            this.submit.update(mousePos, command);
-            this.dialogueNext.update(mousePos, command);
-            this.dialoguePrev.update(mousePos, command);
-            this.help.update(mousePos, command);
-            this.menuboard.update(mousePos, command);
+            for(let i = 0; i < this.buttons.length; i++){
+                if(this.buttons[i]){this.buttons[i].changeScale(scale);}
+            }
         }
     }
     checkReadyForKeyInputs(command, mousePos){
@@ -157,66 +214,6 @@ export class Gameplay {
                     }
                 }
             }
-    }
-
-    initButtons(assets){
-         // Submit Button (Below DropZone)
-        let size = {x: 200, y:100 };
-        let pos = { x: this.dropZone.pos.x + (this.dropZone.size.x / 2) - (size.x / 2), y: 855};
-        let radius = 45;
-        let lineWidth = 5;
-        this.submit = new Button(size, pos, radius, lineWidth);
-        this.submit.setColors('#f3b15576','#f3b255','#f3b155bb','#f3b255','#f3b15576','#f3b15500');
-        this.submit.setText("Enter", 'AlegrayaBold', 50, '#000000');
-        this.submit.toggleVisibleText();
-
-        size = {x:150, y:75};
-        pos = {x: 25, y: 25};
-        radius = 30;
-        this.help = new Button(size, pos, radius, lineWidth);
-        this.help.setColors('#9bd7b591','#9bd7b5','#9bd7b5c8','#9bd7b5','#9bd7b591','#9bd7b500');
-        this.help.setText("Info", 'AlegrayaBold', 50, '#000000');
-        this.help.toggleVisibleText();
-
-        size = {x:50, y:50};
-        pos = {x: 925, y: GAME_HEIGHT - 75};
-        radius = 22;
-        this.dialogueNext = new Button(size, pos, radius, lineWidth);
-        this.dialogueNext.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialogueNext.setText(">", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialogueNext.toggleVisibleText();
-
-        size = {x:50, y:50};
-        pos = {x: 300, y: GAME_HEIGHT - 75};
-        this.dialoguePrev = new Button(size, pos, radius, lineWidth);
-        this.dialoguePrev.setColors('#88a8d877','#88a8d8','#88a8d8ce','#88a8d8','#88a8d877','#88a8d800');
-        this.dialoguePrev.setText("<", 'AlegrayaBold', 50, '#9bd7b5');
-        this.dialoguePrev.toggleVisibleText();
-
-        size = {x: 250, y: 30};
-        pos = {x: 530, y:85};
-        radius = 10;
-        lineWidth = 5;
-        this.menuboard = new Button(size, pos, radius, lineWidth);
-        this.menuboard.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.menuboard.setText("Today's Menu +", 'AlegrayaBold', 20, '#ffffff9d');
-        this.menuboard.toggleVisibleText();
-
-        size = {x: 50, y: 50};
-        pos = {x: 1407, y:100};
-        radius = 10;
-        lineWidth = 5;
-        this.escapeButton = new Button(size, pos, radius, lineWidth);
-        this.escapeButton.setColors('#4949497e','#00000060','#353535ce','#00000060','#353535ce','#88a8d800');
-        this.escapeButton.setText("X", 'AlegrayaBold', 40, '#ffffff9d');
-        this.escapeButton.toggleVisibleText();
-    }
-    drawButtons(ctx){
-        this.submit.draw(ctx);
-        this.dialogueNext.draw(ctx);
-        this.dialoguePrev.draw(ctx);
-        this.help.draw(ctx);
-        this.menuboard.draw(ctx);
     }
     drawKuro(ctx){
         const defSize = {x: 100, y: 66};

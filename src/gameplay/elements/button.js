@@ -1,8 +1,10 @@
 import { ButtonState } from '../../enums/button_states.js'
 import { Command } from '../../enums/commands.js'
 
-export class InputWindow{
-    constructor(){
+
+export class Button{
+    constructor(name){
+        this.name = name;
         this.size = null;
         this.pos = null;
         this.radius = 0;
@@ -16,23 +18,17 @@ export class InputWindow{
         this.font = 'Arial';
         this.fontSize = 0;
         this.fontColor = 'white';
-        this.initial = {size: null, pos: null, radius: 0, lineWidth: 0, fontSize: 0, altFontSize: 0};
+        this.initial = {size: null, pos: null, radius: 0, lineWidth: 0, fontSize: 0};
         this.centerPoint = null;
 
-        this.altFontSize = 0;
-        this.altFontColor = 'white';
-
         this.text = " ";
-        this.altText = " ";
-        this.viewingAltText = false;
 
         this.state = ButtonState.NONE;
 
         this.scale = {x:1.0,y:1.0};
         this.minScale = 1.0;
     }
-
-    initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
+initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
         this.size = size;
         this.pos = pos;
         this.radius = radius;
@@ -55,18 +51,8 @@ export class InputWindow{
         this.initial.fontSize = fontSize;
     }
 
-    initAltText(fontSize, fontColor){
-        this.altFontSize = fontSize;
-        this.initial.altFontSize = fontSize;
-        this.altFontColor = fontColor;
-    }
-
     setText(text){
         this.text = text;
-    }
-
-    setAltText(text){
-        this.altText = text;
     }
 
     setActionColors(hoverInfill, hoverOutline, pressInfill, pressOutline){
@@ -92,22 +78,11 @@ export class InputWindow{
     }
 
     drawText(ctx){
-        switch(this.viewingAltText){
-            case false:
-                ctx.font = `${this.fontSize}px ${this.font}`;
-                ctx.fillStyle = this.fontColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.text, this.centerPoint.x, this.centerPoint.y);
-            break;
-            case true:
-                ctx.font = `${this.altFontSize}px ${this.font}`;
-                ctx.fillStyle = this.altFontColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.altText, this.centerPoint.x, this.centerPoint.y);
-            break;
-        }
+        ctx.font = `${this.fontSize}px ${this.font}`;
+        ctx.fillStyle = this.fontColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.text, this.centerPoint.x, this.centerPoint.y);
     }
 
     findCenterPoint(){
@@ -125,7 +100,6 @@ export class InputWindow{
         this.radius = this.initial.radius * this.minScale;
         this.lineWidth = this.initial.lineWidth * this.minScale;
         this.fontSize = this.initial.fontSize * this.minScale;
-        this.altFontSize = this.initial.altFontSize * this.minScale;
         this.findCenterPoint();
     }
 
@@ -155,8 +129,8 @@ export class InputWindow{
                     if(command === Command.MOUSE_DOWN){
                         this.color = this.pressColor;
                         this.viewingAltText = true;
-                        this.state = ButtonState.PRESSED;
                         this.pressed = true;
+                        this.state = ButtonState.PRESSED;
                     }
                 }
             break;
@@ -164,19 +138,9 @@ export class InputWindow{
                 if(command === Command.MOUSE_UP){
                     if(this.intersects(mousePos)){
                         this.color = this.hoverColor;
-                        this.state = ButtonState.AWAITING_INPUT;
+                        this.state = ButtonState.HOVER;
                     } else {
                         this.color = this.defColor;
-                        this.viewingAltText = false;
-                        this.state = ButtonState.NONE;
-                    }
-                }
-            break;
-            case ButtonState.AWAITING_INPUT:
-                if(command === Command.MOUSE_DOWN){
-                    if(!this.intersects(mousePos)){
-                        this.color = this.defColor;
-                        this.viewingAltText = false;
                         this.state = ButtonState.NONE;
                     }
                 }
