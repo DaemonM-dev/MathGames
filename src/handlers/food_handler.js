@@ -29,7 +29,10 @@ export class FoodHandler{
             {pos: {x:925,y:378}},
         ];
 
+        /*
         this.prices = [ 3.50, 4.00, 4.75, 5.25, 5.00, 4.50, 4.25, 3.75, ];
+        */
+        this.prices = [ 3, 4, 4, 5, 5, 4, 4, 3, ];
 
         this.dropZonePoints = [
             {pos:{x:1400, y: 300}},
@@ -51,6 +54,7 @@ export class FoodHandler{
             const texture = assets.getAsset(this.foodID[i].asset);
             this.foodItems[i].setUnique(name, texture, SIZE);
             this.foodItems[i].init(this.prices[i], this.shelfPoints[i].pos);
+            this.priceTags.push(new Pricetag({x:this.shelfPoints[i].pos.x + 25,y:this.shelfPoints[i].pos.y + 150}, this.prices[i]));
         }
         this.assignRandomValues();
         this.autoSelectRandom();
@@ -68,6 +72,8 @@ export class FoodHandler{
 
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
+            this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
+            this.priceTags[i].changeScale(this.scale);
             this.foodItems[i].changeScale(this.scale);
         }
     }
@@ -76,6 +82,7 @@ export class FoodHandler{
         this.scale = {...scale};
         for(let i = 0; i < this.foodItems.length; i++){
             this.foodItems[i].changeScale(this.scale);
+            this.priceTags[i].changeScale(this.scale);
         }
         for(let i = 0; i < this.foodCopies.length; i++){
             this.foodCopies[i].changeScale(this.scale);
@@ -122,6 +129,7 @@ export class FoodHandler{
     draw(ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
+            this.priceTags[i].draw(ctx);
         }
     }
 

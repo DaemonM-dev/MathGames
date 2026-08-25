@@ -250,6 +250,7 @@ export class Gameplay {
             switch(activeButton){
                 case "Submit":
                     if(parseFloat(this.inputBuffer) === this.correctAnswer){
+                        console.log("Congratulations!! Next Level!");
                         this.food.assignRandomValues();
                         this.food.autoSelectRandom();
                         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
