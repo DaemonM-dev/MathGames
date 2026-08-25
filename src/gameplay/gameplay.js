@@ -36,27 +36,6 @@ export class Gameplay {
         this.buttons = [];
         this.food = null;
         this.dialogue = null;
-
-        /*
-        this.answer = 100;
-        this.scene = null;
-        // Buttons
-        this.submit = null;
-        this.dialogueNext = null;
-        this.dialoguePrev = null;
-        this.help = null;
-        this.menuboard = null;
-        this.escapeButton = null;
-        this.viewingMenu = false;
-        this.menuTexture = null;
-        this.kuroTexture = null;
-        this.speechBubble = null;
-        this.progressWindow = null;
-        this.dropZone = null;
-        this.inputWindow = null;
-        this.foodHandler = null;
-        this.dialogue = null
-        */
     }
 
     init(assets){
@@ -94,7 +73,7 @@ export class Gameplay {
         const RADIUS = 35;
         const LINEWIDTH = 8;
         this.progressWindow.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
-        this.progressWindow.initText('AlegreyaBold', 70, 'black')
+        this.progressWindow.initText('PoppinsBold', 70, 'black')
     }
     initDropzone(){
         const BG_SIZE = {x: 1280, y: 720};
@@ -124,7 +103,7 @@ export class Gameplay {
         const HOVER = {infill:'#e0e0e0' , outline: 'black'};
         const PRESS = {infill:'#e0e0e0' , outline: '#ffffff00'};
         this.inputWindow.setActionColors(HOVER.infill, HOVER.outline, PRESS.infill, PRESS.outline);
-        this.inputWindow.initText('AlegrayaBold', 30, '#0000005c');
+        this.inputWindow.initText('PoppinsBold', 30, '#0000005c');
         this.inputWindow.initAltText(60, '#000000');
         this.inputWindow.setText("Click to type...");
         this.inputWindow.setAltText("123456..");
@@ -136,7 +115,7 @@ export class Gameplay {
         let LINEWIDTH = 5;
         this.buttons[0].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#f3b15576','#f3b255');
         this.buttons[0].setActionColors('#f3b155bb', '#f3b255', '#f3b15576', '#f3b15500');
-        this.buttons[0].initText('AlegrayaBold', 50, '#000000');
+        this.buttons[0].initText('PoppinsBold', 50, '#000000');
         this.buttons[0].setText("Enter");
 
         SIZE = {x: 250, y:30 };
@@ -145,7 +124,7 @@ export class Gameplay {
         LINEWIDTH = 5;
         this.buttons[1].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
         this.buttons[1].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
-        this.buttons[1].initText('AlegrayaBold', 20, '#ffffff9d');
+        this.buttons[1].initText('PoppinsBold', 20, '#ffffff9d');
         this.buttons[1].setText("Today's Menu +");
 
         SIZE = {x: 50, y:50 };
@@ -154,7 +133,7 @@ export class Gameplay {
         LINEWIDTH = 5;
         this.buttons[2].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
         this.buttons[2].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
-        this.buttons[2].initText('AlegrayaBold', 50, '#9bd7b5');
+        this.buttons[2].initText('PoppinsBold', 50, '#9bd7b5');
         this.buttons[2].setText(">");
 
         SIZE = {x: 50, y:50 };
@@ -163,7 +142,7 @@ export class Gameplay {
         LINEWIDTH = 5;
         this.buttons[3].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
         this.buttons[3].setActionColors('#88a8d8ce', '#88a8d8', '#88a8d877', '#88a8d800');
-        this.buttons[3].initText('AlegrayaBold', 50, '#9bd7b5');
+        this.buttons[3].initText('PoppinsBold', 50, '#9bd7b5');
         this.buttons[3].setText("<");
 
         SIZE = {x: 50, y:50 };
@@ -172,64 +151,26 @@ export class Gameplay {
         LINEWIDTH = 5;
         this.buttons[4].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#4949497e','#00000060');
         this.buttons[4].setActionColors('#353535ce', '#00000060', '#353535ce', '#88a8d800');
-        this.buttons[4].initText('AlegrayaBold', 40, '#ffffff9d');
+        this.buttons[4].initText('PoppinsBold', 40, '#ffffff9d');
         this.buttons[4].setText("X");
     }
     initFoods(assets){
         this.food.init(assets);
     }
     initDialogue(){
-        this.dialogue.initFont('Arial', 30, 'black');
-        this.dialogue.initBounds(this.speechBubble.size.x, {...this.speechBubble.size}, {
+        this.dialogue.initFont('PoppinsBold', 45, 'black');
+        this.dialogue.initBounds({...this.speechBubble.size}, {
             x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)
-    });
+        });
+        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
+        this.checkForButtonPress(command, mousePos);
+        this.useActiveButtons();
 
-        if(this.viewingMenu){
-            this.buttons[4].update(command,mousePos);
-        } else {
-            for(let i = 0; i < this.buttons.length; i++){
-                if(i === 4){continue;}
-                this.buttons[i].update(command, mousePos);
-            }
-
-            if(this.inputType === InputType.DRAG_DROP){
-                    this.food.update(command,mousePos);
-                } else {
-                this.inputWindow.update(command, mousePos);
-            }
-        }
-
-        let activeButton = this.getActiveButton();
-        if(activeButton !== " "){
-            switch(activeButton){
-                case "Submit":
-                    console.log("Submit button pressed!");
-                break;
-                case "Menu":
-                    if(!this.viewingMenu){
-                        this.viewingMenu = true;
-                    }
-                    console.log("Menu button pressed!");
-                break;
-                case "Next":
-                case "Prev":
-                    this.speechBubble.changeDirection();
-                break;
-                case "Return":
-                    if(this.viewingMenu){
-                        this.viewingMenu = false;
-                    }
-                    console.log("Return button pressed!");
-                break;
-                case "Submit_Window":
-                    console.log("Submit_Window pressed");
-                break;
-            }
-        }
+        this.progressWindow.update(this.level, this.question);
     }
     draw(ctx){
         this.scene.draw(ctx);
@@ -265,19 +206,27 @@ export class Gameplay {
             this.dialogue.changeScale(scale);
         }
     }
-    checkReadyForKeyInputs(command, mousePos){
-        this.inputWindow.update(mousePos, command);
-            if(this.inputWindow.isPressed()){
-                if(!this.awaitingInput){this.awaitingInput = true; this.inputWindow.toggleVisibleText(); console.log("Waiting for input");}
-            } else {
-                if(this.awaitingInput){
-                    if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                        this.awaitingInput = false;
-                        console.log("No longer waiting for input");
-                        this.inputWindow.toggleVisibleText();
-                    }
+    
+    checkForButtonPress(command, mousePos){
+        if(this.viewingMenu){
+            this.buttons[4].update(command,mousePos);
+        } else {
+            this.inputWindow.update(command, mousePos);
+            for(let i = 0; i < this.buttons.length; i++){
+                if(i === 4){
+                    continue;
+                }
+                this.buttons[i].update(command, mousePos);
+            }
+            if(this.inputType === InputType.DRAG_DROP){
+                this.food.update(command,mousePos);
+            }
+            if(this.awaitingInput){
+                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
+                this.awaitingInput = false;
                 }
             }
+        }
     }
     getActiveButton(){
         let activeButton = " ";
@@ -291,6 +240,43 @@ export class Gameplay {
             }
         }
         return activeButton;
+    }
+    useActiveButtons(){
+        let activeButton = this.getActiveButton();
+        if(activeButton !== " "){
+            switch(activeButton){
+                case "Submit":
+                    this.food.assignRandomValues();
+                    this.food.autoSelectRandom();
+                    this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+                    this.speechBubble.changeDirection();
+                    this.question++;
+                    console.log("Submit button pressed!");
+                    console.log(this.question);
+                break;
+                case "Menu":
+                    if(!this.viewingMenu){
+                        this.viewingMenu = true;
+                    }
+                    console.log("Menu button pressed!");
+                break;
+                case "Next":
+                case "Prev":
+                    this.dialogue.toggleKeyboardInputHelpMsg();
+                    this.speechBubble.changeDirection();
+                break;
+                case "Return":
+                    if(this.viewingMenu){
+                        this.viewingMenu = false;
+                    }
+                    console.log("Return button pressed!");
+                break;
+                case "Submit_Window":
+                    this.awaitingInput = true;
+                    console.log("Input_Window pressed");
+                break;
+            }
+        }
     }
 }
 

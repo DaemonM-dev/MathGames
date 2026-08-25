@@ -43,6 +43,17 @@ export class ProgressWindow{
         this.initial.fontSize = fontSize;
     }
 
+    update(level, question){
+        if(level !== this.currentLvl){
+            this.currentLvl = level;
+            this.levelMsg = "Level " + this.currentLvl;
+        }
+        if(question !== this.currentQuestion){
+            this.currentQuestion = question;
+            this.questionMsg = "Question " + this.currentQuestion;
+        }
+    }
+
     draw(ctx){
         this.drawShape(ctx);
         this.drawText(ctx);
