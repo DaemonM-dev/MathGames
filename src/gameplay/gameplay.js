@@ -64,6 +64,52 @@ export class Gameplay {
         this.dialogue = new Dialogue(this.speechBubble.size, this.speechBubble.pos);
         this.dialogue.setFont('AlegrayaBold', 35, 'black');
         this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
+
+        this.answer = this.calculateAnswer();
+    }
+    // Re-randomizes the shelf items and drop-zone copies, generates a
+    // fresh question, and resets input state. Call this whenever the
+    // player answers correctly and should move on to the next question.
+    startNewQuestion(){
+        // Advance the question counter; once we've hit the last
+        // question for this level, roll over into the next level.
+        if(this.question >= Q_LVL_LIMIT){
+            this.level = Math.min(this.level + 1, MAX_LEVELS);
+            this.question = 1;
+        } else {
+            this.question++;
+        }
+
+        // Re-picks shelf positions/values and the 3 drop-zone copies,
+        // scaling only the freshly-created objects internally. Do NOT
+        // call foodHandler.changeScale() again here — reset() already
+        // handles scaling, and re-applying it on top would compound
+        // the food items' size smaller on every single call.
+        this.foodHandler.reset();
+
+        this.answer = this.calculateAnswer();
+
+        this.dialogue.newLevelOneQuestion(this.foodHandler.foodCopies[0], this.foodHandler.foodCopies[1], this.foodHandler.foodCopies[2]);
+        this.dialogue.changeScale(this.scale);
+
+        // Refresh the progress window text immediately rather than
+        // waiting for the next frame's automatic update() call.
+        this.progressWindow.update(this.level, this.question);
+
+        clearInputBuffer(this);
+        this.awaitingInput = false;
+        this.inputWindow.text = "";
+    }
+    // Sums the values of the current (non-null) drop-zone copies to
+    // determine the correct answer for this round. Prices are dollar
+    // floats (e.g. 3.50), but the player types digits only with no
+    // decimal point, so the total is expressed in whole cents (e.g.
+    // $12.25 -> 1225) to match parseInt(this.inputBuffer) and avoid
+    // floating point rounding issues from summing decimals directly.
+    calculateAnswer(){
+        return this.foodHandler.foodCopies.reduce((sum, item) => {
+            return item !== null ? sum + Math.round(item.value * 100) : sum;
+        }, 0);
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -81,9 +127,15 @@ export class Gameplay {
             }
         } else {
             if(this.submit.isPressed()){
-                if(this.inputBuffer !== "" && parseInt(this.inputBuffer) !== this.answer){
-                    clearInputBuffer(this);
-                    console.log("Incorrect Answer: Try Again!");
+                if(this.inputBuffer !== ""){
+                    const correctAnswer = this.calculateAnswer();
+                    if(parseInt(this.inputBuffer) !== correctAnswer){
+                        clearInputBuffer(this);
+                        console.log("Incorrect Answer: Try Again!");
+                    } else {
+                        console.log("Correct Answer!");
+                        this.startNewQuestion();
+                    }
                 }
                 console.log("Submit Button Pressed");
             } else if (this.dialogueNext.isPressed()){
@@ -215,7 +267,7 @@ export class Gameplay {
         lineWidth = 8;
         this.inputWindow = new Button(size, pos, radius, lineWidth);
         this.inputWindow.setColors('white', 'black', '#e0e0e0', 'black', '#e0e0e0', '#ffffff00');
-        this.inputWindow.setText("", 'AlegrayaBold', 70, '#000000');
+        this.inputWindow.setText("", 'AlegrayaBold', 60, '#000000');
         this.inputWindow.setAltText("Click to type...", 'AlegrayaBold', 40, '#00000051');
     }
     initButtons(assets){

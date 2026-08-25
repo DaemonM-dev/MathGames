@@ -43,6 +43,8 @@ export class FoodHandler{
 
         this.priceTags = [];
 
+        this.scale = { x: 1.0, y: 1.0 };
+
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems.push(new FoodItem(foodID[i].name,
                                 this.prices[i],
@@ -68,6 +70,8 @@ export class FoodHandler{
     }
 
     changeScale(scale){
+        this.scale = scale;
+
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].changeScale(scale);
             this.priceTags[i].changeScale(scale);
@@ -105,7 +109,7 @@ export class FoodHandler{
         this.foodItems[firstIndex].name,
         this.foodItems[firstIndex].value,
         this.foodItems[firstIndex].texture,
-        this.foodItems[firstIndex].size,
+        FOOD_SIZE,
         this.dropZonePoints[0].pos
         );
 
@@ -113,7 +117,7 @@ export class FoodHandler{
         this.foodItems[secIndex].name,
         this.foodItems[secIndex].value,
         this.foodItems[secIndex].texture,
-        this.foodItems[secIndex].size,
+        FOOD_SIZE,
         this.dropZonePoints[1].pos
         );
 
@@ -130,11 +134,32 @@ export class FoodHandler{
             this.foodItems[thirdIndex].name,
             this.foodItems[thirdIndex].value,
             this.foodItems[thirdIndex].texture,
-            this.foodItems[thirdIndex].size,
+            FOOD_SIZE,
             this.dropZonePoints[2].pos
             );
 
             this.foodCopies[2].setPosition(this.dropZonePoints[2].pos);
+        }
+    }
+
+    // Re-randomizes the 8 shelf items (position + value) and picks 3 new
+    // copies for the drop zone. Called at the start of a new question.
+    reset(){
+        this.assignRandomValues();
+        this.autoSelectRandom();
+
+        // Only the priceTags and foodCopies are freshly constructed here
+        // (assignRandomValues repositions the existing foodItems rather
+        // than recreating them, so they're already correctly scaled and
+        // must NOT be scaled again — doing so would compound their size
+        // smaller and smaller on every reset). Scale just the new objects.
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.priceTags[i].changeScale(this.scale);
+        }
+        for(let i = 0; i < this.foodCopies.length; i++){
+            if(this.foodCopies[i] !== null){
+                this.foodCopies[i].changeScale(this.scale);
+            }
         }
     }
 
