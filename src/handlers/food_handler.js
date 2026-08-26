@@ -12,7 +12,7 @@ export class FoodHandler{
             { name: "the Cupcakes", asset: 'cupcakes' },
             { name: "the Fruit Bowl", asset: 'fruitbowl' },
             { name: "the slice of Fruit Cake", asset: 'fruitcake' },
-            { name: "the slice of Macha Cake", asset: 'mintcake' },
+            { name: "the slice of Matcha Cake", asset: 'mintcake' },
             { name: "the Rice Cakes", asset: 'onigiri' },
             { name: "the Salad", asset: 'salad' },
             { name: "the Tofu", asset: 'tofu' }
