@@ -82,5 +82,10 @@ export class AssetHandler{
         this.addAsset('kuro', basePath + 'kuro.png');
         this.addAsset('sign', basePath + 'sign.png');
         this.addAsset('menuboard', basePath + 'menuboard.png');
+
+        this.addAsset('goodjob1', basePath + 'goodjob1.png');
+        this.addAsset('goodjob2', basePath + 'goodjob2.png');
+        this.addAsset('goodjob3', basePath + 'goodjob3.png');
+        this.addAsset('tryagain1', basePath + 'tryagain1.png');
     }
 }

@@ -10,6 +10,9 @@ export class Scene{
         this.girl = null;
         this.kuro = null;
         this.menu = null;
+
+        this.posFeedback = [];
+        this.negFeedback = null;
     }
 
     changeScale(scale){
@@ -21,6 +24,12 @@ export class Scene{
         changeScale(this.girl, scale);
         changeScale(this.kuro, scale);
         changeScale(this.menu, scale);
+
+        // Temp
+        changeScale(this.negFeedback,scale);
+        for(let i = 0; i < this.posFeedback.length; i++){
+            changeScale(this.posFeedback[i], scale);
+        }
     }
 
     init(assets){
@@ -107,6 +116,10 @@ export class Scene{
                 }
             }
         }
+
+        // Temp
+        this.initFeedback(assets);
+        //
     }
 
     draw(ctx){
@@ -131,6 +144,48 @@ export class Scene{
         ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(this.menu.texture, this.menu.pos.x, this.menu.pos.y, this.menu.size.x, this.menu.size.y);
     }
+
+    // Temp
+    drawFeedback(ctx, type, index){
+        switch(type){
+            case "pos":
+                ctx.drawImage(this.posFeedback[index].texture,
+                     this.posFeedback[index].pos.x, this.posFeedback[index].pos.y,
+                     this.posFeedback[index].size.x, this.posFeedback[index].size.y);
+            break;
+            case "neg":
+                ctx.drawImage(this.negFeedback.texture,
+                     this.negFeedback.pos.x, this.negFeedback.pos.y,
+                     this.negFeedback.size.x, this.negFeedback.size.y);
+            break;
+        }
+    }
+    initFeedback(assets){
+        const CENTER = {x: GAME_SIZE.x / 2 - 250, y: GAME_SIZE.y / 2 - 125};
+        this.negFeedback = {
+            texture: assets.getAsset('tryagain1'),
+            size: {x: 500, y: 250},
+            pos: CENTER, 
+            initial: { size: {x:500, y: 250}, pos:CENTER }
+        }
+        this.posFeedback.push(
+            {texture: assets.getAsset('goodjob1'),
+            size: {x: 500, y: 250},
+            pos: CENTER, 
+            initial: { size: {x:500, y: 250}, pos:CENTER }},
+        
+            {texture: assets.getAsset('goodjob2'),
+            size: {x: 500, y: 250},
+            pos: CENTER, 
+            initial: { size: {x:500, y: 250}, pos:CENTER }},
+        
+            {texture: assets.getAsset('goodjob2'),
+            size: {x: 500, y: 250},
+            pos: CENTER, 
+            initial: { size: {x:500, y: 250}, pos:CENTER }},
+        )
+    }
+    //
 }
 
 function changeScale(obj, scale){

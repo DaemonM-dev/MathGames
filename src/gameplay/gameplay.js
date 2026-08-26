@@ -37,6 +37,12 @@ export class Gameplay {
         this.buttons = [];
         this.food = null;
         this.dialogue = null;
+
+        // Temp
+        this.drawingFeedback = false;
+        this.posFeedback  = false;
+        this.feedbackIndex = 0;
+        //
     }
 
     init(assets){
@@ -63,6 +69,10 @@ export class Gameplay {
         this.initButtons();
         this.initFoods(assets);
         this.initDialogue();
+
+        // Temp
+        this.feedbackIndex = Math.floor(Math.random() * 3);
+        //
     }
     initScene(assets){
         this.scene.init(assets);
@@ -169,11 +179,19 @@ export class Gameplay {
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
-        this.checkForButtonPress(command, mousePos);
-        this.useActiveButtons();
 
-        this.inputWindow.displayLiveInput(this.inputBuffer);
-        this.progressWindow.update(this.level, this.question);
+        if(this.drawingFeedback === true){
+            if(command === Command.MOUSE_DOWN){
+                this.drawingFeedback = false;
+                this.posFeedback = false;
+                this.feedbackIndex = Math.floor(Math.random() * 3);
+            }
+        } else {
+            this.checkForButtonPress(command, mousePos);
+            this.useActiveButtons();
+            this.inputWindow.displayLiveInput(this.inputBuffer);
+            this.progressWindow.update(this.level, this.question);
+        }
     }
     draw(ctx){
         this.scene.draw(ctx);
@@ -192,6 +210,14 @@ export class Gameplay {
         if(this.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttons[4].draw(ctx);
+        }
+
+        if(this.drawingFeedback){
+            if(this.posFeedback){
+                this.scene.drawFeedback(ctx, "pos", this.feedbackIndex);
+            } else {
+                this.scene.drawFeedback(ctx, "neg", 0);
+            }
         }
     }
     changeScale(scale){
@@ -250,7 +276,8 @@ export class Gameplay {
             switch(activeButton){
                 case "Submit":
                     if(parseFloat(this.inputBuffer) === this.correctAnswer){
-                        console.log("Congratulations!! Next Level!");
+                        this.drawingFeedback = true;
+                        this.posFeedback = true;
                         this.food.assignRandomValues();
                         this.food.autoSelectRandom();
                         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
@@ -258,8 +285,9 @@ export class Gameplay {
                         this.speechBubble.changeDirection();
                         clearInputBuffer(this);
                         this.question++;
-                        console.log("Congratulations!! Next Level!");
                     } else {
+                        this.drawingFeedback = true;
+                        this.posFeedback = false;
                         clearInputBuffer(this);
                         console.log("So close, try again!")
                     }
