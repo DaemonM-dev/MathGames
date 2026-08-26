@@ -4,10 +4,13 @@ export class Dialogue{
         this.fontSize = 0;
         this.fontColor = 'white';
 
-        this.boundSize = null;
-        this.boundPos = null;
+        this.pos = {x:0, y:0};
 
-        this.initial = {fontSize: 0, boundSize: null , boundPos: null};
+        this.maxSize = {x: 0, y: 0};
+        this.lineSpacing = 1.8;
+        this.minFontSize = 5;
+
+        this.initial = {fontSize: 0, pos: {x:0, y:0}, maxSize: {x:0,y:0}, lineSpacing: 1.2, minFontSize: 5};
 
         this.instructional = [
             "Select the Kuro icon with your mouse to begin typing your answers!",
@@ -29,33 +32,35 @@ export class Dialogue{
         this.activeText = " ";
         this.cachedText = " ";
         this.activeAnswer = 0.0;
-
-        this.maxLineWidth = 0;
-        this.maxVertHeight = 0;
-        this.lineSpacing = 1.2;
-        this.minFontSize = 5;
     }
 
-    initFont(font, fontSize, fontColor){
+    initFont(font, fontSize, lineSpacing, fontColor){
             this.font = font;
             this.fontSize = fontSize;
+            this.lineSpacing = lineSpacing;
             this.initial.fontSize = fontSize;
+            this.initial.lineSpacing = lineSpacing;
             this.fontColor = fontColor;
     }
 
-    initBounds(boundSize, boundPos, padding){
-        this.boundSize = {...boundSize};
-        this.boundPos = {...boundPos};
+    initBounds(pos, size, padding, minFontSize){
+            this.pos = {...pos};
+            this.maxSize = {x: size.x - padding, y: size.y - padding};
+            this.minFontSize = minFontSize;
 
-        this.initial.boundSize = {...boundSize};
-        this.initial.boundPos = {...boundPos};
+            this.initial.pos = {...pos};
+            this.initial.maxSize = {...this.maxSize};
+            this.initial.minFontSize = {...this.minFontSize};
     }
 
     changeScale(scale){
+
+        this.pos = {x:this.initial.pos.x * scale.x, y:this.initial.pos.y * scale.y};
+        this.maxSize = {x:this.initial.maxSize.x * scale.x , y: this.initial.maxSize.y * scale.y};
+
         const minScale = Math.min(scale.x, scale.y);
         this.fontSize = this.initial.fontSize * minScale;
-        this.boundSize = { x:this.initial.boundSize.x * scale.x, y: this.initial.boundSize.y * scale.y };
-        this.boundPos = { x:this.initial.boundPos.x * scale.x, y: this.initial.boundPos.y * scale.y };
+        this.minFontSize = this.initial.minFontSize * minScale;
     }
 
    draw(ctx){
@@ -68,32 +73,35 @@ export class Dialogue{
         this.drawWrappedText(ctx, lines);
     }
 
-    wrapText(ctx, text){
-        const maxWidth = this.boundSize.x;
+    wrapText(ctx, text) {
         const words = text.split(' ');
-        let line = '';
+        let currentLine = '';
         let lines = [];
         
-        for (let i = 0; i < words.length; i++) {
-            const testLine = line + (line ? ' ' : '') + words[i];
-            const metrics = ctx.measureText(testLine);
-            const testWidth = metrics.width;
+        for (let word of words) {
+            const testLine = currentLine + (currentLine ? ' ' : '') + word;
+            const testWidth = ctx.measureText(testLine).width;
             
-            if (testWidth > maxWidth - 30 && i > 0) {
-                lines.push(line);
-                line = words[i];
+            if (testWidth > this.maxSize.x && currentLine !== '') {
+                lines.push(currentLine);
+                currentLine = word;
             } else {
-                line = testLine;
+                currentLine = testLine;
             }
         }
-        lines.push(line);
+        
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+        
         return lines;
     }
 
+
     drawWrappedText(ctx, lines){
-        const x = this.boundPos.x;
-        const y = this.boundPos.y;
-        const lineHeight = this.fontSize;
+        const x = this.pos.x;
+        const y = this.pos.y;
+        const lineHeight = this.fontSize * this.lineSpacing;
         
         const totalHeight = lines.length * lineHeight;
 

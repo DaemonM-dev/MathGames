@@ -169,11 +169,12 @@ export class Gameplay {
         this.food.init(assets);
     }
     initDialogue(){
-        this.dialogue.initFont('PoppinsBold', 45, 'black');
-        this.dialogue.initBounds({...this.speechBubble.size}, {
+        this.dialogue.initFont('PoppinsBold', 35, 1.4, 'black');
+        this.dialogue.initBounds({
             x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
-            y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)
-        });
+            y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)},
+            this.speechBubble.size, 125, 5
+        );
         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
     }
