@@ -161,7 +161,7 @@ export class Scene{
         }
     }
     initFeedback(assets){
-        const CENTER = {x: GAME_SIZE.x / 2 - 250, y: GAME_SIZE.y / 2 - 125};
+        const CENTER = {x: GAME_SIZE.x - 571, y: GAME_SIZE.y / 2 - 225};
         this.negFeedback = {
             texture: assets.getAsset('tryagain1'),
             size: {x: 500, y: 250},
