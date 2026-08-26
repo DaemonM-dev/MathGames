@@ -29,6 +29,11 @@ export class Dialogue{
         this.activeText = " ";
         this.cachedText = " ";
         this.activeAnswer = 0.0;
+
+        this.maxLineWidth = 0;
+        this.maxVertHeight = 0;
+        this.lineSpacing = 1.2;
+        this.minFontSize = 5;
     }
 
     initFont(font, fontSize, fontColor){
@@ -38,7 +43,7 @@ export class Dialogue{
             this.fontColor = fontColor;
     }
 
-    initBounds(boundSize, boundPos){
+    initBounds(boundSize, boundPos, padding){
         this.boundSize = {...boundSize};
         this.boundPos = {...boundPos};
 
@@ -103,10 +108,10 @@ export class Dialogue{
     initLevelOneQuestion(food1, food2, food3){
         if(food1 && food2){
             if(!food3){
-                this.activeText = "I would like to buy a " + food1.name + " and a " + food2.name + ". How much will it cost?";
+                this.activeText = "I would like to buy " + food1.name + " and " + food2.name + ". How much will it cost?";
                 this.activeAnswer = food1.value + food2.value;
             } else {
-                this.activeText = "I would like to buy a " + food1.name + ", a " + food2.name + ", and a " + food3.name + ". How much will it cost?";
+                this.activeText = "I would like to buy " + food1.name + ", " + food2.name + ", and " + food3.name + ". How much will it cost?";
                 this.activeAnswer = food1.value + food2.value + food3.value;
             }
         }

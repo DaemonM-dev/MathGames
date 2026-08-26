@@ -8,14 +8,14 @@ const FOOD_SIZE = { x: 150, y: 150 };
 export class FoodHandler{
     constructor(){
         this.foodID = [
-            { name: "Chocolate Cake", asset: 'chocolatecake' },
-            { name: "Cupcake", asset: 'cupcakes' },
-            { name: "Fruit Bowl", asset: 'fruitbowl' },
-            { name: "Fruit Cake", asset: 'fruitcake' },
-            { name: "Macha Cake", asset: 'mintcake' },
-            { name: "Rice Cake", asset: 'onigiri' },
-            { name: "Salad", asset: 'salad' },
-            { name: "Tofu", asset: 'tofu' }
+            { name: "the slice of Chocolate Cake", asset: 'chocolatecake' },
+            { name: "the Cupcakes", asset: 'cupcakes' },
+            { name: "the Fruit Bowl", asset: 'fruitbowl' },
+            { name: "the slice of Fruit Cake", asset: 'fruitcake' },
+            { name: "the slice of Macha Cake", asset: 'mintcake' },
+            { name: "the Rice Cakes", asset: 'onigiri' },
+            { name: "the Salad", asset: 'salad' },
+            { name: "the Tofu", asset: 'tofu' }
         ];
 
         this.shelfPoints = [
@@ -126,17 +126,10 @@ export class FoodHandler{
         }
     }
 
-    // Re-randomizes the 8 shelf items (position + value) and picks 3 new
-    // copies for the drop zone. Called at the start of a new question.
     reset(){
         this.assignRandomValues();
         this.autoSelectRandom();
 
-        // Only the priceTags and foodCopies are freshly constructed here
-        // (assignRandomValues repositions the existing foodItems rather
-        // than recreating them, so they're already correctly scaled and
-        // must NOT be scaled again — doing so would compound their size
-        // smaller and smaller on every reset). Scale just the new objects.
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.priceTags[i].changeScale(this.scale);
         }
