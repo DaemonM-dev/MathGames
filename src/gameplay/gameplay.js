@@ -181,13 +181,25 @@ export class Gameplay {
     update(command, mousePos, scale){
         this.changeScale(scale);
 
-        if(this.drawingFeedback === true){
-            if(command === Command.MOUSE_DOWN){
-                this.drawingFeedback = false;
+        if(command === Command.MOUSE_DOWN){
+            if(this.drawingFeedback){
+                if(this.posFeedback){
+                        this.food.assignRandomValues();
+                        this.food.autoSelectRandom();
+                        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+                        this.correctAnswer = this.dialogue.getNewAnswer();
+                        this.speechBubble.changeDirection();
+                        this.question++
+                } else {
+
+                }
                 this.posFeedback = false;
+                this.drawingFeedback = false;
                 this.feedbackIndex = Math.floor(Math.random() * 3);
             }
-        } else {
+        }
+
+        if(!this.drawingFeedback){
             this.checkForButtonPress(command, mousePos);
             this.useActiveButtons();
             this.inputWindow.displayLiveInput(this.inputBuffer);
@@ -278,14 +290,8 @@ export class Gameplay {
                 case "Submit":
                     if(parseFloat(this.inputBuffer) === this.correctAnswer){
                         this.drawingFeedback = true;
-                        this.posFeedback = true;
-                        this.food.assignRandomValues();
-                        this.food.autoSelectRandom();
-                        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
-                        this.correctAnswer = this.dialogue.getNewAnswer();
-                        this.speechBubble.changeDirection();
+                        this.posFeedback = true;;
                         clearInputBuffer(this);
-                        this.question++;
                     } else {
                         this.drawingFeedback = true;
                         this.posFeedback = false;
