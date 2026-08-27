@@ -24,10 +24,10 @@ export class Gameplay {
         this.maxDigits = 5;
 
         this.level = 1;
+        this.prevLevel = 1;
         this.question = 1;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
-
 
         this.awaitingInput = false;
         this.answerCorrect = false;
@@ -180,10 +180,10 @@ export class Gameplay {
     update(command, mousePos, scale){
         this.changeScale(scale);
         const activeButton = this.getActiveButton(command, mousePos);
-        if(activeButton !== ""){console.log(activeButton);this.useActiveButtons(activeButton);}
+        if(activeButton !== ""){console.log("Active Button: ", activeButton);this.useActiveButtons(activeButton);}
         switch(this.level){
             case 1:
-                this.updateLevelOne(command, activeButton);
+                this.updateLevelOne(command, mousePos, activeButton);
                 break;
             case 2:
                 break;
@@ -194,16 +194,27 @@ export class Gameplay {
             case 5:
                 break;
         }
+        this.checkLevelInputs(this.level);
+        this.progressWindow.update(this.level, this.question);
     }
-    updateLevelOne(command, activeButton){
-
-        if(this.viewingFeedback && command === Command.MOUSE_DOWN && activeButton === ""){
-            if(this.answerCorrect){
-                this.generateNextLvlOneQuestion();
+    updateLevelOne(command, mousePos, activeButton){
+        if(command === Command.MOUSE_DOWN && activeButton === ""){
+            if(this.awaitingInput){this.awaitingInput = false;} 
+            if(this.viewingFeedback){
+                if(this.answerCorrect){
+                    if(this.level === 1){
+                        if(this.question < 5){
+                            this.generateNextLvlOneQuestion();
+                            this.question++;
+                        } else {
+                            this.level++;
+                            this.question = 1;
+                        }
+                    }
+                }
+                this.viewingFeedback = false;
             }
-            this.viewingFeedback = false;
         }
-
         this.inputWindow.displayLiveInput(this.inputBuffer);
     }
     draw(ctx){
@@ -214,6 +225,7 @@ export class Gameplay {
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.dialogue.draw(ctx);
         this.food.draw(ctx);
+
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
             this.scene.drawKuro(ctx);
@@ -251,22 +263,16 @@ export class Gameplay {
         if(this.viewingMenu){
             this.buttons[4].update(command,mousePos);
             if(this.buttons[4].isPressed()){return this.buttons[4].name;}
-        } else {
+        } else if(!this.viewingFeedback) {
             if(this.inputType === InputType.KEYBOARD){ 
                 this.inputWindow.update(command, mousePos); 
                 if(this.inputWindow.isPressed()) return "Input_Window";
             }
             else if(this.inputType === InputType.DRAG_DROP){ this.food.update(command,mousePos); }
-
             for(let i = 0; i < this.buttons.length; i++){
                 if(i === 4){ continue; }
                 this.buttons[i].update(command, mousePos);
                 if(this.buttons[i].isPressed()){return this.buttons[i].name;}
-            }
-            if(this.awaitingInput){
-                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                this.awaitingInput = false;
-                }
             }
         }
         return "";
@@ -308,11 +314,21 @@ export class Gameplay {
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
-
-        if(this.question < Q_LIMIT){this.question++;}
-        else if (this.level < LEVEL_LIMIT){this.level++;}
-        this.progressWindow.update(this.level, this.question);
-        console.log("Created next question");
+    }
+    checkLevelInputs(level){
+        if(level !== this.prevLevel){
+            switch(level){ 
+                case 1: case 3: case 4:
+                    this.inputType = InputType.KEYBOARD;
+                break;
+                case 2: case 5:
+                    this.inputType = InputType.DRAG_DROP;
+                break;
+            }
+            this.prevLevel = level;
+            console.log("New level: ", this.prevLevel);
+            console.log("New Input Type: ", this.inputType);
+        }
     }
 }
 
