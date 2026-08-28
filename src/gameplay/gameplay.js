@@ -26,7 +26,7 @@ export class Gameplay {
 
         this.level = 1;
         this.prevLevel = 1;
-        this.question = 5;
+        this.question = 1;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
 
