@@ -121,6 +121,12 @@ export class FoodHandler{
     }
 
     reset(){
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].resetPosition();
+        }
+    }
+
+    randomize(){
         this.assignRandomValues();
         this.autoSelectRandom();
 
@@ -149,6 +155,18 @@ export class FoodHandler{
                 this.foodCopies[i].draw(ctx);
             }
         }
+    }
+
+    getSumFromDropzone(bounds){
+        let SUM = 0;
+
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            if(this.foodItems[i].isWithinBounds(bounds.size, bounds.pos)){
+                SUM = SUM + this.foodItems[i].value;
+            }
+        }
+        console.log("Sum in Dropzone: ", SUM);
+        return SUM;
     }
 }
 

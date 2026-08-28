@@ -22,6 +22,7 @@ export class Gameplay {
         this.inputType = InputType.KEYBOARD;
         this.inputBuffer = "";
         this.maxDigits = 5;
+        this.numericAnswer = 0;
 
         this.level = 2;
         this.prevLevel = 1;
@@ -223,13 +224,15 @@ export class Gameplay {
     updateLevelTwo(command, mousePos, activeButton){
         this.food.update(command,mousePos, this.dropzone);
 
+        this.numericAnswer = this.food.getSumFromDropzone(this.dropzone);
+
+
         if(command === Command.MOUSE_DOWN && activeButton === ""){
             if(this.awaitingInput){this.awaitingInput = false;} 
             if(this.viewingFeedback){
                 if(this.answerCorrect){
                     if(this.level === 1){
                         if(this.question < 5){
-                            this.generateNextLvlOneQuestion();
                             this.question++;
                         } else {
                             this.level++;
@@ -312,6 +315,8 @@ export class Gameplay {
                 this.viewingMenu = true;
             break;
             case "Next":
+                this.generateNextLvlTwoQuestion();
+                break;
             case "Prev":
                 this.dialogue.toggleKeyboardInputHelpMsg(this.level);
                 this.speechBubble.changeDirection();
@@ -325,18 +330,39 @@ export class Gameplay {
         }
     }
     checkAnswer(){
-        if(parseFloat(this.inputBuffer) === this.correctAnswer){
-            this.answerCorrect = true;
-        } else {
-            this.answerCorrect = false;
+        switch(this.level){
+            case 1:
+            case 3:
+            case 4:
+                if(parseFloat(this.inputBuffer) === this.correctAnswer){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                clearInputBuffer(this);
+                break;
+            case 2:
+            case 5:
+                if(this.numericAnswer === this.correctAnswer){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                this.food.reset();
+                break;
         }
-        clearInputBuffer(this);
     }
     generateNextLvlOneQuestion(){
         this.food.assignRandomValues();
         this.food.autoSelectRandom();
         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+    }
+    generateNextLvlTwoQuestion(){
+        this.food.assignRandomValues();
+        this.food.autoSelectRandom();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
     }
