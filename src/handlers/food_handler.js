@@ -44,6 +44,10 @@ export class FoodHandler{
         this.foodCopies = [];
         this.priceTags = [];
         this.scale = {x:1.0, y:1.0};
+        this.dropzoneSum = 0;
+
+        this.itemSelected = false;
+        this.selectionIndex = 0;
     }
 
     init(assets){
@@ -84,14 +88,7 @@ export class FoodHandler{
     }
 
     update(command, mousePos, bounds){
-        for(let i = 0; i < TOTAL_FOOD; i++){
-                this.foodItems[i].update(command, mousePos);
-                if(command == Command.MOUSE_UP){
-                    if(!this.foodItems[i].isWithinBounds(bounds.size, bounds.pos)){
-                        this.foodItems[i].resetPosition();
-                    }
-                }
-        }
+        this.handleFoodSelection(command, mousePos, bounds);
     }
 
     autoSelectRandom(){
@@ -156,7 +153,37 @@ export class FoodHandler{
             }
         }
     }
-
+    handleFoodSelection(command, mousePos, bounds){
+        switch(command){
+            case Command.MOUSE_DOWN:
+                if(!this.itemSelected){
+                    for(let i = 0; i < this.foodItems.length; i++){
+                        if(this.foodItems[i].intersects(mousePos)){
+                            this.selectionIndex = i;
+                            this.itemSelected = true;
+                            console.log("Food Selected: ", this.foodItems[this.selectionIndex].name);
+                            break;
+                        }
+                    }
+                } 
+                break;
+            case Command.MOUSE_UP:
+                if(this.itemSelected){
+                    if(this.foodItems[this.selectionIndex].isWithinBounds(bounds.size, bounds.pos)){
+                        this.dropzoneSum = this.getSumFromDropzone(bounds);
+                    } else {
+                        this.foodItems[this.selectionIndex].resetPosition();
+                    }
+                }
+                this.foodItems[this.selectionIndex].deselect();
+                this.selectionIndex = 0;
+                this.itemSelected = false;
+                break;
+        }
+        if(this.itemSelected){
+            this.foodItems[this.selectionIndex].drag(mousePos);
+        }
+    }
     getSumFromDropzone(bounds){
         let SUM = 0;
 

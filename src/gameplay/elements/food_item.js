@@ -44,12 +44,10 @@ export class FoodItem{
 
     changeScale(scale){
         this.scale = {...scale};
-        const originalSizeX = this.initial.size.x;
-        const originalSizeY = this.initial.size.y;
         this.pos.x = this.cachedPos.x * scale.x;
         this.pos.y = this.cachedPos.y * scale.y;
-        this.size.x = originalSizeX * scale.x;
-        this.size.y = originalSizeY * scale.y
+        this.size.x = this.initial.size.x * scale.x;
+        this.size.y = this.initial.size.y * scale.y
     }
 
     intersects(point){
@@ -73,21 +71,16 @@ export class FoodItem{
         return false;
     }
 
-    update(command, mousePos){
-        switch(command){
-            case Command.MOUSE_DOWN:
-            if(!this.selected && this.intersects(mousePos)){
-                this.selected = true;
-            }
-            break;
-            case Command.MOUSE_UP:
-                if(this.selected){
-                    this.selected = false;
-                    this.cachedPos = {x: this.pos.x / this.scale.x,y:this.pos.y / this.scale.y};
-                }
-            break;
-        }
-        if(this.selected){this.pos = {x: mousePos.x - (this.size.x / 2), y:mousePos.y - (this.size.y / 2)};}
+    select(){
+        if(!this.selected){this.selected = true;}
+    }
+
+    deselect(){
+        if(this.selected){this.selected = false;}
+    }
+
+    drag(mousePos){
+        this.pos = {x: mousePos.x - (this.size.x / 2), y:mousePos.y - (this.size.y / 2)};
     }
 
     draw(ctx){

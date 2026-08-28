@@ -224,9 +224,6 @@ export class Gameplay {
     updateLevelTwo(command, mousePos, activeButton){
         this.food.update(command,mousePos, this.dropzone);
 
-        this.numericAnswer = this.food.getSumFromDropzone(this.dropzone);
-
-
         if(command === Command.MOUSE_DOWN && activeButton === ""){
             if(this.awaitingInput){this.awaitingInput = false;} 
             if(this.viewingFeedback){
@@ -289,7 +286,7 @@ export class Gameplay {
         }
     }
     getActiveButton(command, mousePos){
-        if(this.viewingMenu){
+        if(this.viewingMenu && !this.food.itemSelected){
             this.buttons[4].update(command,mousePos);
             if(this.buttons[4].isPressed()){return this.buttons[4].name;}
         } else if(!this.viewingFeedback) {
@@ -297,10 +294,12 @@ export class Gameplay {
                 this.inputWindow.update(command, mousePos); 
                 if(this.inputWindow.isPressed()) return "Input_Window";
             }
-            for(let i = 0; i < this.buttons.length; i++){
-                if(i === 4){ continue; }
-                this.buttons[i].update(command, mousePos);
-                if(this.buttons[i].isPressed()){return this.buttons[i].name;}
+            if(!this.food.itemSelected){
+                for(let i = 0; i < this.buttons.length; i++){
+                    if(i === 4){ continue; }
+                    this.buttons[i].update(command, mousePos);
+                    if(this.buttons[i].isPressed()){return this.buttons[i].name;}
+                }
             }
         }
         return "";
