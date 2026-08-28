@@ -130,10 +130,25 @@ export class Dialogue{
         return this.activeAnswer;
     }
 
-    toggleKeyboardInputHelpMsg(){
-        if(this.activeText !== this.instructional[0]){
+    toggleKeyboardInputHelpMsg(level){
+
+        let index = 0;
+
+        switch(level){
+            case 1:
+            case 3:
+            case 4:
+                index = 0;
+                break;
+            case 2:
+            case 5:
+                index = 1;
+                break;
+        }
+
+        if(this.activeText !== this.instructional[index]){
             this.cachedMessage = this.activeText;
-            this.activeText = this.instructional[0];
+            this.activeText = this.instructional[index];
         } else {
             this.activeText = this.cachedMessage;
         }

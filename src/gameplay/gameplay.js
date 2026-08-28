@@ -174,8 +174,10 @@ export class Gameplay {
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)},
             this.speechBubble.size, 125, 5
         );
-        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
-        this.correctAnswer = this.dialogue.getNewAnswer();
+        if(this.level === 1){
+            this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+            this.correctAnswer = this.dialogue.getNewAnswer();
+        }
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
@@ -247,7 +249,7 @@ export class Gameplay {
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.dialogue.draw(ctx);
 
-        
+
         this.food.draw(ctx);
 
         if(this.inputType === InputType.KEYBOARD){
@@ -311,7 +313,7 @@ export class Gameplay {
             break;
             case "Next":
             case "Prev":
-                this.dialogue.toggleKeyboardInputHelpMsg();
+                this.dialogue.toggleKeyboardInputHelpMsg(this.level);
                 this.speechBubble.changeDirection();
             break;
             case "Return":

@@ -35,7 +35,7 @@ export class FoodItem{
 
     resetPosition(){
         this.cachedPos = {...this.initial.pos};
-        this.pos = {x: this.cachedPos.x, y: this.cachedPos.y};
+        this.pos = {x: this.cachedPos.x * this.scale.x, y: this.cachedPos.y * this.scale.y};
     }
 
     setValue(value){
