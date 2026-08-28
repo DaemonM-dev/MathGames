@@ -24,9 +24,9 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 2;
+        this.level = 1;
         this.prevLevel = 1;
-        this.question = 1;
+        this.question = 5;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
 
@@ -286,9 +286,11 @@ export class Gameplay {
         }
     }
     getActiveButton(command, mousePos){
-        if(this.viewingMenu && !this.food.itemSelected){
-            this.buttons[4].update(command,mousePos);
-            if(this.buttons[4].isPressed()){return this.buttons[4].name;}
+        if(this.viewingMenu){
+            if(!this.food.itemSelected){
+                this.buttons[4].update(command,mousePos);
+                if(this.buttons[4].isPressed()){return this.buttons[4].name;}
+            }
         } else if(!this.viewingFeedback) {
             if(this.inputType === InputType.KEYBOARD){ 
                 this.inputWindow.update(command, mousePos); 

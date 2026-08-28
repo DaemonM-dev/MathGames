@@ -111,12 +111,8 @@ export class InputHandler{
     }
 
     getActiveCommand(){
-        /*
         const command = this.activeCommand;
         this.activeCommand = Command.NONE;
         return command;
-        */
-
-        return this.activeCommand;
     }
 }
