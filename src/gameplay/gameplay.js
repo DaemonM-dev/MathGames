@@ -316,8 +316,6 @@ export class Gameplay {
                 this.viewingMenu = true;
             break;
             case "Next":
-                this.generateNextLvlTwoQuestion();
-                break;
             case "Prev":
                 this.dialogue.toggleKeyboardInputHelpMsg(this.level);
                 this.speechBubble.changeDirection();
@@ -364,6 +362,10 @@ export class Gameplay {
     generateNextLvlTwoQuestion(){
         this.food.assignRandomValues();
         this.food.autoSelectRandom();
+
+        this.dialogue.activeText = "";
+
+
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
     }
@@ -377,6 +379,8 @@ export class Gameplay {
                     this.inputType = InputType.DRAG_DROP;
                 break;
             }
+            this.generateNextLvlTwoQuestion();
+            this.dialogue.setHelpMessage(level);
             this.prevLevel = level;
             console.log("New level: ", this.prevLevel);
             console.log("New Input Type: ", this.inputType);

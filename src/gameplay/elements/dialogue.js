@@ -12,6 +12,7 @@ export class Dialogue{
 
         this.initial = {fontSize: 0, pos: {x:0, y:0}, maxSize: {x:0,y:0}, lineSpacing: 1.2, minFontSize: 5};
 
+        this.instructionIndex = 0;
         this.instructional = [
             "Select the Kuro icon with your mouse to begin typing your answers!",
             "Try clicking and dragging the food items over to the large white box!"
@@ -130,25 +131,24 @@ export class Dialogue{
         return this.activeAnswer;
     }
 
-    toggleKeyboardInputHelpMsg(level){
-
-        let index = 0;
-
+    setHelpMessage(level){
         switch(level){
             case 1:
             case 3:
             case 4:
-                index = 0;
+                this.instructionIndex = 0;
                 break;
             case 2:
             case 5:
-                index = 1;
+                this.instructionIndex = 1;
                 break;
         }
+    }
 
-        if(this.activeText !== this.instructional[index]){
+    toggleKeyboardInputHelpMsg(){
+        if(this.activeText !== this.instructional[this.instructionIndex]){
             this.cachedMessage = this.activeText;
-            this.activeText = this.instructional[index];
+            this.activeText = this.instructional[this.instructionIndex];
         } else {
             this.activeText = this.cachedMessage;
         }
