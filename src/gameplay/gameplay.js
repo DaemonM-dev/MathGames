@@ -23,7 +23,7 @@ export class Gameplay {
         this.inputBuffer = "";
         this.maxDigits = 5;
 
-        this.level = 1;
+        this.level = 2;
         this.prevLevel = 1;
         this.question = 1;
         this.feedbackIndex = 0;
@@ -186,6 +186,7 @@ export class Gameplay {
                 this.updateLevelOne(command, mousePos, activeButton);
                 break;
             case 2:
+                this.updateLevelTwo(command, mousePos, activeButton);
                 break;
             case 3:
                 break;
@@ -217,6 +218,27 @@ export class Gameplay {
         }
         this.inputWindow.displayLiveInput(this.inputBuffer);
     }
+    updateLevelTwo(command, mousePos, activeButton){
+        this.food.update(command,mousePos, this.dropzone);
+
+        if(command === Command.MOUSE_DOWN && activeButton === ""){
+            if(this.awaitingInput){this.awaitingInput = false;} 
+            if(this.viewingFeedback){
+                if(this.answerCorrect){
+                    if(this.level === 1){
+                        if(this.question < 5){
+                            this.generateNextLvlOneQuestion();
+                            this.question++;
+                        } else {
+                            this.level++;
+                            this.question = 1;
+                        }
+                    }
+                }
+                this.viewingFeedback = false;
+            }
+        }
+    }
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
@@ -224,6 +246,8 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.dialogue.draw(ctx);
+
+        
         this.food.draw(ctx);
 
         if(this.inputType === InputType.KEYBOARD){
@@ -268,7 +292,6 @@ export class Gameplay {
                 this.inputWindow.update(command, mousePos); 
                 if(this.inputWindow.isPressed()) return "Input_Window";
             }
-            else if(this.inputType === InputType.DRAG_DROP){ this.food.update(command,mousePos); }
             for(let i = 0; i < this.buttons.length; i++){
                 if(i === 4){ continue; }
                 this.buttons[i].update(command, mousePos);

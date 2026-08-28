@@ -60,12 +60,6 @@ export class FoodHandler{
         this.autoSelectRandom();
     }
 
-    update(command, mousePos){
-        for(let i = 0; i < this.foodItems.length; i++){
-            this.foodItems[i].update(command, mousePos);
-        }
-    }
-
     assignRandomValues(){
         shuffle(this.shelfPoints);
         shuffle(this.prices);
@@ -89,14 +83,14 @@ export class FoodHandler{
         }
     }
 
-    dragFood(command, mousePos, boundarySize, boundaryPos){
+    update(command, mousePos, bounds){
         for(let i = 0; i < TOTAL_FOOD; i++){
-            this.foodItems[i].update(command, mousePos);
-            if(command == Command.MOUSE_UP){
-                if(!this.foodItems[i].isWithinBounds(boundarySize, boundaryPos)){
-                    this.foodItems[i].resetPosition();
+                this.foodItems[i].update(command, mousePos);
+                if(command == Command.MOUSE_UP){
+                    if(!this.foodItems[i].isWithinBounds(bounds.size, bounds.pos)){
+                        this.foodItems[i].resetPosition();
+                    }
                 }
-            }
         }
     }
 
@@ -142,8 +136,10 @@ export class FoodHandler{
 
     draw(ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
-            this.foodItems[i].draw(ctx);
             this.priceTags[i].draw(ctx);
+        }
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].draw(ctx);
         }
     }
 
