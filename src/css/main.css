@@ -4,6 +4,8 @@
     font-display: swap;
 }
 
+/*
+This is the whole app. It breaks the layout of the non-game pages.
 body {
     margin: 0;
     padding: 0;
@@ -15,6 +17,7 @@ body {
     font-family: 'Arial', sans-serif;
     overflow: hidden;
 }
+*/
 
 #game_canvas {
     width: 100vw;

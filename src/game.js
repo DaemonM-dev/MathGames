@@ -10,11 +10,14 @@ let screenCenter = {x: 0, y: 0};
 
 export const Game = {
     canvas: null,
+    container: null,
     ctx: null,
     running: false,
     lastTime: 0,
     scale: {x:1.0,y:1.0},
-    
+    session: null,
+    onAnswer: null,
+
     assetHandler: new AssetHandler(),
     inputHandler: new InputHandler(),
     gameplay: new Gameplay(),
@@ -23,13 +26,30 @@ export const Game = {
     gamestate: GameState.LOADING,
 };
 
-export function init(){
-    Game.canvas = document.getElementById(CANVAS_ID);
+export function init(options = {}){
+    Game.canvas = options.canvas ?? document.getElementById(CANVAS_ID);
+    Game.container = options.container ?? Game.canvas?.parentElement ?? null;
+    Game.session = options.session ?? null;
+    Game.onAnswer = options.onAnswer ?? null;
     Game.ctx = Game.canvas.getContext('2d');
     resizeCanvas();
     Game.assetHandler.loadAll();
     Game.running = true;
+    Game.lastTime = 0;
     requestAnimationFrame(gameLoop);
+}
+
+export function destroy(){
+    Game.running = false;
+    Game.inputHandler.removeEventListeners();
+    Game.canvas = null;
+    Game.container = null;
+    Game.session = null;
+    Game.onAnswer = null;
+}
+
+export function setSession(session){
+    Game.session = session ?? null;
 }
 
 function gameLoop(timeStamp){
@@ -87,10 +107,13 @@ function draw(){
 }
 
 export function resizeCanvas(){
-    const displayWidth = window.innerWidth;
-    const displayHeight = window.innerHeight;
+    if(!Game.canvas){return;}
+
+    const target = Game.container ?? Game.canvas;
+    const displayWidth = target.clientWidth || window.innerWidth;
+    const displayHeight = target.clientHeight || window.innerHeight;
     if (Game.canvas.width !== displayWidth || Game.canvas.height !== displayHeight){
-        
+
         Game.canvas.width = displayWidth;
         Game.canvas.height = displayHeight;
 

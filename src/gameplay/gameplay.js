@@ -1,3 +1,4 @@
+import { Game } from '../game.js'
 import { GAME_SIZE } from "../globals.js"
 import { Command } from '../enums/commands.js'
 import { InputType } from '../enums/input_types.js'
@@ -190,6 +191,15 @@ export class Gameplay {
                         this.correctAnswer = this.dialogue.getNewAnswer();
                         this.speechBubble.changeDirection();
                         this.question++
+
+                        if(Game.onAnswer){
+                            Game.onAnswer({
+                                level: this.level,
+                                score: this.question,
+                                classroomPin: Game.session?.team?.classroomPin ?? '',
+                                teamName: Game.session?.team?.animal ?? '',
+                            });
+                        }
                 } else {
 
                 }
