@@ -32,7 +32,7 @@ export class FoodHandler{
         /*
         this.prices = [ 3.50, 4.00, 4.75, 5.25, 5.00, 4.50, 4.25, 3.75, ];
         */
-        this.prices = [ 3, 4, 4, 5, 5, 4, 4, 3, ];
+        this.prices = [ 3, 4, 5, 6, 7, 8, 4, 5, ];
 
         this.dropZonePoints = [
             {pos:{x:1400, y: 300}},
