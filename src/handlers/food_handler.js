@@ -1,3 +1,4 @@
+import { getRandomInt } from '../globals.js'
 import { Command } from '../enums/commands.js'
 import { FoodItem } from '../gameplay/elements/food_item.js'
 import { Pricetag } from '../gameplay/elements/pricetag.js'
@@ -44,7 +45,9 @@ export class FoodHandler{
         this.foodCopies = [];
         this.priceTags = [];
         this.scale = {x:1.0, y:1.0};
+
         this.dropzoneSum = 0;
+        this.foodInDropzone = 0;
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -93,10 +96,10 @@ export class FoodHandler{
 
     autoSelectRandom(){
         this.foodCopies = [];
-        const spawnCount = 2 + Math.floor(Math.random() * 2); // 2 or 3
+        const spawnCount = getRandomInt(2, 3);
         const indices = [];
         while(indices.length < spawnCount){
-            const idx = Math.floor(Math.random() * TOTAL_FOOD);
+            const idx = getRandomInt(0, TOTAL_FOOD - 1);
             if(!indices.includes(idx)){
                 indices.push(idx);
             }
@@ -121,7 +124,10 @@ export class FoodHandler{
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].resetPosition();
         }
+        this.dropzoneSum = 0;
+        this.foodInDropzone = 0;
     }
+
 
     randomize(){
         this.assignRandomValues();
@@ -170,7 +176,9 @@ export class FoodHandler{
             case Command.MOUSE_UP:
                 if(this.itemSelected){
                     if(this.foodItems[this.selectionIndex].isWithinBounds(bounds.size, bounds.pos)){
+                        // Item successfully dropped in dropzone - no need to manually increment
                         this.dropzoneSum = this.getSumFromDropzone(bounds);
+                        // Don't increment foodInDropzone here - let getSumFromDropzone handle it
                     } else {
                         this.foodItems[this.selectionIndex].resetPosition();
                     }
@@ -184,17 +192,26 @@ export class FoodHandler{
             this.foodItems[this.selectionIndex].drag(mousePos);
         }
     }
+
     getSumFromDropzone(bounds){
         let SUM = 0;
+        let count = 0;
 
         for(let i = 0; i < TOTAL_FOOD; i++){
             if(this.foodItems[i].isWithinBounds(bounds.size, bounds.pos)){
                 SUM = SUM + this.foodItems[i].value;
+                count++;
             }
         }
+
+        this.dropzoneSum = SUM;
+        this.foodInDropzone = count;
+        
         console.log("Sum in Dropzone: ", SUM);
+        console.log("Food Count in Dropzone: ", count);
         return SUM;
     }
+
 }
 
 function shuffle(array){
