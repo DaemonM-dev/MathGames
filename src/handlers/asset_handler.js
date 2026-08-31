@@ -8,6 +8,10 @@ export class AssetHandler{
         this.createAssetEntries();
     }
 
+    assetUrl(fileName){
+        return new URL(`../assets/${fileName}`, import.meta.url).href;
+    }
+
     addAsset(name, filepath){
         this.assets.set(name, {
             filepath: filepath,
@@ -66,26 +70,27 @@ export class AssetHandler{
     }
 
     createAssetEntries(){
-        const basePath = './src/assets/';
-        
-        this.addAsset('background', basePath + 'background.png');
-        this.addAsset('boy', basePath + 'boy.png');
-        this.addAsset('girl', basePath + 'girl.png');
-        this.addAsset('chocolatecake', basePath + 'chocolatecake.png');
-        this.addAsset('cupcakes', basePath + 'cupcakes.png');
-        this.addAsset('fruitbowl', basePath + 'fruitbowl.png');
-        this.addAsset('fruitcake', basePath + 'fruitcake.png');
-        this.addAsset('mintcake', basePath + 'mintcake.png');
-        this.addAsset('onigiri', basePath + 'onigiri.png');
-        this.addAsset('salad', basePath + 'salad.png');
-        this.addAsset('tofu', basePath + 'tofu.png');
-        this.addAsset('kuro', basePath + 'kuro.png');
-        this.addAsset('sign', basePath + 'sign.png');
-        this.addAsset('menuboard', basePath + 'menuboard.png');
+        this.addAsset('background', this.assetUrl('background.png'));
+        this.addAsset('boy', this.assetUrl('boy.png'));
+        this.addAsset('girl', this.assetUrl('girl.png'));
+        this.addAsset('chocolatecake', this.assetUrl('chocolatecake.png'));
+        this.addAsset('cupcakes', this.assetUrl('cupcakes.png'));
+        this.addAsset('fruitbowl', this.assetUrl('fruitbowl.png'));
+        this.addAsset('fruitcake', this.assetUrl('fruitcake.png'));
+        this.addAsset('mintcake', this.assetUrl('mintcake.png'));
+        this.addAsset('onigiri', this.assetUrl('onigiri.png'));
+        this.addAsset('salad', this.assetUrl('salad.png'));
+        this.addAsset('tofu', this.assetUrl('tofu.png'));
+        this.addAsset('kuro', this.assetUrl('kuro.png'));
+        this.addAsset('sign', this.assetUrl('sign.png'));
+        this.addAsset('menuboard', this.assetUrl('menuboard.png'));
 
-        this.addAsset('goodjob1', basePath + 'goodjob1.png');
-        this.addAsset('goodjob2', basePath + 'goodjob2.png');
-        this.addAsset('goodjob3', basePath + 'goodjob3.png');
-        this.addAsset('tryagain1', basePath + 'tryagain1.png');
+        this.addAsset('goodjob1', this.assetUrl('goodjob1.png'));
+        this.addAsset('goodjob2', this.assetUrl('goodjob2.png'));
+        this.addAsset('goodjob3', this.assetUrl('goodjob3.png'));
+        this.addAsset('tryagain1', this.assetUrl('tryagain1.png'));
+
+        this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
+        this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
     }
 }

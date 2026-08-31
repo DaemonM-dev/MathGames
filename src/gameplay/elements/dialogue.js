@@ -1,3 +1,5 @@
+import { getRandomInt } from '../../globals.js'
+
 export class Dialogue{
     constructor(){
         this.font = 'Arial';
@@ -33,6 +35,8 @@ export class Dialogue{
         this.activeText = " ";
         this.cachedText = " ";
         this.activeAnswer = 0.0;
+
+        this.startingKuro = 0;
     }
 
     initFont(font, fontSize, lineSpacing, fontColor){
@@ -124,6 +128,18 @@ export class Dialogue{
                 this.activeAnswer = food1.value + food2.value + food3.value;
             }
         }
+    }
+
+    initLevelTwoQuestion(value1, value2, value3){
+        let sum = 0;
+        if(value3 === 0){
+            sum = value1 + value2;
+            this.activeText = "I have " + sum + " Kuro to buy food. What two items can I get?";
+        } else {
+            sum = value1 + value2 + value3;
+            this.activeText = "I have " + sum + " Kuro to buy food. What three items can I get?";
+        }
+        this.activeAnswer = sum;
     }
 
     getNewAnswer(){
