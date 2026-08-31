@@ -31,6 +31,7 @@ export function init(options = {}){
     Game.container = options.container ?? Game.canvas?.parentElement ?? null;
     Game.session = options.session ?? null;
     Game.onAnswer = options.onAnswer ?? null;
+    Game.initial_score = options.score ?? {level:1, score:0};
     Game.ctx = Game.canvas.getContext('2d');
     resizeCanvas();
     Game.assetHandler.loadAll();
@@ -73,6 +74,7 @@ function update(deltaTime){
         case GameState.INITIALIZING:
             Game.gameplay.init(Game.assetHandler);
             Game.inputHandler.initInputs();
+            Game.gameplay.initScore(Game.initial_score);
             Game.gamestate = GameState.GAMEPLAY;
             console.log("Game initialized!");
             break;
