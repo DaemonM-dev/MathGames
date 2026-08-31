@@ -22,6 +22,9 @@ export class SpeechBubble{
         this.direction = Direction.RIGHT;
         this.scale = {x:1.0,y:1.0};
         this.minScale = 1.0;
+
+        this.imgRight = null;
+        this.imgLeft = null;
     }
 
     initShape(size, pos, radius, lineWidth, infillColor, outlineColor){
@@ -38,6 +41,27 @@ export class SpeechBubble{
         this.initial.lineWidth = lineWidth;
 
         this.findCenterPoint();
+    }
+
+    initImages(assets){
+        this.imgRight = {
+            texture: assets.getAsset('dialogueright'),
+            size: this.size,
+            pos: this.pos, 
+            initial: {
+                size: this.initial.size,
+                pos:this.initial.pos
+            }
+        }
+        this.imgLeft = {
+            texture: assets.getAsset('dialogueleft'),
+            size: this.size,
+            pos: this.pos, 
+            initial: {
+                size: this.initial.size,
+                pos:this.initial.pos
+            }
+        }
     }
 
     initText(font, fontSize, fontColor){
@@ -57,14 +81,26 @@ export class SpeechBubble{
         ctx.lineWidth = this.lineWidth;
         ctx.strokeStyle = this.color.outline;
         ctx.beginPath();
+
+
+    let padding = 40 * Math.min(this.scale.x, this.scale.y);
+
         switch(this.direction){
             case Direction.LEFT:
+/*
                 ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, 
                     [0, this.radius, this.radius, this.radius]);
+*/
+
+                    ctx.drawImage(this.imgLeft.texture, this.pos.x - (padding / 2), this.pos.y - (padding / 2), this.size.x + padding, this.size.y + padding);
+
                 break;
             case Direction.RIGHT:
+/*
                 ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, 
                     [this.radius, 0, this.radius, this.radius]);
+*/
+                    ctx.drawImage(this.imgRight.texture, this.pos.x - (padding / 2), this.pos.y - (padding / 2), this.size.x + padding, this.size.y + padding);
                 break;
         }
         ctx.fill();
@@ -85,7 +121,7 @@ export class SpeechBubble{
 
     findCenterPoint(){
         const centerX = this.pos.x + this.size.x / 2;
-        const centerY = this.pos.y + this.size.y / 2;
+        const centerY = this.pos.y + 75 + this.size.y / 2;
         this.centerPoint = {x: centerX, y: centerY};
     }
 

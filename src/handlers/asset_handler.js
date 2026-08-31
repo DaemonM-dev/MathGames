@@ -89,5 +89,8 @@ export class AssetHandler{
         this.addAsset('goodjob2', this.assetUrl('goodjob2.png'));
         this.addAsset('goodjob3', this.assetUrl('goodjob3.png'));
         this.addAsset('tryagain1', this.assetUrl('tryagain1.png'));
+
+        this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
+        this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
     }
 }

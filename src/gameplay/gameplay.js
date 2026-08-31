@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 2;
+        this.level = 1;
         this.prevLevel = 1;
         this.question = 1;
         this.numFoods = 0;
@@ -66,7 +66,7 @@ export class Gameplay {
         this.initScene(assets);
         this.initProgWindow();
         this.initDropzone();
-        this.initSpeechBubble();
+        this.initSpeechBubble(assets);
         this.initInputWindow();
         this.initButtons();
         this.initFoods(assets);
@@ -99,12 +99,13 @@ export class Gameplay {
         const LINEWIDTH = 8;
         this.dropzone.initShape(SIZE, POS, RADIUS, LINEWIDTH, 'white', 'black');
     }
-    initSpeechBubble(){
+    initSpeechBubble(assets){
         const SIZE = {x: 600, y:300};
         const POS = {x: 338, y:755};
         const RADIUS = 125;
         const LINEWIDTH = 10;
         this.speechBubble.initShape(SIZE, POS, RADIUS, LINEWIDTH, '#f0b155', 'black');
+        this.speechBubble.initImages(assets);
     }
     initInputWindow(){
         const BG_SIZE = {x: 1280, y: 720};
@@ -141,7 +142,7 @@ export class Gameplay {
         this.buttons[1].setText("Today's Menu +");
 
         SIZE = {x: 50, y:50 };
-        POS = { x: 925, y: GAME_SIZE.y - 75};
+        POS = { x: 900, y: GAME_SIZE.y - 335};
         RADIUS = 22;
         LINEWIDTH = 5;
         this.buttons[2].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
@@ -150,7 +151,7 @@ export class Gameplay {
         this.buttons[2].setText(">");
 
         SIZE = {x: 50, y:50 };
-        POS = { x: 300, y: GAME_SIZE.y - 75};
+        POS = { x: 325, y: GAME_SIZE.y - 335};
         RADIUS = 22;
         LINEWIDTH = 5;
         this.buttons[3].initShape(SIZE, POS, RADIUS, LINEWIDTH,'#88a8d877','#88a8d8');
