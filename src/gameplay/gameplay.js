@@ -12,8 +12,8 @@ import { Button } from './elements/button.js'
 import { FoodHandler } from '../handlers/food_handler.js'
 import { Dialogue } from './elements/dialogue.js'
 
-const MAX_LEVELS = 10;
-const Q_LVL_LIMIT = 5;
+const LEVEL_LIMIT = 5;
+const Q_LIMIT = 5;
 
 export class Gameplay {
     constructor(){
@@ -23,12 +23,18 @@ export class Gameplay {
         this.inputType = InputType.KEYBOARD;
         this.inputBuffer = "";
         this.maxDigits = 5;
+        this.numericAnswer = 0;
 
         this.level = 1;
-        this.question = 1;
+        this.prevLevel = 1;
+        this.question = 5;
+        this.feedbackIndex = 0;
         this.correctAnswer = 0;
+
         this.awaitingInput = false;
+        this.answerCorrect = false;
         this.viewingMenu = false;
+        this.viewingFeedback = false;
 
         this.scene = null;
         this.progressWindow = null;
@@ -38,12 +44,6 @@ export class Gameplay {
         this.buttons = [];
         this.food = null;
         this.dialogue = null;
-
-        // Temp
-        this.drawingFeedback = false;
-        this.posFeedback  = false;
-        this.feedbackIndex = 0;
-        //
     }
 
     init(assets){
@@ -176,44 +176,70 @@ export class Gameplay {
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)},
             this.speechBubble.size, 125, 5
         );
-        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
-        this.correctAnswer = this.dialogue.getNewAnswer();
+        if(this.level === 1){
+            this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+            this.correctAnswer = this.dialogue.getNewAnswer();
+        }
     }
     update(command, mousePos, scale){
         this.changeScale(scale);
-
-        if(command === Command.MOUSE_DOWN){
-            if(this.drawingFeedback){
-                if(this.posFeedback){
-                        this.food.assignRandomValues();
-                        this.food.autoSelectRandom();
-                        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
-                        this.correctAnswer = this.dialogue.getNewAnswer();
-                        this.speechBubble.changeDirection();
-                        this.question++
-
-                        if(Game.onAnswer){
-                            Game.onAnswer({
-                                level: this.level,
-                                score: this.question,
-                                classroomPin: Game.session?.team?.classroomPin ?? '',
-                                teamName: Game.session?.team?.animal ?? '',
-                            });
+        const activeButton = this.getActiveButton(command, mousePos);
+        if(activeButton !== ""){console.log("Active Button: ", activeButton);this.useActiveButtons(activeButton);}
+        switch(this.level){
+            case 1:
+                this.updateLevelOne(command, mousePos, activeButton);
+                break;
+            case 2:
+                this.updateLevelTwo(command, mousePos, activeButton);
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+        this.checkLevelInputs(this.level);
+        this.progressWindow.update(this.level, this.question);
+    }
+    updateLevelOne(command, mousePos, activeButton){
+        if(command === Command.MOUSE_DOWN && activeButton === ""){
+            if(this.awaitingInput){this.awaitingInput = false;} 
+            if(this.viewingFeedback){
+                if(this.answerCorrect){
+                    if(this.level === 1){
+                        if(this.question < 5){
+                            this.generateNextLvlOneQuestion();
+                            this.question++;
+                        } else {
+                            this.level++;
+                            this.question = 1;
                         }
-                } else {
-
+                    }
                 }
-                this.posFeedback = false;
-                this.drawingFeedback = false;
-                this.feedbackIndex = Math.floor(Math.random() * 3);
+                this.viewingFeedback = false;
             }
         }
+        this.inputWindow.displayLiveInput(this.inputBuffer);
+    }
+    updateLevelTwo(command, mousePos, activeButton){
+        this.food.update(command,mousePos, this.dropzone);
 
-        if(!this.drawingFeedback){
-            this.checkForButtonPress(command, mousePos);
-            this.useActiveButtons();
-            this.inputWindow.displayLiveInput(this.inputBuffer);
-            this.progressWindow.update(this.level, this.question);
+        if(command === Command.MOUSE_DOWN && activeButton === ""){
+            if(this.awaitingInput){this.awaitingInput = false;} 
+            if(this.viewingFeedback){
+                if(this.answerCorrect){
+                    if(this.level === 1){
+                        if(this.question < 5){
+                            this.question++;
+                        } else {
+                            this.level++;
+                            this.question = 1;
+                        }
+                    }
+                }
+                this.viewingFeedback = false;
+            }
         }
     }
     draw(ctx){
@@ -221,13 +247,15 @@ export class Gameplay {
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
-        this.inputWindow.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
-        this.scene.drawKuro(ctx);
         this.dialogue.draw(ctx);
 
+
         this.food.draw(ctx);
+
         if(this.inputType === InputType.KEYBOARD){
+            this.inputWindow.draw(ctx);
+            this.scene.drawKuro(ctx);
             this.food.drawCopies(ctx);
         }
         if(this.viewingMenu){
@@ -235,8 +263,8 @@ export class Gameplay {
             this.buttons[4].draw(ctx);
         }
 
-        if(this.drawingFeedback){
-            if(this.posFeedback){
+        if(this.viewingFeedback){
+            if(this.answerCorrect){
                 this.scene.drawFeedback(ctx, "pos", this.feedbackIndex);
             } else {
                 this.scene.drawFeedback(ctx, "neg", 0);
@@ -258,78 +286,105 @@ export class Gameplay {
             this.dialogue.changeScale(scale);
         }
     }
-    
-    checkForButtonPress(command, mousePos){
+    getActiveButton(command, mousePos){
         if(this.viewingMenu){
-            this.buttons[4].update(command,mousePos);
-        } else {
-            this.inputWindow.update(command, mousePos);
-            for(let i = 0; i < this.buttons.length; i++){
-                if(i === 4){
-                    continue;
-                }
-                this.buttons[i].update(command, mousePos);
+            if(!this.food.itemSelected){
+                this.buttons[4].update(command,mousePos);
+                if(this.buttons[4].isPressed()){return this.buttons[4].name;}
             }
-            if(this.inputType === InputType.DRAG_DROP){
-                this.food.update(command,mousePos);
+        } else if(!this.viewingFeedback) {
+            if(this.inputType === InputType.KEYBOARD){ 
+                this.inputWindow.update(command, mousePos); 
+                if(this.inputWindow.isPressed()) return "Input_Window";
             }
-            if(this.awaitingInput){
-                if(command === Command.MOUSE_DOWN && !this.inputWindow.intersects(mousePos)){
-                this.awaitingInput = false;
-                }
-            }
-        }
-    }
-    getActiveButton(){
-        let activeButton = " ";
-        if(this.inputWindow.isPressed()){
-            activeButton = "Submit_Window";
-        } else {
-            for(let i = 0; i < this.buttons.length; i++){
-                if(this.buttons[i].isPressed()){
-                    activeButton = this.buttons[i].name;
+            if(!this.food.itemSelected){
+                for(let i = 0; i < this.buttons.length; i++){
+                    if(i === 4){ continue; }
+                    this.buttons[i].update(command, mousePos);
+                    if(this.buttons[i].isPressed()){return this.buttons[i].name;}
                 }
             }
         }
-        return activeButton;
+        return "";
     }
-    useActiveButtons(){
-        let activeButton = this.getActiveButton();
-        if(activeButton !== " "){
-            switch(activeButton){
-                case "Submit":
-                    if(parseFloat(this.inputBuffer) === this.correctAnswer){
-                        this.drawingFeedback = true;
-                        this.posFeedback = true;;
-                        clearInputBuffer(this);
-                    } else {
-                        this.drawingFeedback = true;
-                        this.posFeedback = false;
-                        clearInputBuffer(this);
-                        console.log("So close, try again!")
-                    }
+    useActiveButtons(activeButton){
+        switch(activeButton){
+            case "Submit":
+                this.checkAnswer();
+                this.viewingFeedback = true;
+            break;
+            case "Menu":
+                this.viewingMenu = true;
+            break;
+            case "Next":
+            case "Prev":
+                this.dialogue.toggleKeyboardInputHelpMsg(this.level);
+                this.speechBubble.changeDirection();
+            break;
+            case "Return":
+                this.viewingMenu = false;
+            break;
+            case "Input_Window":
+                this.awaitingInput = true;
+            break;
+        }
+    }
+    checkAnswer(){
+        switch(this.level){
+            case 1:
+            case 3:
+            case 4:
+                if(parseFloat(this.inputBuffer) === this.correctAnswer){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                clearInputBuffer(this);
+                break;
+            case 2:
+            case 5:
+                if(this.numericAnswer === this.correctAnswer){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                this.food.reset();
+                break;
+        }
+    }
+    generateNextLvlOneQuestion(){
+        this.food.assignRandomValues();
+        this.food.autoSelectRandom();
+        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.correctAnswer = this.dialogue.getNewAnswer();
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+    }
+    generateNextLvlTwoQuestion(){
+        this.food.assignRandomValues();
+        this.food.autoSelectRandom();
+
+        this.dialogue.activeText = "";
 
 
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+    }
+    checkLevelInputs(level){
+        if(level !== this.prevLevel){
+            switch(level){ 
+                case 1: case 3: case 4:
+                    this.inputType = InputType.KEYBOARD;
                 break;
-                case "Menu":
-                    if(!this.viewingMenu){
-                        this.viewingMenu = true;
-                    }
-                break;
-                case "Next":
-                case "Prev":
-                    this.dialogue.toggleKeyboardInputHelpMsg();
-                    this.speechBubble.changeDirection();
-                break;
-                case "Return":
-                    if(this.viewingMenu){
-                        this.viewingMenu = false;
-                    }
-                break;
-                case "Submit_Window":
-                    this.awaitingInput = true;
+                case 2: case 5:
+                    this.inputType = InputType.DRAG_DROP;
                 break;
             }
+            this.generateNextLvlTwoQuestion();
+            this.dialogue.setHelpMessage(level);
+            this.prevLevel = level;
+            console.log("New level: ", this.prevLevel);
+            console.log("New Input Type: ", this.inputType);
         }
     }
 }
