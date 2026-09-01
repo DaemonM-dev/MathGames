@@ -163,10 +163,6 @@ export class Dialogue{
 
         this.activeText = "I have " + this.startingKuro + " KURO. How much will I have remaining after buying these food items?"
 
-
-
-
-
         console.log("Starting Kuro amount", this.startingKuro);
         console.log("Total Food Value: ", min);
     }

@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 2;
+        this.level = 3;
         this.prevLevel = 0;
         this.question = 5;
         this.numFoods = 0;
@@ -217,6 +217,7 @@ export class Gameplay {
                                 this.generateNextLvlThreeQuestion();
                                 break;
                             case 4:
+                                this.generateNextLvlFourQuestion();
                                 break;
                             case 5:
                                 break;
@@ -396,6 +397,16 @@ export class Gameplay {
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
     }
+    generateNextLvlFourQuestion(){
+        this.food.assignRandomValues(this.level);
+
+        this.dialogue.activeText = "";
+        this.correctAnswer = 0;
+
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+
+    }
     checkLevelInputs(level){
         if(level !== this.prevLevel){
             switch(level){
@@ -412,6 +423,7 @@ export class Gameplay {
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 4:
+                    this.generateNextLvlFourQuestion();
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 5:
