@@ -186,61 +186,49 @@ export class Gameplay {
     update(command, mousePos, scale){
         this.changeScale(scale);
         const activeButton = this.getActiveButton(command, mousePos);
-        if(activeButton !== ""){console.log("Active Button: ", activeButton);this.useActiveButtons(activeButton);}
-        switch(this.level){
-            case 1:
-                this.updateLevelOne(command, mousePos, activeButton);
-                break;
-            case 2:
-                this.updateLevelTwo(command, mousePos, activeButton);
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
+        if(activeButton !== ""){this.useActiveButtons(activeButton);}
+
+        this.updateLevel(command, mousePos, activeButton);
         this.checkLevelInputs(this.level);
         this.progressWindow.update(this.level, this.question);
     }
-    updateLevelOne(command, mousePos, activeButton){
-        if(command === Command.MOUSE_DOWN && activeButton === ""){
-            if(this.awaitingInput){this.awaitingInput = false;} 
-            if(this.viewingFeedback){
-                if(this.answerCorrect){
-                    if(this.level === 1){
-                        if(this.question < 5){
-                            this.generateNextLvlOneQuestion();
-                            this.question++;
-                        } else {
-                            this.level++;
-                            this.question = 1;
-                        }
-                    }
-                }
-                this.viewingFeedback = false;
-            }
+
+
+    updateLevel(command, mousePos, activeButton){
+        if(this.level == 2 || this.level == 5){
+            this.food.update(command,mousePos, this.dropzone);
+        } else {
+            this.inputWindow.displayLiveInput(this.inputBuffer);
         }
-        this.inputWindow.displayLiveInput(this.inputBuffer);
-    }
-    updateLevelTwo(command, mousePos, activeButton){
-        this.food.update(command,mousePos, this.dropzone);
 
         if(command === Command.MOUSE_DOWN && activeButton === ""){
-            if(this.awaitingInput){this.awaitingInput = false;} 
+            if(this.awaitingInput){
+                this.awaitingInput = false;
+            } 
             if(this.viewingFeedback){
                 if(this.answerCorrect){
-                    if(this.level === 2){ // Fixed: was checking for level 1
                         if(this.question < 5){
-                            this.generateNextLvlTwoQuestion();
+                            switch(this.level){
+                                case 1:
+                                    this.generateNextLvlOneQuestion();
+                                    break;
+                                case 2:
+                                    this.generateNextLvlTwoQuestion();
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    break;
+                            }
                             this.question++;
                         } else {
                             this.level++;
                             this.question = 1;
                         }
-                    }
-                } else {
+                }
+                 else {
                     this.food.reset();
                 }
                 this.viewingFeedback = false;
