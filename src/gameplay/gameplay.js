@@ -26,7 +26,7 @@ export class Gameplay {
         this.numericAnswer = 0;
 
         this.level = 2;
-        this.prevLevel = 1;
+        this.prevLevel = 0;
         this.question = 5;
         this.numFoods = 0;
         this.feedbackIndex = 0;
@@ -192,7 +192,6 @@ export class Gameplay {
         this.checkLevelInputs(this.level);
         this.progressWindow.update(this.level, this.question);
     }
-
     updateLevel(command, mousePos, activeButton){
         if(this.level == 2 || this.level == 5){
             this.food.update(command,mousePos, this.dropzone);
@@ -347,15 +346,16 @@ export class Gameplay {
         }
     }
     generateNextLvlOneQuestion(){
-        this.food.assignRandomValues();
-        this.food.autoSelectRandom();
+        this.food.assignRandomValues(this.level);
+        this.numFoods = getRandomInt(2, 3);
+        this.food.autoSelectRandom(this.numFoods);
         this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
     }
     generateNextLvlTwoQuestion(){
-        this.food.assignRandomValues();
+        this.food.assignRandomValues(this.level);
         this.numFoods = getRandomInt(2, 3);
         let randIndex1 = getRandomInt(0, this.food.foodItems.length - 1);
         let randIndex2 = getRandomInt(0, this.food.foodItems.length - 1);
@@ -385,11 +385,13 @@ export class Gameplay {
         this.answerCorrect = false;
     }
     generateNextLvlThreeQuestion(){
-        this.food.assignRandomValues();
-        this.food.autoSelectRandom();
+        this.food.assignRandomValues(this.level);
+        this.numFoods = getRandomInt(2, 3);
+        this.food.autoSelectRandom(this.numFoods);
 
-        this.dialogue.activeText = "";
-        this.correctAnswer = 0;
+
+        this.dialogue.initLevelThreeQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.correctAnswer = this.dialogue.getNewAnswer();
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
