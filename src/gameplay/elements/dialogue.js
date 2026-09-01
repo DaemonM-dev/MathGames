@@ -1,4 +1,4 @@
-import { getRandomInt } from '../../globals.js'
+import { getRandomInt, getRandomFloat } from '../../globals.js'
 
 export class Dialogue{
     constructor(){
@@ -102,7 +102,6 @@ export class Dialogue{
         return lines;
     }
 
-
     drawWrappedText(ctx, lines){
         const x = this.pos.x;
         const y = this.pos.y;
@@ -134,12 +133,42 @@ export class Dialogue{
         let sum = 0;
         if(value3 === 0){
             sum = value1 + value2;
-            this.activeText = "I have " + sum + " Kuro to buy food. What two items can I get?";
+            this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get?";
         } else {
             sum = value1 + value2 + value3;
-            this.activeText = "I have " + sum + " Kuro to buy food. What three items can I get?";
+            this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get?";
         }
         this.activeAnswer = sum;
+    }
+
+    initLevelThreeQuestion(food1, food2, food3){
+        let inc = getRandomInt(1, 3);
+        switch(inc){
+            case 1: inc = 0.25; break;
+            case 2: inc = 0.5; break;
+            case 3: inc = 0.75; break;
+        }
+        let min = 0;
+        let max = 0;
+        if(food1 && food2){
+            if(!food3){
+                min = food1.value + food2.value;
+            } else {
+                min = food1.value + food2.value + food3.value;
+            }
+        }
+        max = min + 10;
+        this.startingKuro = getRandomInt(min, max) + inc;
+        this.activeAnswer = this.startingKuro - min;
+
+        this.activeText = "I have " + this.startingKuro + " KURO. How much will I have remaining after buying these food items?"
+
+
+
+
+
+        console.log("Starting Kuro amount", this.startingKuro);
+        console.log("Total Food Value: ", min);
     }
 
     getNewAnswer(){

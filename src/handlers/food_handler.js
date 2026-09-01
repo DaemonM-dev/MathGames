@@ -30,10 +30,8 @@ export class FoodHandler{
             {pos: {x:925,y:378}},
         ];
 
-        /*
-        this.prices = [ 3.50, 4.00, 4.75, 5.25, 5.00, 4.50, 4.25, 3.75, ];
-        */
-        this.prices = [ 3, 4, 5, 6, 7, 8, 4, 5, ];
+        this.prices = [ 2, 3, 4, 5, 6, 7, 8, 9 ];
+        this.pricesDec = [ 2.75, 3.5, 4.25, 5.75, 6.5, 7.25, 8.75, 9.5 ];
 
         this.dropZonePoints = [
             {pos:{x:1400, y: 300}},
@@ -63,19 +61,33 @@ export class FoodHandler{
             this.foodItems[i].init(this.prices[i], this.shelfPoints[i].pos);
             this.priceTags.push(new Pricetag({x:this.shelfPoints[i].pos.x + 25,y:this.shelfPoints[i].pos.y + 150}, this.prices[i]));
         }
-        this.assignRandomValues();
-        this.autoSelectRandom();
     }
 
-    assignRandomValues(){
+    assignRandomValues(level){
         shuffle(this.shelfPoints);
         shuffle(this.prices);
+        shuffle(this.pricesDec);
 
-        for(let i = 0; i < TOTAL_FOOD; i++){
-            this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
-            this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
-            this.priceTags[i].changeScale(this.scale);
-            this.foodItems[i].changeScale(this.scale);
+        switch(level){
+            case 1:
+            case 2:
+                for(let i = 0; i < TOTAL_FOOD; i++){
+                    this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
+                    this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
+                    this.priceTags[i].changeScale(this.scale);
+                    this.foodItems[i].changeScale(this.scale);
+                };
+                break;
+            case 3:
+            case 4:
+            case 5:
+                for(let i = 0; i < TOTAL_FOOD; i++){
+                    this.foodItems[i].init(this.pricesDec[i], {...this.shelfPoints[i].pos});
+                    this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.pricesDec[i]);
+                    this.priceTags[i].changeScale(this.scale);
+                    this.foodItems[i].changeScale(this.scale);
+                };
+                break;
         }
     }
 
@@ -94,9 +106,8 @@ export class FoodHandler{
         this.handleFoodSelection(command, mousePos, bounds);
     }
 
-    autoSelectRandom(){
+    autoSelectRandom(spawnCount){
         this.foodCopies = [];
-        const spawnCount = getRandomInt(2, 3);
         const indices = [];
         while(indices.length < spawnCount){
             const idx = getRandomInt(0, TOTAL_FOOD - 1);
@@ -176,9 +187,7 @@ export class FoodHandler{
             case Command.MOUSE_UP:
                 if(this.itemSelected){
                     if(this.foodItems[this.selectionIndex].isWithinBounds(bounds.size, bounds.pos)){
-                        // Item successfully dropped in dropzone - no need to manually increment
                         this.dropzoneSum = this.getSumFromDropzone(bounds);
-                        // Don't increment foodInDropzone here - let getSumFromDropzone handle it
                     } else {
                         this.foodItems[this.selectionIndex].resetPosition();
                     }
