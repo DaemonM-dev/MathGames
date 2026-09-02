@@ -34,13 +34,18 @@ export class FoodHandler{
         this.pricesDec = [ 2.75, 3.5, 4.25, 5.75, 6.5, 7.25, 8.75, 9.5 ];
 
         this.dropZonePoints = [
-            {pos:{x:1400, y: 300}},
-            {pos:{x:1650, y: 300}},
-            {pos:{x:1525, y: 450}}
+            {pos:{x:1375, y: 300}},
+            {pos:{x:1525, y: 300}},
+            {pos:{x:1675, y: 300}},
+            {pos:{x:1375, y: 450}},
+            {pos:{x:1525, y: 450}},
+            {pos:{x:1675, y: 450}}
         ];
 
-        this.foodItems = [];
-        this.foodCopies = [];
+        this.foodItems = []; // original 8 food items
+        this.copies = [];
+        this.duplicates = []; // 1 food item duplicated 2 - 6 times
+
         this.priceTags = [];
         this.scale = {x:1.0, y:1.0};
 
@@ -71,6 +76,7 @@ export class FoodHandler{
         switch(level){
             case 1:
             case 2:
+            case 4:
                 for(let i = 0; i < TOTAL_FOOD; i++){
                     this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
                     this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
@@ -79,7 +85,6 @@ export class FoodHandler{
                 };
                 break;
             case 3:
-            case 4:
             case 5:
                 for(let i = 0; i < TOTAL_FOOD; i++){
                     this.foodItems[i].init(this.pricesDec[i], {...this.shelfPoints[i].pos});
@@ -96,9 +101,8 @@ export class FoodHandler{
         for(let i = 0; i < this.foodItems.length; i++){
             this.foodItems[i].changeScale(this.scale);
             this.priceTags[i].changeScale(this.scale);
-        }
-        for(let i = 0; i < this.foodCopies.length; i++){
-            this.foodCopies[i].changeScale(this.scale);
+            if(this.copies[i]){this.copies[i].changeScale(this.scale);}
+            if(this.duplicates[i]){this.duplicates[i].changeScale(this.scale);}
         }
     }
 
@@ -106,29 +110,52 @@ export class FoodHandler{
         this.handleFoodSelection(command, mousePos, bounds);
     }
 
-    autoSelectRandom(spawnCount){
-        this.foodCopies = [];
-        const indices = [];
-        while(indices.length < spawnCount){
-            const idx = getRandomInt(0, TOTAL_FOOD - 1);
-            if(!indices.includes(idx)){
-                indices.push(idx);
+
+    duplicateRandom(){
+        console.log("Duplicating...");
+        this.duplicates = [];
+        const COUNT = getRandomInt(2, 6);
+        const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+        const ORIGINAL = this.foodItems[INDEX];
+        let sum = 0;
+        for(let i = 0; i < COUNT; i++){
+            const COPY = new FoodItem();
+            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size});
+            COPY.init(ORIGINAL.value, {...this.dropZonePoints[i].pos});
+            COPY.changeScale(this.scale);
+            this.duplicates.push(COPY);
+            sum = sum + ORIGINAL.value;
+        }
+        console.log("Food: ", ORIGINAL.name, " Count: ", COUNT, " Sum: ", sum);
+        console.log("Duplication complete.");
+    }
+
+    copyRandom(){
+        console.log("Copying...");
+        this.copies = [];
+        const COUNT = getRandomInt(2, 3);
+        const INDICES = [];
+        let sum = 0;
+        while(INDICES.length < COUNT){
+            const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+            if(!INDICES.includes(INDEX)){INDICES.push(INDEX);}
+        }
+        for(let i = 0; i < COUNT; i++){
+            const ORIGINAL = this.foodItems[INDICES[i]];
+            const COPY = new FoodItem();
+            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size});
+            switch(i){
+                case 0: COPY.init(ORIGINAL.value, {...this.dropZonePoints[0].pos}); break;
+                case 1: COPY.init(ORIGINAL.value, {...this.dropZonePoints[2].pos}); break;
+                case 2: COPY.init(ORIGINAL.value, {...this.dropZonePoints[4].pos}); break;
             }
+            COPY.changeScale(this.scale);
+            this.copies.push(COPY);
+            sum = sum + ORIGINAL.value;
         }
-
-        for(let i = 0; i < indices.length; i++){
-            const source = this.foodItems[indices[i]];
-            const copy = new FoodItem();
-            copy.setUnique(source.name, source.texture, {...source.initial.size});
-            copy.init(source.value, {...this.dropZonePoints[i].pos});
-            copy.changeScale(this.scale);
-            this.foodCopies.push(copy);
-        }
-
-        let total = 0;
-        for(let i = 0; i < this.foodCopies.length; i++){
-            total = total + this.foodCopies[i].value;
-        }
+        if(COUNT === 2){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, " Sum: ", sum);}
+        else if(COUNT === 3){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, ", ", this.copies[2].name, " Sum: ", sum);}
+        console.log("Copying complete.")
     }
 
     reset(){
@@ -139,37 +166,22 @@ export class FoodHandler{
         this.foodInDropzone = 0;
     }
 
-
-    randomize(){
-        this.assignRandomValues();
-        this.autoSelectRandom();
-
-        for(let i = 0; i < TOTAL_FOOD; i++){
-            this.priceTags[i].changeScale(this.scale);
-        }
-        for(let i = 0; i < this.foodCopies.length; i++){
-            if(this.foodCopies[i] !== null){
-                this.foodCopies[i].changeScale(this.scale);
-            }
-        }
-    }
-
-    draw(ctx){
+    draw(level, ctx){
         for(let i = 0; i < TOTAL_FOOD; i++){
             this.priceTags[i].draw(ctx);
-        }
-        for(let i = 0; i < TOTAL_FOOD; i++){
             this.foodItems[i].draw(ctx);
         }
-    }
-
-    drawCopies(ctx){
-        for(let i = 0; i < this.foodCopies.length; i++){
-            if(this.foodCopies[i] !== null){
-                this.foodCopies[i].draw(ctx);
+        if(level === 1 || level === 3){
+            for(let i = 0; i < this.copies.length; i++){
+                if(this.copies[i]){this.copies[i].draw(ctx);}
+            }
+        } else if (level === 4){
+            for(let i = 0; i < this.duplicates.length; i++){
+                if(this.duplicates[i]){this.duplicates[i].draw(ctx);}
             }
         }
     }
+
     handleFoodSelection(command, mousePos, bounds){
         switch(command){
             case Command.MOUSE_DOWN:

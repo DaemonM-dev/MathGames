@@ -25,9 +25,9 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 3;
+        this.level = 4;
         this.prevLevel = 0;
-        this.question = 5;
+        this.question = 1;
         this.numFoods = 0;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
@@ -179,7 +179,7 @@ export class Gameplay {
             this.speechBubble.size, 125, 5
         );
         if(this.level === 1){
-            this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+            this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
             this.correctAnswer = this.dialogue.getNewAnswer();
         }
     }
@@ -232,7 +232,6 @@ export class Gameplay {
             }
         }
     }
-
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
@@ -240,20 +239,15 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.dialogue.draw(ctx);
-
-
-        this.food.draw(ctx);
-
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
             this.scene.drawKuro(ctx);
-            this.food.drawCopies(ctx);
         }
+        this.food.draw(this.level, ctx);
         if(this.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttons[4].draw(ctx);
         }
-
         if(this.viewingFeedback){
             if(this.answerCorrect){
                 this.scene.drawFeedback(ctx, "pos", this.feedbackIndex);
@@ -348,9 +342,8 @@ export class Gameplay {
     }
     generateNextLvlOneQuestion(){
         this.food.assignRandomValues(this.level);
-        this.numFoods = getRandomInt(2, 3);
-        this.food.autoSelectRandom(this.numFoods);
-        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.food.copyRandom();
+        this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
@@ -387,11 +380,10 @@ export class Gameplay {
     }
     generateNextLvlThreeQuestion(){
         this.food.assignRandomValues(this.level);
-        this.numFoods = getRandomInt(2, 3);
-        this.food.autoSelectRandom(this.numFoods);
+        this.food.copyRandom();
 
 
-        this.dialogue.initLevelThreeQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.dialogue.initLevelThreeQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
 
         this.speechBubble.changeDirection();
@@ -399,13 +391,12 @@ export class Gameplay {
     }
     generateNextLvlFourQuestion(){
         this.food.assignRandomValues(this.level);
-
+        this.food.duplicateRandom();
         this.dialogue.activeText = "";
         this.correctAnswer = 0;
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
-
     }
     checkLevelInputs(level){
         if(level !== this.prevLevel){

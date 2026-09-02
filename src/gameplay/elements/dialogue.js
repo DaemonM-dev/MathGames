@@ -14,24 +14,6 @@ export class Dialogue{
 
         this.initial = {fontSize: 0, pos: {x:0, y:0}, maxSize: {x:0,y:0}, lineSpacing: 1.2, minFontSize: 5};
 
-        this.instructionIndex = 0;
-        this.instructional = [
-            "Select the Kuro icon with your mouse to begin typing your answers!",
-            "Try clicking and dragging the food items over to the large white box!"
-        ];
-
-        this.errors = [
-            "Almost, try again!",
-            "Close, but not quite!",
-            "Oops, lets give it another shot!"
-        ];
-
-        this.success = [
-            "Success!",
-            "Great Job!",
-            "Well Done!"
-        ];
-
         this.activeText = " ";
         this.cachedText = " ";
         this.activeAnswer = 0.0;
