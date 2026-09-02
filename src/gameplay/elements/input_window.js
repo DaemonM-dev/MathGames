@@ -22,8 +22,8 @@ export class InputWindow{
         this.altFontSize = 0;
         this.altFontColor = 'white';
 
-        this.text = " ";
-        this.altText = " ";
+        this.text = "";
+        this.altText = "";
         this.viewingAltText = false;
 
         this.state = ButtonState.NONE;
