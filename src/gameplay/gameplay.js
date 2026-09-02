@@ -72,9 +72,7 @@ export class Gameplay {
         this.initFoods(assets);
         this.initDialogue();
 
-        // Temp
         this.feedbackIndex = Math.floor(Math.random() * 3);
-        //
     }
     initScene(assets){
         this.scene.init(assets);
