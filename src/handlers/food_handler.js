@@ -73,27 +73,12 @@ export class FoodHandler{
         shuffle(this.prices);
         shuffle(this.pricesDec);
 
-        switch(level){
-            case 1:
-            case 2:
-            case 4:
-                for(let i = 0; i < TOTAL_FOOD; i++){
-                    this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
-                    this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
-                    this.priceTags[i].changeScale(this.scale);
-                    this.foodItems[i].changeScale(this.scale);
-                };
-                break;
-            case 3:
-            case 5:
-                for(let i = 0; i < TOTAL_FOOD; i++){
-                    this.foodItems[i].init(this.pricesDec[i], {...this.shelfPoints[i].pos});
-                    this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.pricesDec[i]);
-                    this.priceTags[i].changeScale(this.scale);
-                    this.foodItems[i].changeScale(this.scale);
-                };
-                break;
-        }
+        for(let i = 0; i < TOTAL_FOOD; i++){
+            this.foodItems[i].init(this.prices[i], {...this.shelfPoints[i].pos});
+            this.priceTags[i] = new Pricetag({x:this.shelfPoints[i].pos.x + 25, y:this.shelfPoints[i].pos.y + 150}, this.prices[i]);
+            this.priceTags[i].changeScale(this.scale);
+            this.foodItems[i].changeScale(this.scale);
+        };
     }
 
     changeScale(scale){

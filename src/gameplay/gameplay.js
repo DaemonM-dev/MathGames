@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 4;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;
@@ -379,11 +379,8 @@ export class Gameplay {
     generateNextLvlThreeQuestion(){
         this.food.assignRandomValues(this.level);
         this.food.copyRandom();
-
-
         this.dialogue.initLevelThreeQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
-
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
         console.log("Answer: ", this.correctAnswer);
@@ -393,6 +390,16 @@ export class Gameplay {
         this.food.duplicateRandom();
         this.dialogue.initLevelFourQuestion(this.food.duplicates[0], this.food.duplicates.length);
         this.correctAnswer = this.food.duplicates.length * this.food.duplicates[0].value;
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
+    }
+    generateNextLvlFiveQuestion(){
+        this.food.assignRandomValues(this.level);
+
+        this.dialogue.activeText = "";
+        this.correctAnswer = 0;
+
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
         console.log("Answer: ", this.correctAnswer);
@@ -418,6 +425,8 @@ export class Gameplay {
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 5:
+                    this.generateNextLvlFiveQuestion();
+                    this.dialogue.mathVisible = false;
                     this.inputType = InputType.DRAG_DROP;
                     break;
             }
