@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 1;
+        this.level = 3;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;
@@ -72,9 +72,7 @@ export class Gameplay {
         this.initFoods(assets);
         this.initDialogue();
 
-        // Temp
         this.feedbackIndex = Math.floor(Math.random() * 3);
-        //
     }
     initScene(assets){
         this.scene.init(assets);
