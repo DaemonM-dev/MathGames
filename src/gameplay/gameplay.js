@@ -25,9 +25,9 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 2;
+        this.level = 1;
         this.prevLevel = 0;
-        this.question = 5;
+        this.question = 1;
         this.numFoods = 0;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
@@ -179,7 +179,7 @@ export class Gameplay {
             this.speechBubble.size, 125, 5
         );
         if(this.level === 1){
-            this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+            this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
             this.correctAnswer = this.dialogue.getNewAnswer();
         }
     }
@@ -217,6 +217,7 @@ export class Gameplay {
                                 this.generateNextLvlThreeQuestion();
                                 break;
                             case 4:
+                                this.generateNextLvlFourQuestion();
                                 break;
                             case 5:
                                 break;
@@ -231,7 +232,6 @@ export class Gameplay {
             }
         }
     }
-
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
@@ -239,20 +239,15 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         for(let i = 0; i < this.buttons.length; i++){ if(i === 4){continue;} else{this.buttons[i].draw(ctx);} }
         this.dialogue.draw(ctx);
-
-
-        this.food.draw(ctx);
-
         if(this.inputType === InputType.KEYBOARD){
             this.inputWindow.draw(ctx);
             this.scene.drawKuro(ctx);
-            this.food.drawCopies(ctx);
         }
+        this.food.draw(this.level, ctx);
         if(this.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttons[4].draw(ctx);
         }
-
         if(this.viewingFeedback){
             if(this.answerCorrect){
                 this.scene.drawFeedback(ctx, "pos", this.feedbackIndex);
@@ -308,7 +303,7 @@ export class Gameplay {
             break;
             case "Next":
             case "Prev":
-                this.dialogue.toggleKeyboardInputHelpMsg(this.level);
+                this.dialogue.toggleInputHelpMsg();
                 this.speechBubble.changeDirection();
             break;
             case "Return":
@@ -334,10 +329,6 @@ export class Gameplay {
             case 2:
             case 5:
                 if(this.food.dropzoneSum !== this.correctAnswer || this.food.foodInDropzone !== this.numFoods){
-                    console.log("Dropzone Sum: ", this.food.dropzoneSum);
-                    console.log("Correct Answer: ", this.correctAnswer);
-                    console.log("Food Count in Dropzone: ", this.food.foodInDropzone);
-                    console.log("Required number of food: ", this.numFoods);
                     this.answerCorrect = false;
                 } else {
                     this.answerCorrect = true;
@@ -347,12 +338,12 @@ export class Gameplay {
     }
     generateNextLvlOneQuestion(){
         this.food.assignRandomValues(this.level);
-        this.numFoods = getRandomInt(2, 3);
-        this.food.autoSelectRandom(this.numFoods);
-        this.dialogue.initLevelOneQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.food.copyRandom();
+        this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     generateNextLvlTwoQuestion(){
         this.food.assignRandomValues(this.level);
@@ -383,18 +374,35 @@ export class Gameplay {
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     generateNextLvlThreeQuestion(){
         this.food.assignRandomValues(this.level);
-        this.numFoods = getRandomInt(2, 3);
-        this.food.autoSelectRandom(this.numFoods);
-
-
-        this.dialogue.initLevelThreeQuestion(this.food.foodCopies[0], this.food.foodCopies[1], this.food.foodCopies[2]);
+        this.food.copyRandom();
+        this.dialogue.initLevelThreeQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
         this.correctAnswer = this.dialogue.getNewAnswer();
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
+    }
+    generateNextLvlFourQuestion(){
+        this.food.assignRandomValues(this.level);
+        this.food.duplicateRandom();
+        this.dialogue.initLevelFourQuestion(this.food.duplicates[0], this.food.duplicates.length);
+        this.correctAnswer = this.food.duplicates.length * this.food.duplicates[0].value;
+        this.speechBubble.changeDirection();
+        this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
+    }
+    generateNextLvlFiveQuestion(){
+        this.food.assignRandomValues(this.level);
+
+        this.dialogue.activeText = "";
+        this.correctAnswer = 0;
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     checkLevelInputs(level){
         if(level !== this.prevLevel){
@@ -412,16 +420,18 @@ export class Gameplay {
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 4:
+                    this.generateNextLvlFourQuestion();
+                    this.dialogue.mathVisible = true;
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 5:
+                    this.generateNextLvlFiveQuestion();
+                    this.dialogue.mathVisible = false;
                     this.inputType = InputType.DRAG_DROP;
                     break;
             }
             this.dialogue.setHelpMessage(level);
             this.prevLevel = level;
-            console.log("New level: ", this.prevLevel);
-            console.log("New Input Type: ", this.inputType);
         }
     }
 }
@@ -434,8 +444,6 @@ export function getKeyboardInput(object, key){
         if(object.inputBuffer.length < object.maxDigits){
                 object.inputBuffer += key;
     
-        } else {
-            console.log("Recieved Input: ", object.inputBuffer);
         }
     }
 }
@@ -443,7 +451,6 @@ export function removeKeyboardInput(object){
     if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
         if(object.inputBuffer.length > 0){
             object.inputBuffer = object.inputBuffer.slice(0, -1);
-            console.log("New Input buffer: ", object.inputBuffer);
         }
     }
 }
