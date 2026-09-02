@@ -31,7 +31,7 @@ export class FoodHandler{
         ];
 
         this.prices = [ 2, 3, 4, 5, 6, 7, 8, 9 ];
-        this.pricesDec = [ 2.75, 3.5, 4.25, 5.75, 6.5, 7.25, 8.75, 9.5 ];
+        this.pricesDec = [ 2.75, 3.50, 4.25, 5.75, 6.50, 7.25, 8.75, 9.50 ];
 
         this.dropZonePoints = [
             {pos:{x:1375, y: 300}},
@@ -126,8 +126,10 @@ export class FoodHandler{
             this.duplicates.push(COPY);
             sum = sum + ORIGINAL.value;
         }
+        /*
         console.log("Food: ", ORIGINAL.name, " Count: ", COUNT, " Sum: ", sum);
         console.log("Duplication complete.");
+        */
     }
 
     copyRandom(){
@@ -153,9 +155,11 @@ export class FoodHandler{
             this.copies.push(COPY);
             sum = sum + ORIGINAL.value;
         }
+        /*
         if(COUNT === 2){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, " Sum: ", sum);}
         else if(COUNT === 3){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, ", ", this.copies[2].name, " Sum: ", sum);}
         console.log("Copying complete.")
+        */
     }
 
     reset(){

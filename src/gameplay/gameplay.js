@@ -303,7 +303,7 @@ export class Gameplay {
             break;
             case "Next":
             case "Prev":
-                this.dialogue.toggleKeyboardInputHelpMsg(this.level);
+                this.dialogue.toggleInputHelpMsg();
                 this.speechBubble.changeDirection();
             break;
             case "Return":
@@ -329,10 +329,6 @@ export class Gameplay {
             case 2:
             case 5:
                 if(this.food.dropzoneSum !== this.correctAnswer || this.food.foodInDropzone !== this.numFoods){
-                    console.log("Dropzone Sum: ", this.food.dropzoneSum);
-                    console.log("Correct Answer: ", this.correctAnswer);
-                    console.log("Food Count in Dropzone: ", this.food.foodInDropzone);
-                    console.log("Required number of food: ", this.numFoods);
                     this.answerCorrect = false;
                 } else {
                     this.answerCorrect = true;
@@ -347,6 +343,7 @@ export class Gameplay {
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     generateNextLvlTwoQuestion(){
         this.food.assignRandomValues(this.level);
@@ -377,6 +374,7 @@ export class Gameplay {
         this.correctAnswer = this.dialogue.getNewAnswer();
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     generateNextLvlThreeQuestion(){
         this.food.assignRandomValues(this.level);
@@ -388,15 +386,16 @@ export class Gameplay {
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     generateNextLvlFourQuestion(){
         this.food.assignRandomValues(this.level);
         this.food.duplicateRandom();
-        this.dialogue.activeText = "";
-        this.correctAnswer = 0;
-
+        this.dialogue.initLevelFourQuestion(this.food.duplicates[0], this.food.duplicates.length);
+        this.correctAnswer = this.food.duplicates.length * this.food.duplicates[0].value;
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
+        console.log("Answer: ", this.correctAnswer);
     }
     checkLevelInputs(level){
         if(level !== this.prevLevel){
@@ -415,6 +414,7 @@ export class Gameplay {
                     break;
                 case 4:
                     this.generateNextLvlFourQuestion();
+                    this.dialogue.mathVisible = true;
                     this.inputType = InputType.KEYBOARD;
                     break;
                 case 5:
@@ -423,8 +423,6 @@ export class Gameplay {
             }
             this.dialogue.setHelpMessage(level);
             this.prevLevel = level;
-            console.log("New level: ", this.prevLevel);
-            console.log("New Input Type: ", this.inputType);
         }
     }
 }
@@ -437,8 +435,6 @@ export function getKeyboardInput(object, key){
         if(object.inputBuffer.length < object.maxDigits){
                 object.inputBuffer += key;
     
-        } else {
-            console.log("Recieved Input: ", object.inputBuffer);
         }
     }
 }
@@ -446,7 +442,6 @@ export function removeKeyboardInput(object){
     if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
         if(object.inputBuffer.length > 0){
             object.inputBuffer = object.inputBuffer.slice(0, -1);
-            console.log("New Input buffer: ", object.inputBuffer);
         }
     }
 }
