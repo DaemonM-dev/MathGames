@@ -114,10 +114,10 @@ export class Dialogue{
         let sum = 0;
         if(value3 === 0){
             sum = value1 + value2;
-            this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get?";
+            this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
         } else {
             sum = value1 + value2 + value3;
-            this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get?";
+            this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
         }
         this.activeAnswer = sum;
     }
@@ -139,6 +139,7 @@ export class Dialogue{
         }
         max = min + 10;
         this.startingKuro = getRandomInt(min, max) + inc;
+
         this.activeAnswer = this.startingKuro - min;
         this.activeText = "I have " + this.startingKuro + " KURO. How much will I have remaining after buying these food items?"
     }

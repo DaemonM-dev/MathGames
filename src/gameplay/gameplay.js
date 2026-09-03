@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 1;
+        this.level = 5;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;
@@ -72,9 +72,7 @@ export class Gameplay {
         this.initFoods(assets);
         this.initDialogue();
 
-        // Temp
         this.feedbackIndex = Math.floor(Math.random() * 3);
-        //
     }
     initScene(assets){
         this.scene.init(assets);
@@ -183,7 +181,7 @@ export class Gameplay {
             this.correctAnswer = this.dialogue.getNewAnswer();
         }
     }
-    update(command, mousePos, scale){
+    update(command, mousePos, scale, deltaTime){
         this.changeScale(scale);
         const activeButton = this.getActiveButton(command, mousePos);
         if(activeButton !== ""){this.useActiveButtons(activeButton);}
@@ -191,6 +189,7 @@ export class Gameplay {
         this.updateLevel(command, mousePos, activeButton);
         this.checkLevelInputs(this.level);
         this.progressWindow.update(this.level, this.question);
+        this.scene.update(this.level, deltaTime);
     }
     updateLevel(command, mousePos, activeButton){
         if(this.level == 2 || this.level == 5){
@@ -220,6 +219,7 @@ export class Gameplay {
                                 this.generateNextLvlFourQuestion();
                                 break;
                             case 5:
+                                this.generateNextLvlFiveQuestion();
                                 break;
                         }
                         this.question++;
@@ -396,7 +396,7 @@ export class Gameplay {
     }
     generateNextLvlFiveQuestion(){
         this.food.assignRandomValues(this.level);
-
+        this.scene.setRandomDiscount();
         this.dialogue.activeText = "";
         this.correctAnswer = 0;
 
