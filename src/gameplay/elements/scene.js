@@ -216,6 +216,7 @@ export class Scene{
             case 2: this.coupon.discount = 0.50; this.coupon.line1 = "50%"; break;
             case 3: this.coupon.discount = 0.75; this.coupon.line1 = "75%"; break;
         }
+        this.coupon.discount = 0.50; this.coupon.line1 = "50%";
         num = getRandomInt(1,3);
         switch(num){
             case 1: this.coupon.line2 = "Healthy Items"; break;

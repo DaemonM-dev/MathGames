@@ -205,7 +205,6 @@ export class Dialogue{
         let healthyCountString = "";
         let sweetCountString = "";
 
-
         for(let i = 0; i < foods.length; i++){
             sumBeforeDiscount = sumBeforeDiscount + foods[i].value;
             switch(line2){
