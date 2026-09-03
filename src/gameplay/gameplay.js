@@ -31,6 +31,7 @@ export class Gameplay {
         this.numFoods = 0;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
+        this.correctFoodTypes = [];
 
         this.awaitingInput = false;
         this.answerCorrect = false;
@@ -170,11 +171,11 @@ export class Gameplay {
         this.food.init(assets);
     }
     initDialogue(){
-        this.dialogue.initFont('PoppinsBold', 35, 1.4, 'black');
+        this.dialogue.initFont('PoppinsBold', 30, 1.2, 'black');
         this.dialogue.initBounds({
             x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)},
-            this.speechBubble.size, 125, 5
+            this.speechBubble.size, 195, 5
         );
         if(this.level === 1){
             this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
@@ -334,6 +335,14 @@ export class Gameplay {
                 }
                 break;
             case 5:
+
+                let dzCount = {healthy: 0, sweet: 0};
+                let answerCount = {healthy: 0, sweet: 0};
+
+
+
+
+
                 if(this.food.dropzoneSum !== this.correctAnswer){
                     this.answerCorrect = false;
                 } else {
@@ -407,6 +416,7 @@ export class Gameplay {
 
         this.dialogue.initLevelFiveQuestion(this.scene.coupon.discount, this.scene.coupon.line1, this.scene.coupon.line2, this.food.copies);
         this.correctAnswer = this.dialogue.getNewAnswer();
+        this.correctFoodTypes = this.dialogue.getFoodTypeAnswer();
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;

@@ -112,10 +112,6 @@ export class FoodHandler{
             this.duplicates.push(COPY);
             sum = sum + ORIGINAL.value;
         }
-        /*
-        console.log("Food: ", ORIGINAL.name, " Count: ", COUNT, " Sum: ", sum);
-        console.log("Duplication complete.");
-        */
     }
 
     copyRandom(){
@@ -175,7 +171,6 @@ export class FoodHandler{
                         if(this.foodItems[i].intersects(mousePos)){
                             this.selectionIndex = i;
                             this.itemSelected = true;
-                            console.log("Food Selected: ", this.foodItems[this.selectionIndex].name);
                             break;
                         }
                     }
