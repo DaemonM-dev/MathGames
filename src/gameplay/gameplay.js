@@ -219,6 +219,7 @@ export class Gameplay {
                                 this.generateNextLvlFourQuestion();
                                 break;
                             case 5:
+                                this.generateNextLvlFiveQuestion();
                                 break;
                         }
                         this.question++;
@@ -395,7 +396,7 @@ export class Gameplay {
     }
     generateNextLvlFiveQuestion(){
         this.food.assignRandomValues(this.level);
-
+        this.scene.setRandomDiscount();
         this.dialogue.activeText = "";
         this.correctAnswer = 0;
 

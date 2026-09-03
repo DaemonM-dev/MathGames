@@ -130,7 +130,6 @@ export class Scene{
         }
 
         this.initCoupon( {x: 460 / 1.5, y: 250 / 1.5}, {x: 0.0, y: 0.0 }, 30, 20);
-        this.setRandomDiscount();
         this.initFeedback(assets);
     }
 
@@ -220,20 +219,28 @@ export class Scene{
             case 1: this.coupon.line2 = "Healthy Items"; break;
             case 2: this.coupon.line2 = "Sweet Treats"; break;
         }
+
+        num = getRandomInt(1,2);
+        if(num === 1){this.coupon.direction = 'right'}
+        else {this.coupon.direction = 'down'};
+
         switch(this.coupon.direction){
             case 'down': 
                 this.coupon.direction = 'right';
                 this.coupon.initial.pos.x = -this.coupon.size.x;
                 this.coupon.pos.x = -this.coupon.size.x;
+                this.coupon.center.x = this.coupon.pos.x + (this.coupon.size.x / 2);
             break;
             case 'right': 
                 this.coupon.direction = 'down';
                 this.coupon.initial.pos.y = -this.coupon.size.y;
                 this.coupon.pos.y = -this.coupon.size.y;
+                this.coupon.center.y = this.coupon.pos.y + (this.coupon.size.y / 2);
             break;
         }
-        console.log(this.coupon.center);
-        this.coupon.moving = true;
+        if(!this.coupon.moving){
+            this.coupon.moving = true;
+        }
     }
     drawCoupon(ctx){
         ctx.drawImage(this.coupon.texture, this.coupon.pos.x, this.coupon.pos.y, this.coupon.size.x, this.coupon.size.y);
@@ -255,7 +262,7 @@ export class Scene{
     }
     animateCoupon(deltaTime){
         if(this.coupon.moving){
-            const SPEED = 225 * deltaTime;
+            const SPEED = 325 * deltaTime;
             switch(this.coupon.direction){
                 case 'right':
                     this.coupon.initial.pos.x +=  SPEED;
