@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 3;
+        this.level = 5;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;

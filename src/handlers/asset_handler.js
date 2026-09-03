@@ -84,13 +84,12 @@ export class AssetHandler{
         this.addAsset('kuro', this.assetUrl('kuro.png'));
         this.addAsset('sign', this.assetUrl('sign.png'));
         this.addAsset('menuboard', this.assetUrl('menuboard.png'));
-
         this.addAsset('goodjob1', this.assetUrl('goodjob1.png'));
         this.addAsset('goodjob2', this.assetUrl('goodjob2.png'));
         this.addAsset('goodjob3', this.assetUrl('goodjob3.png'));
         this.addAsset('tryagain1', this.assetUrl('tryagain1.png'));
-
         this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
         this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
+        this.addAsset('coupon', this.assetUrl('coupon.png'));
     }
 }
