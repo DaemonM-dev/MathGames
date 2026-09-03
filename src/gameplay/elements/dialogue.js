@@ -260,7 +260,6 @@ export class Dialogue{
         return this.activeAnswer;
     }
     getFoodTypeAnswer(){
-        console.log(this.foodTypeAnswer);
         return this.foodTypeAnswer;
     }
 

@@ -25,13 +25,12 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 5;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;
         this.feedbackIndex = 0;
         this.correctAnswer = 0;
-        this.correctFoodTypes = [];
 
         this.awaitingInput = false;
         this.answerCorrect = false;
@@ -224,8 +223,11 @@ export class Gameplay {
                                 break;
                         }
                         this.question++;
-                    } else {
+                    } else if (this.level < 5) {
                         this.level++;
+                        this.question = 1;
+                    } else {
+                        this.level = 1;
                         this.question = 1;
                     }
                 }
@@ -234,7 +236,7 @@ export class Gameplay {
         }
     }
     draw(ctx){
-        this.scene.draw(ctx);
+        this.scene.draw(this.level, ctx);
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
@@ -335,18 +337,28 @@ export class Gameplay {
                 }
                 break;
             case 5:
-
-                let dzCount = {healthy: 0, sweet: 0};
                 let answerCount = {healthy: 0, sweet: 0};
-
-
-
-
-
-                if(this.food.dropzoneSum !== this.correctAnswer){
+                const answerTypes = this.dialogue.getFoodTypeAnswer();
+                let dzCount = {healthy: 0, sweet: 0};
+                const dzFoodTypes = this.food.dropZoneFoods;
+                if(answerTypes.length !== dzFoodTypes.length){
                     this.answerCorrect = false;
                 } else {
-                    this.answerCorrect = true;
+                    for(let i = 0; i < answerTypes.length; i++){
+                        if(answerTypes[i] === 'Healthy'){answerCount.healthy++;}
+                        else if(answerTypes[i] === 'Sweet'){answerCount.sweet++;}
+                    }
+                    for(let i = 0; i < dzFoodTypes.length; i++){
+                        if(dzFoodTypes[i].type === 'Healthy'){dzCount.healthy++;}
+                        else if(dzFoodTypes[i].type === 'Sweet'){dzCount.sweet++;}
+                    }
+                    if(answerCount.healthy !== dzCount.healthy || answerCount.sweet !== dzCount.sweet){
+                        this.answerCorrect = false;
+                    } else if (this.food.dropzoneSum !== this.correctAnswer){
+                        this.answerCorrect = false;
+                    } else {
+                        this.answerCorrect = true;
+                    }
                 }
                 break;
         }
@@ -420,7 +432,6 @@ export class Gameplay {
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
-        console.log("Answer: ", this.correctAnswer);
     }
     checkLevelInputs(level){
         if(level !== this.prevLevel){

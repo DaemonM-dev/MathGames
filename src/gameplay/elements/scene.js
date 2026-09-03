@@ -133,7 +133,7 @@ export class Scene{
         this.initFeedback(assets);
     }
 
-    draw(ctx){
+    draw(level, ctx){
         ctx.fillStyle = '#9bd7b585';
         ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = 'purple';
@@ -145,7 +145,9 @@ export class Scene{
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
 
-        this.drawCoupon(ctx);
+        if(level === 5){
+            this.drawCoupon(ctx);
+        }
     }
     drawKuro(ctx){
         ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);

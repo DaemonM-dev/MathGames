@@ -51,6 +51,7 @@ export class FoodHandler{
 
         this.dropzoneSum = 0;
         this.foodInDropzone = 0;
+        this.dropZoneFoods = [];
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -145,6 +146,7 @@ export class FoodHandler{
         }
         this.dropzoneSum = 0;
         this.foodInDropzone = 0;
+        this.dropZoneFoods = [];
     }
 
     draw(level, ctx){
@@ -180,8 +182,18 @@ export class FoodHandler{
                 if(this.itemSelected){
                     if(this.foodItems[this.selectionIndex].isWithinBounds(bounds.size, bounds.pos)){
                         this.dropzoneSum = this.getSumFromDropzone(bounds);
+                        this.dropZoneFoods.push(this.foodItems[this.selectionIndex]);
                     } else {
                         this.foodItems[this.selectionIndex].resetPosition();
+                        for(let i = 0; i < this.dropZoneFoods.length; i++){
+                            if(this.foodItems[this.selectionIndex] === this.dropZoneFoods[i]){
+                                this.dropZoneFoods.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                    for(let i = 0; i < this.dropZoneFoods.length; i++){
+                        console.log(this.dropZoneFoods[i].type);
                     }
                 }
                 this.foodItems[this.selectionIndex].deselect();
