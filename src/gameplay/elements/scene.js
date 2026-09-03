@@ -133,7 +133,7 @@ export class Scene{
         this.initFeedback(assets);
     }
 
-    draw(ctx){
+    draw(level, ctx){
         ctx.fillStyle = '#9bd7b585';
         ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = 'purple';
@@ -145,7 +145,9 @@ export class Scene{
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
 
-        this.drawCoupon(ctx);
+        if(level === 5){
+            this.drawCoupon(ctx);
+        }
     }
     drawKuro(ctx){
         ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);
@@ -210,14 +212,15 @@ export class Scene{
         this.coupon.line2 = "";
         let num = getRandomInt(1,3);
         switch(num){
-            case 1: this.coupon.discount = 0.25; this.coupon.line1 = "25% OFF"; break;
-            case 2: this.coupon.discount = 0.50; this.coupon.line1 = "50% OFF"; break;
-            case 3: this.coupon.discount = 0.75; this.coupon.line1 = "75% OFF"; break;
+            case 1: this.coupon.discount = 0.25; this.coupon.line1 = "25%"; break;
+            case 2: this.coupon.discount = 0.50; this.coupon.line1 = "50%"; break;
+            case 3: this.coupon.discount = 0.75; this.coupon.line1 = "75%"; break;
         }
-        num = getRandomInt(1,2);
+        num = getRandomInt(1,3);
         switch(num){
             case 1: this.coupon.line2 = "Healthy Items"; break;
-            case 2: this.coupon.line2 = "Sweet Treats"; break;
+            case 2: this.coupon.line2 = "Sweet Items"; break;
+            case 3: this.coupon.line2 = "All Items"; break;
         }
 
         num = getRandomInt(1,2);
@@ -248,7 +251,7 @@ export class Scene{
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
-        ctx.fillText(this.coupon.line1, this.coupon.center.x, this.coupon.center.y - this.coupon.lineSpace);
+        ctx.fillText(this.coupon.line1 + " OFF", this.coupon.center.x, this.coupon.center.y - this.coupon.lineSpace);
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.lineSpace);
     }
     scaleCoupon(scale){
@@ -265,9 +268,9 @@ export class Scene{
             const SPEED = 325 * deltaTime;
             switch(this.coupon.direction){
                 case 'right':
-                    this.coupon.initial.pos.x +=  SPEED;
-                    this.coupon.pos.x += SPEED;
-                    this.coupon.center.x += SPEED;
+                    this.coupon.initial.pos.x +=  SPEED * 1.75;
+                    this.coupon.pos.x += SPEED * 1.75;
+                    this.coupon.center.x += SPEED * 1.75;
                     if(this.coupon.pos.x >= 0.0){this.coupon.moving = false;}
                 break;
                 case 'down':

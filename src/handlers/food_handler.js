@@ -9,14 +9,14 @@ const FOOD_SIZE = { x: 150, y: 150 };
 export class FoodHandler{
     constructor(){
         this.foodID = [
-            { name: "the slice of Chocolate Cake", asset: 'chocolatecake' },
-            { name: "the Cupcakes", asset: 'cupcakes' },
-            { name: "the Fruit Bowl", asset: 'fruitbowl' },
-            { name: "the slice of Fruit Cake", asset: 'fruitcake' },
-            { name: "the slice of Matcha Cake", asset: 'mintcake' },
-            { name: "the Rice Cakes", asset: 'onigiri' },
-            { name: "the Salad", asset: 'salad' },
-            { name: "the Tofu", asset: 'tofu' }
+            { name: "the slice of Chocolate Cake", asset: 'chocolatecake', type: 'Sweet' },
+            { name: "the Cupcakes", asset: 'cupcakes', type: 'Sweet' },
+            { name: "the Fruit Bowl", asset: 'fruitbowl', type: 'Healthy' },
+            { name: "the slice of Fruit Cake", asset: 'fruitcake', type: 'Sweet' },
+            { name: "the slice of Matcha Cake", asset: 'mintcake', type: 'Sweet' },
+            { name: "the Rice Cakes", asset: 'onigiri', type: 'Healthy' },
+            { name: "the Salad", asset: 'salad', type: 'Healthy' },
+            { name: "the Tofu", asset: 'tofu', type: 'Healthy' }
         ];
 
         this.shelfPoints = [
@@ -51,6 +51,7 @@ export class FoodHandler{
 
         this.dropzoneSum = 0;
         this.foodInDropzone = 0;
+        this.dropZoneFoods = [];
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -62,7 +63,8 @@ export class FoodHandler{
             this.foodItems.push(new FoodItem());
             const name = this.foodID[i].name;
             const texture = assets.getAsset(this.foodID[i].asset);
-            this.foodItems[i].setUnique(name, texture, SIZE);
+            const TYPE = this.foodID[i].type;
+            this.foodItems[i].setUnique(name, texture, SIZE, TYPE);
             this.foodItems[i].init(this.prices[i], this.shelfPoints[i].pos);
             this.priceTags.push(new Pricetag({x:this.shelfPoints[i].pos.x + 25,y:this.shelfPoints[i].pos.y + 150}, this.prices[i]));
         }
@@ -111,10 +113,6 @@ export class FoodHandler{
             this.duplicates.push(COPY);
             sum = sum + ORIGINAL.value;
         }
-        /*
-        console.log("Food: ", ORIGINAL.name, " Count: ", COUNT, " Sum: ", sum);
-        console.log("Duplication complete.");
-        */
     }
 
     copyRandom(){
@@ -130,7 +128,7 @@ export class FoodHandler{
         for(let i = 0; i < COUNT; i++){
             const ORIGINAL = this.foodItems[INDICES[i]];
             const COPY = new FoodItem();
-            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size});
+            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size}, ORIGINAL.type);
             switch(i){
                 case 0: COPY.init(ORIGINAL.value, {...this.dropZonePoints[0].pos}); break;
                 case 1: COPY.init(ORIGINAL.value, {...this.dropZonePoints[2].pos}); break;
@@ -140,11 +138,6 @@ export class FoodHandler{
             this.copies.push(COPY);
             sum = sum + ORIGINAL.value;
         }
-        /*
-        if(COUNT === 2){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, " Sum: ", sum);}
-        else if(COUNT === 3){console.log("Food: ", this.copies[0].name, ", ", this.copies[1].name, ", ", this.copies[2].name, " Sum: ", sum);}
-        console.log("Copying complete.")
-        */
     }
 
     reset(){
@@ -153,6 +146,7 @@ export class FoodHandler{
         }
         this.dropzoneSum = 0;
         this.foodInDropzone = 0;
+        this.dropZoneFoods = [];
     }
 
     draw(level, ctx){
@@ -179,7 +173,6 @@ export class FoodHandler{
                         if(this.foodItems[i].intersects(mousePos)){
                             this.selectionIndex = i;
                             this.itemSelected = true;
-                            console.log("Food Selected: ", this.foodItems[this.selectionIndex].name);
                             break;
                         }
                     }
@@ -189,8 +182,18 @@ export class FoodHandler{
                 if(this.itemSelected){
                     if(this.foodItems[this.selectionIndex].isWithinBounds(bounds.size, bounds.pos)){
                         this.dropzoneSum = this.getSumFromDropzone(bounds);
+                        this.dropZoneFoods.push(this.foodItems[this.selectionIndex]);
                     } else {
                         this.foodItems[this.selectionIndex].resetPosition();
+                        for(let i = 0; i < this.dropZoneFoods.length; i++){
+                            if(this.foodItems[this.selectionIndex] === this.dropZoneFoods[i]){
+                                this.dropZoneFoods.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                    for(let i = 0; i < this.dropZoneFoods.length; i++){
+                        console.log(this.dropZoneFoods[i].type);
                     }
                 }
                 this.foodItems[this.selectionIndex].deselect();

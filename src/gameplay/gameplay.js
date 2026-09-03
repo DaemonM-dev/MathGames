@@ -25,7 +25,7 @@ export class Gameplay {
         this.maxDigits = 5;
         this.numericAnswer = 0;
 
-        this.level = 5;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
         this.numFoods = 0;
@@ -170,11 +170,11 @@ export class Gameplay {
         this.food.init(assets);
     }
     initDialogue(){
-        this.dialogue.initFont('PoppinsBold', 35, 1.4, 'black');
+        this.dialogue.initFont('PoppinsBold', 30, 1.2, 'black');
         this.dialogue.initBounds({
             x: this.speechBubble.pos.x + (this.speechBubble.size.x / 2),
             y: this.speechBubble.pos.y + (this.speechBubble.size.y / 2)},
-            this.speechBubble.size, 125, 5
+            this.speechBubble.size, 195, 5
         );
         if(this.level === 1){
             this.dialogue.initLevelOneQuestion(this.food.copies[0], this.food.copies[1], this.food.copies[2]);
@@ -223,8 +223,11 @@ export class Gameplay {
                                 break;
                         }
                         this.question++;
-                    } else {
+                    } else if (this.level < 5) {
                         this.level++;
+                        this.question = 1;
+                    } else {
+                        this.level = 1;
                         this.question = 1;
                     }
                 }
@@ -233,7 +236,7 @@ export class Gameplay {
         }
     }
     draw(ctx){
-        this.scene.draw(ctx);
+        this.scene.draw(this.level, ctx);
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
@@ -327,11 +330,35 @@ export class Gameplay {
                 clearInputBuffer(this);
                 break;
             case 2:
-            case 5:
                 if(this.food.dropzoneSum !== this.correctAnswer || this.food.foodInDropzone !== this.numFoods){
                     this.answerCorrect = false;
                 } else {
                     this.answerCorrect = true;
+                }
+                break;
+            case 5:
+                let answerCount = {healthy: 0, sweet: 0};
+                const answerTypes = this.dialogue.getFoodTypeAnswer();
+                let dzCount = {healthy: 0, sweet: 0};
+                const dzFoodTypes = this.food.dropZoneFoods;
+                if(answerTypes.length !== dzFoodTypes.length){
+                    this.answerCorrect = false;
+                } else {
+                    for(let i = 0; i < answerTypes.length; i++){
+                        if(answerTypes[i] === 'Healthy'){answerCount.healthy++;}
+                        else if(answerTypes[i] === 'Sweet'){answerCount.sweet++;}
+                    }
+                    for(let i = 0; i < dzFoodTypes.length; i++){
+                        if(dzFoodTypes[i].type === 'Healthy'){dzCount.healthy++;}
+                        else if(dzFoodTypes[i].type === 'Sweet'){dzCount.sweet++;}
+                    }
+                    if(answerCount.healthy !== dzCount.healthy || answerCount.sweet !== dzCount.sweet){
+                        this.answerCorrect = false;
+                    } else if (this.food.dropzoneSum !== this.correctAnswer){
+                        this.answerCorrect = false;
+                    } else {
+                        this.answerCorrect = true;
+                    }
                 }
                 break;
         }
@@ -396,13 +423,15 @@ export class Gameplay {
     }
     generateNextLvlFiveQuestion(){
         this.food.assignRandomValues(this.level);
+        this.food.copyRandom();
         this.scene.setRandomDiscount();
-        this.dialogue.activeText = "";
-        this.correctAnswer = 0;
+
+        this.dialogue.initLevelFiveQuestion(this.scene.coupon.discount, this.scene.coupon.line1, this.scene.coupon.line2, this.food.copies);
+        this.correctAnswer = this.dialogue.getNewAnswer();
+        this.correctFoodTypes = this.dialogue.getFoodTypeAnswer();
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
-        console.log("Answer: ", this.correctAnswer);
     }
     checkLevelInputs(level){
         if(level !== this.prevLevel){

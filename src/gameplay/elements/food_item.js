@@ -11,13 +11,15 @@ export class FoodItem{
         this.initial = {size: null, pos: null};
         this.selected = false;
         this.scale = {x:1.0, y:1.0};
+        this.type = "";
     }
 
-    setUnique(name, texture, size){
+    setUnique(name, texture, size, type){
         this.name = name;
         this.texture = texture;
         this.size = size;
         this.initial.size = {...size};
+        this.type = type;
     }
 
     init(value, pos){

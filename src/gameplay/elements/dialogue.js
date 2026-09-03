@@ -8,16 +8,18 @@ export class Dialogue{
         this.fontColor = 'white';
         this.pos = {x:0, y:0};
         this.maxSize = {x: 0, y: 0};
-        this.lineSpacing = 1.8;
+        this.lineSpacing = 1.2;
         this.minFontSize = 5;
-        this.initial = {fontSize: 0, pos: {x:0, y:0}, maxSize: {x:0,y:0}, lineSpacing: 1.2, minFontSize: 5};
+        this.initial = {fontSize: 0, pos: {x:0, y:0}, maxSize: {x:0,y:0}, lineSpacing: 1.2, minFontSize: 5, padding: 0};
 
         this.mathProblem = "";
         this.mathVisible = false;
+        this.padding = 0;
 
         this.activeText = "";
         this.cachedText = "";
         this.activeAnswer = 0.0;
+        this.foodTypeAnswer = [];
         this.startingKuro = 0;
 
         this.instructionIndex = 0;
@@ -37,12 +39,13 @@ export class Dialogue{
     }
     initBounds(pos, size, padding, minFontSize){
             this.pos = {...pos};
-            this.maxSize = {x: size.x - padding, y: size.y - padding};
+            this.maxSize = {x: size.x, y: size.y};
             this.minFontSize = minFontSize;
-
+            this.padding = 0;
             this.initial.pos = {...pos};
             this.initial.maxSize = {...this.maxSize};
             this.initial.minFontSize = {...this.minFontSize};
+            this.initial.padding = padding;
     }
     changeScale(scale){
         this.scale = scale;
@@ -51,9 +54,10 @@ export class Dialogue{
         const minScale = Math.min(scale.x, scale.y);
         this.fontSize = this.initial.fontSize * minScale;
         this.minFontSize = this.initial.minFontSize * minScale;
+        this.padding = this.initial.padding * minScale;
     }
 
-   draw(ctx){
+    draw(ctx){
         ctx.fillStyle = this.fontColor || 'black';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -77,7 +81,7 @@ export class Dialogue{
         for (let word of words) {
             const testLine = currentLine + (currentLine ? ' ' : '') + word;
             const testWidth = ctx.measureText(testLine).width;
-            if (testWidth > this.maxSize.x && currentLine !== '') {
+            if (testWidth > this.maxSize.x - this.padding && currentLine !== '') {
                 lines.push(currentLine);
                 currentLine = word;
             } else {
@@ -185,9 +189,80 @@ export class Dialogue{
         this.activeText = start + middle + count + name;
         this.mathProblem = food.value + " x " + total + " = ";
     }
+    initLevelFiveQuestion(discount, line1, line2, foods){
+        // discount = percentage discout and a decimal value (ie. 0.25, 0.5, 0.75)
+        // line1 = percentage discount as a string (ie. "25%", "50%", "75%")
+        // line2 = what that percentage applies to (ie. "Healthy Items", "Sweet Items", "All Items!")
+        // foods = two or three randomly selected food items
+        this.foodTypeAnswer = [];
+
+        let sumBeforeDiscount = 0;
+        let sumAfterDiscount = 0;
+        let healthyItems = 0;
+        let sweetItems = 0;
+
+        let foodCountString = "";
+        let healthyCountString = "";
+        let sweetCountString = "";
+
+
+        for(let i = 0; i < foods.length; i++){
+            sumBeforeDiscount = sumBeforeDiscount + foods[i].value;
+            switch(line2){
+                case "Healthy Items":
+                    if(foods[i].type === 'Healthy'){
+                        sumAfterDiscount = sumAfterDiscount + (foods[i].value - (foods[i].value * discount));
+                    } else {
+                        sumAfterDiscount = sumAfterDiscount + foods[i].value;
+                    }
+                break;
+                case "Sweet Items":
+                    if(foods[i].type === 'Sweet'){
+                        sumAfterDiscount = sumAfterDiscount + (foods[i].value - (foods[i].value * discount));
+                    } else {
+                        sumAfterDiscount = sumAfterDiscount + foods[i].value;
+                    }
+                break;
+                case "All Items":
+                    sumAfterDiscount = sumAfterDiscount + foods[i].value - (foods[i].value * discount);
+                    break;
+            }
+            switch(foods[i].type){ case 'Healthy': healthyItems++; break; case 'Sweet': sweetItems++; break; }
+            this.foodTypeAnswer.push(foods[i].type);
+            console.log(foods[i].name);
+        }
+        this.startingKuro = sumAfterDiscount;
+        this.activeAnswer = sumBeforeDiscount;
+        console.log("Sum BEFORE discount: ", sumBeforeDiscount )
+        console.log("Sum AFTER discount: ", sumAfterDiscount );
+        console.log("Healthy: ", healthyItems, "- Sweet: ", sweetItems);
+
+        // Message generation
+        this.activeText = "We have " + this.startingKuro + " KURO. There is a " + line1 + " discount on " + line2 + ". ";
+
+        switch (healthyItems){case 1: healthyCountString = "ONE"; break; case 2: healthyCountString = "TWO"; break; case 3:healthyCountString = "THREE"; break;}
+        switch (sweetItems){case 1: sweetCountString = "ONE"; break; case 2: sweetCountString = "TWO"; break; case 3:sweetCountString = "THREE"; break;}
+
+        if(healthyItems > 0 && sweetItems > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(healthyItems > 1){this.activeText += "s";}
+            this.activeText += " and what " + sweetCountString + " SWEET food"; if(sweetItems > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+        } else if (healthyItems > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(healthyItems > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+
+        } else if (sweetItems > 0){
+            this.activeText += "What " + sweetCountString + " SWEET food"; if(sweetItems > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+        }
+    }
     getNewAnswer(){
         return this.activeAnswer;
     }
+    getFoodTypeAnswer(){
+        return this.foodTypeAnswer;
+    }
+
 
     setHelpMessage(level){
         switch(level){
