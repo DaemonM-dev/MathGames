@@ -53,7 +53,7 @@ export class Dialogue{
         this.minFontSize = this.initial.minFontSize * minScale;
     }
 
-   draw(ctx){
+    draw(ctx){
         ctx.fillStyle = this.fontColor || 'black';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -184,6 +184,78 @@ export class Dialogue{
         }
         this.activeText = start + middle + count + name;
         this.mathProblem = food.value + " x " + total + " = ";
+    }
+    initLevelFiveQuestion(discount, line1, line2, foods){
+        // discount = percentage discout and a decimal value (ie. 0.25, 0.5, 0.75)
+        // line1 = percentage discount as a string (ie. "25%", "50%", "75%")
+        // line2 = what that percentage applies to (ie. "Healthy Items", "Sweet Items", "All Items!")
+        // foods = two or three randomly selected food items
+        let sumBeforeDiscount = 0;
+        let sumAfterDiscount = 0;
+        let healthyItems = 0;
+        let sweetItems = 0;
+
+        for(let i = 0; i < foods.length; i++){
+            sumBeforeDiscount = sumBeforeDiscount + foods[i].value;
+            switch(line2){
+                case "Healthy Items":
+                    if(foods[i].type === 'Healthy'){
+                        sumAfterDiscount = sumAfterDiscount + (foods[i].value - (foods[i].value * discount));
+                    }
+                break;
+                case "Sweet Items":
+                    if(foods[i].type === 'Sweet'){
+                        sumAfterDiscount = sumAfterDiscount + (foods[i].value - (foods[i].value * discount));
+                    }
+                break;
+                case "All Items":
+                    sumAfterDiscount = sumAfterDiscount + foods[i].value - (foods[i].value * discount);
+                    break;
+            }
+        }
+
+        this.startingKuro = sumAfterDiscount;
+        this.activeAnswer = sumBeforeDiscount;
+        console.log("Sum BEFORE discount: ", sumBeforeDiscount )
+        console.log("Sum AFTER discount: ", sumAfterDiscount );
+
+
+        // Message generation
+        this.activeText = "We have " + this.startingKuro + " KURO. There is a " + line1 + " discount on " + line2 + ". ";
+
+        if(healthyItems === 0 && sweetItems === 0){
+            let FOODCOUNT = "";
+            if(foods.length === 2){FOODCOUNT = "TWO";}
+            else{FOODCOUNT = "THREE";}
+            this.activeText += "What " + FOODCOUNT + " Food items can I get without having any change left over?";
+
+
+
+
+        } else if(healthyItems > 0 && sweetItems === 0 || healthyItems === 0 && sweetItems > 0){
+            let FOODCOUNT = "";
+            if(foods.length === 2){FOODCOUNT = "TWO";}
+            else{FOODCOUNT = "THREE";}
+            if(healthyItems !== 0){
+                this.activeText += "What " + FOODCOUNT + " SWEET items can I get without having any change left over?";
+            } else if (sweetItems !== 0){
+                this.activeText += "What " + FOODCOUNT + " HEALTHY items can I get without having any change left over?";
+            }
+
+
+
+
+        } else {
+            let hc = ""; // Healthy count as string
+            let sc = ""; // Sweet count as string
+            switch(healthyItems){case 1: hc = "ONE"; break; case 2: hc = "TWO"; break; case 3: hc = "THREE"; break;}
+            switch(sweetItems){case 1: sc = "ONE"; break; case 2: sc = "TWO"; break; case 3: sc = "THREE"; break;}
+
+            this.activeText += "What " + hc + " HEALTHY item"; if(healthyItems !== 1){this.activeText += "s"};
+            this.activeText += " and what " + sc + " SWEET item"; if(sweetItems !== 1){this.activeText += "s"};
+            this.activeText += " can I get without having any change left over?";
+        }
+
     }
     getNewAnswer(){
         return this.activeAnswer;

@@ -327,8 +327,14 @@ export class Gameplay {
                 clearInputBuffer(this);
                 break;
             case 2:
-            case 5:
                 if(this.food.dropzoneSum !== this.correctAnswer || this.food.foodInDropzone !== this.numFoods){
+                    this.answerCorrect = false;
+                } else {
+                    this.answerCorrect = true;
+                }
+                break;
+            case 5:
+                if(this.food.dropzoneSum !== this.correctAnswer){
                     this.answerCorrect = false;
                 } else {
                     this.answerCorrect = true;
@@ -396,9 +402,11 @@ export class Gameplay {
     }
     generateNextLvlFiveQuestion(){
         this.food.assignRandomValues(this.level);
+        this.food.copyRandom();
         this.scene.setRandomDiscount();
-        this.dialogue.activeText = "";
-        this.correctAnswer = 0;
+
+        this.dialogue.initLevelFiveQuestion(this.scene.coupon.discount, this.scene.coupon.line1, this.scene.coupon.line2, this.food.copies);
+        this.correctAnswer = this.dialogue.getNewAnswer();
 
         this.speechBubble.changeDirection();
         this.answerCorrect = false;
