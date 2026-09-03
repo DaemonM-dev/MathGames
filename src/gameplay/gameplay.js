@@ -181,7 +181,7 @@ export class Gameplay {
             this.correctAnswer = this.dialogue.getNewAnswer();
         }
     }
-    update(command, mousePos, scale){
+    update(command, mousePos, scale, deltaTime){
         this.changeScale(scale);
         const activeButton = this.getActiveButton(command, mousePos);
         if(activeButton !== ""){this.useActiveButtons(activeButton);}
@@ -189,6 +189,7 @@ export class Gameplay {
         this.updateLevel(command, mousePos, activeButton);
         this.checkLevelInputs(this.level);
         this.progressWindow.update(this.level, this.question);
+        this.scene.update(this.level, deltaTime);
     }
     updateLevel(command, mousePos, activeButton){
         if(this.level == 2 || this.level == 5){

@@ -2,6 +2,7 @@ import { GAME_SIZE, BG_SIZE, getRandomInt } from '../../globals.js'
 
 export class Scene{
     constructor(){
+        this.scale = {x:1.0, y:1.0};
         this.bg = null;
         this.purpleBox = null;
         this.blackVertBox = null;
@@ -17,6 +18,7 @@ export class Scene{
     }
 
     changeScale(scale){
+        this.scale = scale;
         changeScale(this.bg, scale);
         changeScale(this.purpleBox, scale);
         changeScale(this.blackVertBox, scale);
@@ -122,7 +124,9 @@ export class Scene{
             discount: 0,
             line1: "",
             line2: "",
-            initial:{size: {x:461, y:250}, pos: {x:0.0,y:0.0}, fontSize: 0, lineSpace: 0}
+            initial:{size: {x:461, y:250}, pos: {x:0.0,y:0.0}, fontSize: 0, lineSpace: 0},
+            moving: false,
+            direction: 'down'
         }
 
         this.initCoupon( {x: 460 / 1.5, y: 250 / 1.5}, {x: 0.0, y: 0.0 }, 30, 20);
@@ -191,7 +195,6 @@ export class Scene{
             initial: { size: {x:500, y: 250}, pos:CENTER }},
         )
     }
-
     initCoupon(size, pos, fontSize, lineSpace){
         this.coupon.size = {...size};
         this.coupon.pos = {...pos};
@@ -217,6 +220,20 @@ export class Scene{
             case 1: this.coupon.line2 = "Healthy Items"; break;
             case 2: this.coupon.line2 = "Sweet Treats"; break;
         }
+        switch(this.coupon.direction){
+            case 'down': 
+                this.coupon.direction = 'right';
+                this.coupon.initial.pos.x = -this.coupon.size.x;
+                this.coupon.pos.x = -this.coupon.size.x;
+            break;
+            case 'right': 
+                this.coupon.direction = 'down';
+                this.coupon.initial.pos.y = -this.coupon.size.y;
+                this.coupon.pos.y = -this.coupon.size.y;
+            break;
+        }
+        console.log(this.coupon.center);
+        this.coupon.moving = true;
     }
     drawCoupon(ctx){
         ctx.drawImage(this.coupon.texture, this.coupon.pos.x, this.coupon.pos.y, this.coupon.size.x, this.coupon.size.y);
@@ -234,7 +251,31 @@ export class Scene{
         this.coupon.fontSize = this.coupon.initial.fontSize * MINSCALE;
         this.coupon.lineWidth = this.coupon.initial.lineWidth * MINSCALE;
         this.coupon.lineSpace = this.coupon.initial.lineSpace * MINSCALE;
-        this.coupon.center = {x: this.coupon.pos.x + (this.coupon.size.x / 2), y: this.coupon.pos.x + this.coupon.size.y / 2 }
+        this.coupon.center = {x: this.coupon.pos.x + (this.coupon.size.x / 2),y: this.coupon.pos.y + (this.coupon.size.y / 2)};
+    }
+    animateCoupon(deltaTime){
+        if(this.coupon.moving){
+            const SPEED = 225 * deltaTime;
+            switch(this.coupon.direction){
+                case 'right':
+                    this.coupon.initial.pos.x +=  SPEED;
+                    this.coupon.pos.x += SPEED;
+                    this.coupon.center.x += SPEED;
+                    if(this.coupon.pos.x >= 0.0){this.coupon.moving = false;}
+                break;
+                case 'down':
+                    this.coupon.initial.pos.y += SPEED;
+                    this.coupon.pos.y += SPEED;
+                    this.coupon.center.y += SPEED;
+                    if(this.coupon.pos.y >= 0.0){this.coupon.moving = false;}
+                break;
+            }
+        }
+    }
+    update(level, deltaTime){
+        if(level === 5){
+            this.animateCoupon(deltaTime);
+        }
     }
 }
 
