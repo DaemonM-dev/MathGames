@@ -2,7 +2,9 @@ import { Game } from '../game.js'
 import { GAME_SIZE, getRandomInt } from "../globals.js"
 import { Command } from '../enums/commands.js'
 import { InputType } from '../enums/input_types.js'
+
 import { Scene } from '../gameplay/elements/scene.js'
+import { ProgressWindow } from '../gameplay/elements/progress.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;
@@ -14,14 +16,15 @@ export class Gameplay {
         this.inputBuffer = "";
         this.maxDigits = 5;
         this.numericAnswer = 0;
-        this.level = 3;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
-
         this.scene = new Scene();
+        this.progressWindow = new ProgressWindow();
     }
     changeScale(scale){
         if(this.scene){this.scene.changeScale(scale);}
+        if(this.progressWindow){this.progressWindow.changeScale(scale);}
     }
 
     init(assets){
@@ -31,10 +34,12 @@ export class Gameplay {
 
     update(deltaTime){
         this.scene.update(deltaTime);
+        this.progressWindow.update(this.question, this.level);
     }
 
     draw(ctx){
         this.scene.draw(ctx);
+        this.progressWindow.draw(ctx);
     }
 }
 
