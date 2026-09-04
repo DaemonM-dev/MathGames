@@ -14,7 +14,7 @@ export const Game = {
     ctx: null,
     running: false,
     lastTime: 0,
-    scale: {x:1.0,y:1.0},
+    scale: 1.0,
     session: null,
     onAnswer: null,
 
@@ -35,7 +35,6 @@ export function init(options = {}){
     Game.assetHandler.loadAll();
     Game.running = true;
     Game.lastTime = 0;
-    console.log(Game.canvas);
     resizeCanvas();
     requestAnimationFrame(gameLoop);
 }
@@ -71,11 +70,14 @@ function update(deltaTime){
             }
             break;
         case GameState.INITIALIZING:
+            Game.gameplay.init(Game.assetHandler);
             Game.inputHandler.initInputs();
+            resizeCanvas();
             Game.gamestate = GameState.GAMEPLAY;
             break;
         case GameState.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
+            Game.gameplay.update(deltaTime);
             break;
         case GameState.GAME_COMPLETE:
             break;
@@ -93,6 +95,7 @@ function draw(){
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
             break;
         case GameState.GAMEPLAY:
+            Game.gameplay.draw(Game.ctx);
             break;
         case GameState.GAME_COMPLETE:
             Game.ctx.fillStyle = "#000";
@@ -112,14 +115,16 @@ export function resizeCanvas(){
     const scaleX = displayWidth / GAME_SIZE.x;
     const scaleY = displayHeight / GAME_SIZE.y;
 
-    const minScale = Math.min(scaleX, scaleY);
+    Game.scale = Math.min(scaleX, scaleY);
 
-    const scaledWidth = GAME_SIZE.x * minScale;
-    const scaledHeight = GAME_SIZE.y * minScale;
+    const scaledWidth = GAME_SIZE.x * Game.scale;
+    const scaledHeight = GAME_SIZE.y * Game.scale;
 
     Game.canvas.width = scaledWidth;
     Game.canvas.height = scaledHeight;
 
     Game.canvas.style.width = scaledWidth + 'px';
     Game.canvas.style.height = scaledHeight + 'px';
+
+    Game.gameplay.changeScale(Game.scale);
 }

@@ -1,6 +1,6 @@
 export const CANVAS_ID = 'game_canvas';
 
-export const GAME_SIZE = {x:960, y: 540};
+export const GAME_SIZE = {x:1920, y: 1080};
 
 export function getRandomInt(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
