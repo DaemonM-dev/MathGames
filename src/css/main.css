@@ -5,23 +5,11 @@
 }
 
 
-body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #ffffff;
-    font-family: 'Arial', sans-serif;
-    overflow: hidden;
-}
-
-
 #game_canvas {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background-color: #ffffff;
-    cursor: default;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    border: 2px solid black;
 }
