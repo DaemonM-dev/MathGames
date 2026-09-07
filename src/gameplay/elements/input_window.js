@@ -14,7 +14,7 @@ const TEXT_POS = {x: POS.x + 135, y: CENTER.y};
 const KURO = {size: {x: 110, y: 85}, pos: {x: POS.x + 10, y: CENTER.y - 45}};
 
 const CURSOR = {size: {x:6, y: 50}, pos: {x: TEXT_POS.x - 15, y: CENTER.y - 25}, visible: false};
-const MAX_INPUTS = 6;
+const MAX_INPUTS = 5;
 
 export class InputWindow{
     constructor(){
@@ -78,7 +78,7 @@ export class InputWindow{
     handleInputs(command, mousePos){
         switch(this.state){
             case ButtonState.NONE:
-                if(pointIntersects(this.size, this.pos, mousePos)){
+                if(pointIntersects(mousePos, this)){
                     if(!this.awaitingInput){
                         this.color = {infill: '#c5c5c5', outline: '#00000077' , font: 'black'};
                         this.state = ButtonState.HOVER;
@@ -88,7 +88,7 @@ export class InputWindow{
                 }
             break;
             case ButtonState.HOVER:
-                if(!pointIntersects(this.size, this.pos, mousePos)){
+                if(!pointIntersects(mousePos, this)){
                     this.color = {...COLOR};
                     this.state = ButtonState.NONE;
                 } else if(command === Command.MOUSE_DOWN || command === Command.MOUSE_UP){
@@ -101,7 +101,7 @@ export class InputWindow{
                 }
             break;
             case ButtonState.PRESSED:
-                if(!pointIntersects(this.size, this.pos, mousePos)){
+                if(!pointIntersects(mousePos, this)){
                     this.color = {...COLOR};
                     this.state = ButtonState.NONE;
                 } else {
