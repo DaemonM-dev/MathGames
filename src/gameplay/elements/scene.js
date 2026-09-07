@@ -66,7 +66,7 @@ export class Scene{
             size: {...SIZE},
             pos: {...POS},
             initial: { size: {...SIZE}, pos: {...POS} },
-            color: '#9bd7b585'
+            color: '#bfdbcb'
         }
         const WIDTH = 14
         SIZE = {x: WIDTH, y: GAME_SIZE.y};

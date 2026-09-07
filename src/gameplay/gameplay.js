@@ -4,7 +4,7 @@ import { Command } from '../enums/commands.js'
 import { InputType } from '../enums/input_types.js'
 
 import { Scene } from '../gameplay/elements/scene.js'
-import { ProgressWindow } from '../gameplay/elements/progress.js'
+import { ProgressWindow } from './elements/progress_window.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;

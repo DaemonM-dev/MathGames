@@ -21,7 +21,6 @@ export class ProgressWindow{
         this.fontSize = FONTSIZE;
         this.lineSpace = LINESPACE;
         this.color = {infill: COLOR.infill, outline: COLOR.outline, font: COLOR.font};
-
         this.initial = {
             size: {...SIZE},
             pos: {...POS},
@@ -31,7 +30,6 @@ export class ProgressWindow{
             fontSize: FONTSIZE,
             lineSpace: LINESPACE
         }
-
         this.level = 0;
         this.question = 0;
         this.levelMsg = "";
