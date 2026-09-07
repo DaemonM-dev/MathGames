@@ -10,6 +10,9 @@ const COLOR = {infill: 'white', outline: 'black' , font: 'black'};
 const TEXT_POS = {x: POS.x + 135, y: CENTER.y};
 const KURO = {size: {x: 110, y: 85}, pos: {x: POS.x + 10, y: CENTER.y - 45}};
 
+const CURSOR = {size: {x:4, y: 50}, pos: {x: TEXT_POS.x - 15, y: CENTER.y - 25}, visible: false};
+
+
 export class InputWindow{
     constructor(){
         this.scale = 1.0;
@@ -21,11 +24,12 @@ export class InputWindow{
         this.outlineWidth = OUTLINEWIDTH;
         this.fontSize = FONTSIZE;
         this.color = {...COLOR};
-
         this.kuro = {texture: null, size: {...KURO.size}, pos: {...KURO.pos}};
-
         this.clickHere = "Type answer here...";
         this.inputMsg = "";
+        this.cursor = {...CURSOR};
+        this.cursorTimer = 0.0;
+        this.awaitingInput = false;
     }
 
     changeScale(scale){
@@ -39,6 +43,9 @@ export class InputWindow{
         this.radius = RADIUS * this.scale;
         this.outlineWidth = OUTLINEWIDTH * this.scale;
         this.fontSize = FONTSIZE * this.scale;
+
+        this.cursor.size = {x: CURSOR.size.x * this.scale, y: CURSOR.size.y * this.scale};
+        this.cursor.pos = {x: CURSOR.pos.x * this.scale, y: CURSOR.pos.y * this.scale};
     }
 
     init(assets){
@@ -46,7 +53,19 @@ export class InputWindow{
     }
 
     update(deltaTime){
-        if(this.inputMsg === ""){this.inputMsg = this.clickHere;}
+        if(this.inputMsg === "" && this.awaitingInput === false){this.inputMsg = this.clickHere;}
+
+        if(this.awaitingInput){
+            this.cursorTimer += 10 * deltaTime;
+            if(this.cursorTimer >= 5){
+                this.cursorTimer = 0.0;
+                this.cursor.visible = !this.cursor.visible;
+                console.log(this.cursorTimer);
+                console.log(this.cursor.visible);
+                console.log(this.cursor.pos);
+                console.log(this.cursor.size);
+            }
+        }
     }
 
     draw(ctx){
@@ -58,15 +77,22 @@ export class InputWindow{
         ctx.fill();
         ctx.stroke();
         if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
-        ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
-        ctx.fillStyle = this.color.font;
-        ctx.textAlign = 'start';
-        ctx.textBaseline = 'middle';
 
         if(this.inputMsg === this.clickHere){
             ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
             ctx.fillStyle = '#00000041';
+        } else {
+            ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
+            ctx.fillStyle = this.color.font;
         }
+
+        ctx.textAlign = 'start';
+        ctx.textBaseline = 'middle';
         ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
+
+        if(this.cursor.visible){
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(this.cursor.pos.x, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+        }
     }
 }
