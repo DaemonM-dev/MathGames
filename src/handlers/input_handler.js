@@ -28,6 +28,7 @@ export class InputHandler{
         this.keydownHandler = (event) => {
             switch(event.code) {
                 case 'Enter':
+                case 'NumpadEnter':
                     pressButton(Game.gameplay, Game.gameplay.buttons[0]);
                     event.preventDefault();
                     break;

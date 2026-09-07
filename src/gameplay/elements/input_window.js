@@ -1,4 +1,5 @@
 import { GAME_SIZE, pointIntersects } from '../../globals.js'
+import { Game } from '../../game.js';
 import { ButtonState } from '../../enums/button_states.js';
 import { Command } from '../../enums/commands.js';
 
@@ -13,7 +14,7 @@ const TEXT_POS = {x: POS.x + 135, y: CENTER.y};
 const KURO = {size: {x: 110, y: 85}, pos: {x: POS.x + 10, y: CENTER.y - 45}};
 
 const CURSOR = {size: {x:6, y: 50}, pos: {x: TEXT_POS.x - 15, y: CENTER.y - 25}, visible: false};
-
+const MAX_INPUTS = 6;
 
 export class InputWindow{
     constructor(){
@@ -28,12 +29,14 @@ export class InputWindow{
         this.color = {...COLOR};
         this.kuro = {texture: null, size: {...KURO.size}, pos: {...KURO.pos}};
         this.clickHere = "Type answer here...";
-        this.inputMsg = "";
         this.cursor = {...CURSOR};
         this.cursorTimer = 0.0;
         this.awaitingInput = false;
-
         this.state = ButtonState.NONE;
+        this.currentInput = "";
+        this.inputMsg = "";
+        this.inputLength = 0.0;
+        
     }
 
     changeScale(scale){
@@ -47,9 +50,9 @@ export class InputWindow{
         this.radius = RADIUS * this.scale;
         this.outlineWidth = OUTLINEWIDTH * this.scale;
         this.fontSize = FONTSIZE * this.scale;
-
         this.cursor.size = {x: CURSOR.size.x * this.scale, y: CURSOR.size.y * this.scale};
         this.cursor.pos = {x: CURSOR.pos.x * this.scale, y: CURSOR.pos.y * this.scale};
+        this.inputLength = Game.ctx.measureText(this.inputMsg);
     }
 
     init(assets){
@@ -59,6 +62,7 @@ export class InputWindow{
     update(command, mousePos, deltaTime){
         this.animateCursor(deltaTime);
         this.handleInputs(command, mousePos);
+        if(this.awaitingInput){this.getKeyInputs()};
     }
 
     animateCursor(deltaTime){
@@ -89,9 +93,9 @@ export class InputWindow{
                     this.state = ButtonState.NONE;
                 } else if(command === Command.MOUSE_DOWN || command === Command.MOUSE_UP){
                     if(!this.awaitingInput){
-                        this.color = {infill: '#ffffff', outline: '#00000000' , font: 'black'};
                         this.state = ButtonState.PRESSED;
-                        if(this.cursorTimer !== 0.0){this.cursor.visible = true; this.cursorTimer = 0.0;}
+                        this.cursor.visible = true;
+                        this.cursorTimer = 0.0;
                         this.awaitingInput = true;
                     }
                 }
@@ -113,6 +117,16 @@ export class InputWindow{
         }
     }
 
+    getKeyInputs(){
+        if (this.currentInput) {
+            if (this.inputMsg.length < MAX_INPUTS) {
+                this.inputMsg += this.currentInput;
+            }
+            this.currentInput = "";
+            this.inputLength = Game.ctx.measureText(this.inputMsg);
+        }
+    }
+
     draw(ctx){
         ctx.fillStyle = this.color.infill;
         ctx.lineWidth = this.outlineWidth;
@@ -126,17 +140,22 @@ export class InputWindow{
         ctx.textAlign = 'start';
         ctx.textBaseline = 'middle';
 
-        if(!this.awaitingInput || this.input === ""){
+        if(!this.awaitingInput && this.inputMsg === ""){
             ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
             ctx.fillStyle = '#00000041';
-            ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
+            ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
         } else {
             ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
             ctx.fillStyle = this.color.font;
-            ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
-            if(this.cursor.visible){
-                ctx.fillRect(this.cursor.pos.x, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+            ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
+            if(this.awaitingInput && this.cursor.visible){
+                const textWidth = ctx.measureText(this.inputMsg).width + 5 * this.scale;
+                ctx.fillRect(this.textPos.x + textWidth, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
             }
         }
+    }
+
+    getInput(){
+        return this.inputMsg;
     }
 }

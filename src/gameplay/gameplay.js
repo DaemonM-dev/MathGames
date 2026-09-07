@@ -15,8 +15,6 @@ const Q_LIMIT = 5;
 export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
-        this.inputBuffer = "";
-        this.maxDigits = 5;
         this.numericAnswer = 0;
         this.level = 1;
         this.prevLevel = 0;
@@ -58,26 +56,25 @@ export class Gameplay {
     }
 }
 
-function clearInputBuffer(object){
-    if(object.inputBuffer !== ""){object.inputBuffer = "";}
+function clearInputBuffer(inputWindow){
+    if(inputWindow.inputMsg !== ""){inputWindow.inputMsg = "";}
 }
-export function getKeyboardInput(object, key){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-        if(object.inputBuffer.length < object.maxDigits){
-                object.inputBuffer += key;
-    
+export function getKeyboardInput(gameplay, key){
+    const inputWindow = gameplay.inputWindow;
+    if(gameplay.inputType === InputType.KEYBOARD && inputWindow.awaitingInput){
+        inputWindow.currentInput = key;
+    }
+}
+export function removeKeyboardInput(gameplay){
+    const inputWindow = gameplay.inputWindow;
+    if(gameplay.inputType === InputType.KEYBOARD && inputWindow.awaitingInput){
+        if(inputWindow.inputMsg.length > 0){
+            inputWindow.inputMsg = inputWindow.inputMsg.slice(0, -1);
         }
     }
 }
-export function removeKeyboardInput(object){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
-        if(object.inputBuffer.length > 0){
-            object.inputBuffer = object.inputBuffer.slice(0, -1);
-        }
-    }
-}
-export function pressButton(object, button){
-    if(object.inputType === InputType.KEYBOARD && object.awaitingInput){
+export function pressButton(gameplay, button){
+    if(gameplay.inputType === InputType.KEYBOARD && gameplay.inputWindow.awaitingInput){
         if(!button.pressed){button.pressed = true;}
     }
 }
