@@ -12,7 +12,7 @@ const COLOR = {infill: 'white', outline: 'black' , font: 'black'};
 const TEXT_POS = {x: POS.x + 135, y: CENTER.y};
 const KURO = {size: {x: 110, y: 85}, pos: {x: POS.x + 10, y: CENTER.y - 45}};
 
-const CURSOR = {size: {x:4, y: 50}, pos: {x: TEXT_POS.x - 15, y: CENTER.y - 25}, visible: false};
+const CURSOR = {size: {x:6, y: 50}, pos: {x: TEXT_POS.x - 15, y: CENTER.y - 25}, visible: false};
 
 
 export class InputWindow{
@@ -57,7 +57,6 @@ export class InputWindow{
     }
 
     update(command, mousePos, deltaTime){
-        if(this.inputMsg === "" && this.awaitingInput === false){this.inputMsg = this.clickHere;}
         this.animateCursor(deltaTime);
         this.handleInputs(command, mousePos);
     }
@@ -88,10 +87,11 @@ export class InputWindow{
                 if(!pointIntersects(this.size, this.pos, mousePos)){
                     this.color = {...COLOR};
                     this.state = ButtonState.NONE;
-                } else if(command === Command.MOUSE_DOWN){
+                } else if(command === Command.MOUSE_DOWN || command === Command.MOUSE_UP){
                     if(!this.awaitingInput){
                         this.color = {infill: '#ffffff', outline: '#00000000' , font: 'black'};
                         this.state = ButtonState.PRESSED;
+                        if(this.cursorTimer !== 0.0){this.cursor.visible = true; this.cursorTimer = 0.0;}
                         this.awaitingInput = true;
                     }
                 }
@@ -100,7 +100,7 @@ export class InputWindow{
                 if(!pointIntersects(this.size, this.pos, mousePos)){
                     this.color = {...COLOR};
                     this.state = ButtonState.NONE;
-                } else if (command === Command.MOUSE_UP){
+                } else {
                     if(!this.awaitingInput){
                         this.color = {infill: '#c5c5c5', outline: '#00000077' , font: 'black'};
                         this.state = ButtonState.HOVER;
@@ -122,19 +122,21 @@ export class InputWindow{
         ctx.fill();
         ctx.stroke();
         if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
-        if(this.inputMsg === this.clickHere){
+
+        ctx.textAlign = 'start';
+        ctx.textBaseline = 'middle';
+
+        if(!this.awaitingInput || this.input === ""){
             ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
             ctx.fillStyle = '#00000041';
+            ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
         } else {
             ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
             ctx.fillStyle = this.color.font;
-        }
-        ctx.textAlign = 'start';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
-        if(this.cursor.visible && this.awaitingInput){
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(this.cursor.pos.x, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+            ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
+            if(this.cursor.visible){
+                ctx.fillRect(this.cursor.pos.x, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+            }
         }
     }
 }
