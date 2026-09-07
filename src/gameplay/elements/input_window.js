@@ -68,7 +68,7 @@ export class InputWindow{
     animateCursor(deltaTime){
         if(this.awaitingInput){
             this.cursorTimer += 10 * deltaTime;
-            if(this.cursorTimer >= 5){
+            if(this.cursorTimer >= 3){
                 this.cursorTimer = 0.0;
                 this.cursor.visible = !this.cursor.visible;
             }
