@@ -47,6 +47,7 @@ export class Gameplay {
     update(deltaTime){
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
+        this.inputWindow.update(deltaTime);
     }
 
     draw(ctx){
