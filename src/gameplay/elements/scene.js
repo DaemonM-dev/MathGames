@@ -13,33 +13,34 @@ export class Scene{
     }
 
     changeScale(scale){
+        this.scale = scale;
         if(this.bg){
-            this.bg.size = {x: this.bg.initial.size.x * scale, y: this.bg.initial.size.y * scale};
-            this.bg.pos = {x: this.bg.initial.pos.x * scale, y: this.bg.initial.pos.y * scale};
+            this.bg.size = {x: this.bg.initial.size.x * this.scale, y: this.bg.initial.size.y * this.scale};
+            this.bg.pos = {x: this.bg.initial.pos.x * this.scale, y: this.bg.initial.pos.y * this.scale};
         }
         if(this.purpleBox){
-            this.purpleBox.size = {x: this.purpleBox.initial.size.x * scale, y: this.purpleBox.initial.size.y * scale};
-            this.purpleBox.pos = {x: this.purpleBox.initial.pos.x * scale, y: this.purpleBox.initial.pos.y * scale};
+            this.purpleBox.size = {x: this.purpleBox.initial.size.x * this.scale, y: this.purpleBox.initial.size.y * this.scale};
+            this.purpleBox.pos = {x: this.purpleBox.initial.pos.x * this.scale, y: this.purpleBox.initial.pos.y * this.scale};
         }
         if(this.greenBox){
-            this.greenBox.size = {x: this.greenBox.initial.size.x * scale, y: this.greenBox.initial.size.y * scale};
-            this.greenBox.pos = {x: this.greenBox.initial.pos.x * scale, y: this.greenBox.initial.pos.y * scale};
+            this.greenBox.size = {x: this.greenBox.initial.size.x * this.scale, y: this.greenBox.initial.size.y * this.scale};
+            this.greenBox.pos = {x: this.greenBox.initial.pos.x * this.scale, y: this.greenBox.initial.pos.y * this.scale};
         }
         if(this.blackVertBox){
-            this.blackVertBox.size = {x: this.blackVertBox.initial.size.x * scale, y: this.blackVertBox.initial.size.y * scale};
-            this.blackVertBox.pos = {x: this.blackVertBox.initial.pos.x * scale, y: this.blackVertBox.initial.pos.y * scale};
+            this.blackVertBox.size = {x: this.blackVertBox.initial.size.x * this.scale, y: this.blackVertBox.initial.size.y * this.scale};
+            this.blackVertBox.pos = {x: this.blackVertBox.initial.pos.x * this.scale, y: this.blackVertBox.initial.pos.y * this.scale};
         }
         if(this.blackHorizBox){
-            this.blackHorizBox.size = {x: this.blackHorizBox.initial.size.x * scale, y: this.blackHorizBox.initial.size.y * scale};
-            this.blackHorizBox.pos = {x: this.blackHorizBox.initial.pos.x * scale, y: this.blackHorizBox.initial.pos.y * scale};
+            this.blackHorizBox.size = {x: this.blackHorizBox.initial.size.x * this.scale, y: this.blackHorizBox.initial.size.y * this.scale};
+            this.blackHorizBox.pos = {x: this.blackHorizBox.initial.pos.x * this.scale, y: this.blackHorizBox.initial.pos.y * this.scale};
         }
         if(this.boy){
-            this.boy.size = {x: this.boy.initial.size.x * scale, y: this.boy.initial.size.y * scale};
-            this.boy.pos = {x: this.boy.initial.pos.x * scale, y: this.boy.initial.pos.y * scale};
+            this.boy.size = {x: this.boy.initial.size.x * this.scale, y: this.boy.initial.size.y * this.scale};
+            this.boy.pos = {x: this.boy.initial.pos.x * this.scale, y: this.boy.initial.pos.y * this.scale};
         }
         if(this.girl){
-            this.girl.size = {x: this.girl.initial.size.x * scale, y: this.girl.initial.size.y * scale};
-            this.girl.pos = {x: this.girl.initial.pos.x * scale, y: this.girl.initial.pos.y * scale};
+            this.girl.size = {x: this.girl.initial.size.x * this.scale, y: this.girl.initial.size.y * this.scale};
+            this.girl.pos = {x: this.girl.initial.pos.x * this.scale, y: this.girl.initial.pos.y * this.scale};
         }
     }
 

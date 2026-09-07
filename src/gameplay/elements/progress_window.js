@@ -1,8 +1,9 @@
 import { GAME_SIZE } from '../../globals.js'
 
 const BG_SIZE = {x: 1280, y: 720};
+
 const SIZE = {x: 500, y: 150};
-const POS = { x: 1355 , y:20};
+const POS = { x: 1353.5 , y:20};
 const RADIUS = 35;
 const OUTLINEWIDTH = 8;
 const FONTSIZE = 60;
@@ -21,15 +22,6 @@ export class ProgressWindow{
         this.fontSize = FONTSIZE;
         this.lineSpace = LINESPACE;
         this.color = {infill: COLOR.infill, outline: COLOR.outline, font: COLOR.font};
-        this.initial = {
-            size: {...SIZE},
-            pos: {...POS},
-            center: {...CENTER},
-            radius: RADIUS,
-            outlineWidth: OUTLINEWIDTH,
-            fontSize: FONTSIZE,
-            lineSpace: LINESPACE
-        }
         this.level = 0;
         this.question = 0;
         this.levelMsg = "";
@@ -38,13 +30,13 @@ export class ProgressWindow{
 
     changeScale(scale){
         this.scale = scale;
-        this.size = { x:this.initial.size.x * scale, y: this.initial.size.y * scale };
-        this.pos = { x:this.initial.pos.x * scale, y: this.initial.pos.y * scale };
-        this.center = { x:this.initial.center.x * scale, y: this.initial.center.y * scale };
-        this.radius = this.initial.radius * scale;
-        this.outlineWidth = this.initial.outlineWidth * scale;
-        this.fontSize = this.initial.fontSize * scale;
-        this.lineSpace = this.initial.lineSpace * scale;
+        this.size = {x: SIZE.x * this.scale, y: SIZE.y * this.scale};
+        this.pos = {x:POS.x * this.scale, y: POS.y * this.scale};
+        this.center = {x:CENTER.x * this.scale, y: CENTER.y * this.scale};
+        this.radius = RADIUS * this.scale;
+        this.outlineWidth = OUTLINEWIDTH * this.scale;
+        this.fontSize = FONTSIZE * this.scale;
+        this.lineSpace = LINESPACE * this.scale;
     }
 
     update(question, level){

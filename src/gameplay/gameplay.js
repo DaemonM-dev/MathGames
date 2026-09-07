@@ -5,6 +5,7 @@ import { InputType } from '../enums/input_types.js'
 
 import { Scene } from '../gameplay/elements/scene.js'
 import { ProgressWindow } from './elements/progress_window.js'
+import { Dropzone } from './elements/dropzone.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;
@@ -19,12 +20,15 @@ export class Gameplay {
         this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
+
         this.scene = new Scene();
         this.progressWindow = new ProgressWindow();
+        this.dropzone = new Dropzone();
     }
     changeScale(scale){
         if(this.scene){this.scene.changeScale(scale);}
         if(this.progressWindow){this.progressWindow.changeScale(scale);}
+        if(this.dropzone){this.dropzone.changeScale(scale);}
     }
 
     init(assets){
@@ -40,6 +44,7 @@ export class Gameplay {
     draw(ctx){
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
+        this.dropzone.draw(ctx);
     }
 }
 
