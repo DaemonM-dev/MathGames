@@ -6,6 +6,7 @@ import { InputType } from '../enums/input_types.js'
 import { Scene } from '../gameplay/elements/scene.js'
 import { ProgressWindow } from './elements/progress_window.js'
 import { Dropzone } from './elements/dropzone.js'
+import { SpeechBubble } from './elements/speech_bubble.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;
@@ -24,15 +25,18 @@ export class Gameplay {
         this.scene = new Scene();
         this.progressWindow = new ProgressWindow();
         this.dropzone = new Dropzone();
+        this.speechBubble = new SpeechBubble();
     }
     changeScale(scale){
         if(this.scene){this.scene.changeScale(scale);}
         if(this.progressWindow){this.progressWindow.changeScale(scale);}
         if(this.dropzone){this.dropzone.changeScale(scale);}
+        if(this.speechBubble){this.speechBubble.changeScale(scale);}
     }
 
     init(assets){
         this.scene.init(assets);
+        this.speechBubble.init(assets);
         console.log("Initializing gameplay");
     }
 
@@ -45,6 +49,7 @@ export class Gameplay {
         this.scene.draw(ctx);
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
+        this.speechBubble.draw(ctx);
     }
 }
 
