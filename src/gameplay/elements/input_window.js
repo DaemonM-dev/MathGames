@@ -1,4 +1,6 @@
-import { GAME_SIZE } from '../../globals.js'
+import { GAME_SIZE, pointIntersects } from '../../globals.js'
+import { ButtonState } from '../../enums/button_states.js';
+import { Command } from '../../enums/commands.js';
 
 const SIZE = {x: 500, y: 100};
 const POS = { x: 1353.5 , y:740};
@@ -30,6 +32,8 @@ export class InputWindow{
         this.cursor = {...CURSOR};
         this.cursorTimer = 0.0;
         this.awaitingInput = false;
+
+        this.state = ButtonState.NONE;
     }
 
     changeScale(scale){
@@ -52,19 +56,60 @@ export class InputWindow{
         this.kuro.texture = assets.getAsset('kuro');
     }
 
-    update(deltaTime){
+    update(command, mousePos, deltaTime){
         if(this.inputMsg === "" && this.awaitingInput === false){this.inputMsg = this.clickHere;}
+        this.animateCursor(deltaTime);
+        this.handleInputs(command, mousePos);
+    }
 
+    animateCursor(deltaTime){
         if(this.awaitingInput){
             this.cursorTimer += 10 * deltaTime;
             if(this.cursorTimer >= 5){
                 this.cursorTimer = 0.0;
                 this.cursor.visible = !this.cursor.visible;
-                console.log(this.cursorTimer);
-                console.log(this.cursor.visible);
-                console.log(this.cursor.pos);
-                console.log(this.cursor.size);
             }
+        }
+    }
+
+    handleInputs(command, mousePos){
+        switch(this.state){
+            case ButtonState.NONE:
+                if(pointIntersects(this.size, this.pos, mousePos)){
+                    if(!this.awaitingInput){
+                        this.color = {infill: '#c5c5c5', outline: '#00000077' , font: 'black'};
+                        this.state = ButtonState.HOVER;
+                    }
+                } else {
+                    if(this.awaitingInput && command === Command.MOUSE_DOWN){this.awaitingInput = false;}
+                }
+            break;
+            case ButtonState.HOVER:
+                if(!pointIntersects(this.size, this.pos, mousePos)){
+                    this.color = {...COLOR};
+                    this.state = ButtonState.NONE;
+                } else if(command === Command.MOUSE_DOWN){
+                    if(!this.awaitingInput){
+                        this.color = {infill: '#ffffff', outline: '#00000000' , font: 'black'};
+                        this.state = ButtonState.PRESSED;
+                        this.awaitingInput = true;
+                    }
+                }
+            break;
+            case ButtonState.PRESSED:
+                if(!pointIntersects(this.size, this.pos, mousePos)){
+                    this.color = {...COLOR};
+                    this.state = ButtonState.NONE;
+                } else if (command === Command.MOUSE_UP){
+                    if(!this.awaitingInput){
+                        this.color = {infill: '#c5c5c5', outline: '#00000077' , font: 'black'};
+                        this.state = ButtonState.HOVER;
+                    } else {
+                        this.color = {...COLOR};
+                        this.state = ButtonState.NONE;
+                    }
+                }
+            break;
         }
     }
 
@@ -77,7 +122,6 @@ export class InputWindow{
         ctx.fill();
         ctx.stroke();
         if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
-
         if(this.inputMsg === this.clickHere){
             ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
             ctx.fillStyle = '#00000041';
@@ -85,12 +129,10 @@ export class InputWindow{
             ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
             ctx.fillStyle = this.color.font;
         }
-
         ctx.textAlign = 'start';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (2 * this.scale), this.size.x);
-
-        if(this.cursor.visible){
+        if(this.cursor.visible && this.awaitingInput){
             ctx.fillStyle = '#000000';
             ctx.fillRect(this.cursor.pos.x, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
         }

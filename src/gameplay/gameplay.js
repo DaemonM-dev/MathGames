@@ -14,7 +14,6 @@ const Q_LIMIT = 5;
 
 export class Gameplay {
     constructor(){
-        this.mousePos = { x: 0.0, y: 0.0 };
         this.inputType = InputType.KEYBOARD;
         this.inputBuffer = "";
         this.maxDigits = 5;
@@ -44,10 +43,10 @@ export class Gameplay {
         console.log("Initializing gameplay");
     }
 
-    update(deltaTime){
+    update(command, mousePos, deltaTime){
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
-        this.inputWindow.update(deltaTime);
+        this.inputWindow.update(command, mousePos, deltaTime);
     }
 
     draw(ctx){

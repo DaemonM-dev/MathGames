@@ -77,7 +77,7 @@ function update(deltaTime){
             break;
         case GameState.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.gameplay.update(deltaTime);
+            Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
             break;
         case GameState.GAME_COMPLETE:
             break;
