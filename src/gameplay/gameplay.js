@@ -67,7 +67,7 @@ export class Gameplay {
         }
         this.buttonHandler.update(command, mousePos);
         this.foodHandler.update(this.level, command, mousePos, this.dropzone);
-
+        this.dialogue.update(Game.ctx);
         if(this.buttonHandler.pressedButton !== null){
             console.log("Button Pressed", this.buttonHandler.pressedButton.text);
         }

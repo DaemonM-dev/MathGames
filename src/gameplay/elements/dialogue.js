@@ -4,24 +4,26 @@ export class Dialogue{
     constructor(bounds){
         this.scale = 1.0;
 
-        this.fontSize = 20;
+        this.fontSize = 30;
         this.bounds = {...bounds};
         this.center = {
             x: bounds.pos.x + (bounds.size.x / 2),
             y: bounds.pos.y + (bounds.size.y / 2)
         };
-        this.initial = {fontSize: 50, bounds: {...bounds}, center: {...this.center}};
-
-        this.activeText = "Sample Text";
-        this.cachedText = "";
-        this.activeAnswer = 0.0;
-        this.mathProblem = "";
-        this.viewingMathProblem = false;
+        this.initial = {fontSize: this.fontSize, bounds: {...bounds}, center: {...this.center}};
         this.instructionIndex = 0;
         this.instructionalMsg = [
             "Select the Kuro icon with your mouse to begin typing your answers!",
             "Try clicking and dragging the food items over to the large white box!"
         ];
+
+
+        this.activeText = "This is a new text with words of different sizes that I am using to test a hypothesis. ";
+        this.cachedText = "";
+
+        this.wrappingText = false;
+        this.wordArray = [];
+        this.lines = [];
     }
 
     changeScale(scale){
@@ -32,11 +34,58 @@ export class Dialogue{
         this.center = {x:this.initial.center.x * this.scale, y:this.initial.center.y * this.scale};
     }
 
+    update(ctx){
+        if(this.activeText !== this.cachedText || this.wrappingText){
+            this.wrapText(ctx);
+            this.wrappingText = false;
+            this.cachedText = this.activeText;
+        }
+    }
+
     draw(ctx){
         ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.activeText, this.center.x, this.center.y);
+
+        const lineHeight = this.fontSize * 1.4;
+        const totalHeight = this.lines.length * lineHeight;
+        const startY = this.center.y - totalHeight / 2 + lineHeight / 2;
+
+        for(let i = 0; i < this.lines.length; i++){
+            const yPos = startY + i * lineHeight;
+            ctx.fillText(this.lines[i], this.center.x, yPos);
+        }
+    }
+
+wrapText(ctx){
+    this.wordArray = [];
+    this.lines = [];
+    ctx.font = `${this.fontSize}px PoppinsBold`;
+    this.wordArray = this.activeText.split(' ');
+
+    let line = '';
+    for(let i = 0; i < this.wordArray.length; i++){
+        let testLine = '';
+        if(line === ''){
+            testLine = this.wordArray[i];
+        } else {
+            testLine = line + ' ' + this.wordArray[i];
+        }
+        const testWidth = ctx.measureText(testLine).width;
+        if(testWidth > this.bounds.size.x){
+            this.lines.push(line);
+            line = this.wordArray[i];
+        } else {
+            line = testLine;
+        }
+    }
+    if(line !== ''){ this.lines.push(line); }
+}
+
+
+    setText(text){
+        this.activeText = text;
+        this.wrappingText = true;
     }
 }
