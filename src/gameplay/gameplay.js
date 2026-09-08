@@ -10,6 +10,7 @@ import { SpeechBubble } from './elements/speech_bubble.js'
 import { InputWindow } from './elements/input_window.js'
 import { FoodHandler } from '../handlers/food_handler.js'
 import { ButtonHandler } from '../handlers/button_handler.js'
+import { Dialogue } from './elements/dialogue.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;
@@ -22,13 +23,15 @@ export class Gameplay {
         this.prevLevel = 0;
         this.question = 1;
 
-        this.scene = new Scene();
-        this.progressWindow = new ProgressWindow();
-        this.dropzone = new Dropzone();
-        this.speechBubble = new SpeechBubble();
-        this.inputWindow = new InputWindow();
-        this.buttonHandler = new ButtonHandler();
-        this.foodHandler = new FoodHandler();
+
+        this.scene = null;
+        this.progressWindow = null;
+        this.dropzone = null;
+        this.speechBubble = null;
+        this.inputWindow = null;
+        this.buttonHandler = null;
+        this.foodHandler = null;
+        this.dialogue = null;
     }
     changeScale(scale){
         if(this.scene){this.scene.changeScale(scale);}
@@ -38,14 +41,22 @@ export class Gameplay {
         if(this.inputWindow){this.inputWindow.changeScale(scale);}
         if(this.buttonHandler){this.buttonHandler.changeScale(scale);}
         if(this.foodHandler){this.foodHandler.changeScale(scale);}
+        if(this.dialogue){this.dialogue.changeScale(scale);}
     }
 
     init(assets){
+        this.scene = new Scene();
         this.scene.init(assets);
+        this.progressWindow = new ProgressWindow();
+        this.dropzone = new Dropzone();
+        this.speechBubble = new SpeechBubble();
         this.speechBubble.init(assets);
+        this.inputWindow = new InputWindow();
         this.inputWindow.init(assets);
+        this.buttonHandler = new ButtonHandler();
+        this.foodHandler = new FoodHandler();
         this.foodHandler.init(assets);
-        console.log("Initializing gameplay");
+        this.dialogue = new Dialogue(this.speechBubble.textBounds);
     }
 
     update(command, mousePos, deltaTime){
@@ -70,7 +81,7 @@ export class Gameplay {
         this.inputWindow.draw(this.level, ctx);
         this.buttonHandler.draw(ctx);
         this.foodHandler.draw(this.level, ctx);
-
+        this.dialogue.draw(ctx);
         if(this.buttonHandler.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttonHandler.drawMenuReturn(ctx);
