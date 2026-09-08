@@ -101,15 +101,22 @@ export class ButtonHandler{
 
     update(command, mousePos){
         if(!this.viewingMenu){
+            if(this.pressedButton){this.pressedButton = null;}
+
             this.submit.update(command, mousePos);
             this.next.update(command, mousePos);
             this.prev.update(command, mousePos);
             this.menu.update(command, mousePos);
+
+            if(this.submit.isPressed()){this.pressedButton = this.submit;}
+            else if (this.next.isPressed()){this.pressedButton = this.next;}
+            else if (this.prev.isPressed()){this.pressedButton = this.prev;}
+            else if(this.menu.isPressed()){this.viewingMenu = true;}
+
         } else {
             this.menuReturn.update(command, mousePos);
             if(this.menuReturn.isPressed()){this.viewingMenu = false;}
         }
-        if(this.menu.isPressed()){this.viewingMenu = true;}
     }
 
     draw(ctx){

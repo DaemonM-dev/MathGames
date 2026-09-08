@@ -29,7 +29,7 @@ export class InputHandler{
             switch(event.code) {
                 case 'Enter':
                 case 'NumpadEnter':
-                    pressButton(Game.gameplay, Game.gameplay.buttons[0]);
+                    pressButton(Game.gameplay.buttonHandler.viewingMenu, Game.gameplay.buttonHandler.submit);
                     event.preventDefault();
                     break;
                 case 'Backspace':

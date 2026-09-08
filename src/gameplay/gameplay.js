@@ -56,6 +56,10 @@ export class Gameplay {
         }
         this.buttonHandler.update(command, mousePos);
         this.foodHandler.update(this.level, command, mousePos, this.dropzone);
+
+        if(this.buttonHandler.pressedButton !== null){
+            console.log("Button Pressed", this.buttonHandler.pressedButton.text);
+        }
     }
 
     draw(ctx){
@@ -91,8 +95,6 @@ export function removeKeyboardInput(gameplay){
         }
     }
 }
-export function pressButton(gameplay, button){
-    if(gameplay.inputWindow.awaitingInput){
-        if(!button.pressed){button.pressed = true;}
-    }
+export function pressButton(viewingMenu, button){
+    if(!button.pressed && !viewingMenu){console.log("Pressing Enter Key to Submit!!"); button.pressed = true;}
 }
