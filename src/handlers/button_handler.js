@@ -85,16 +85,16 @@ export class ButtonHandler{
         this.menu.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menu.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE = {x:50, y: 50};
-        POS = {x:1407 ,y: 75};
+        SIZE = {x:100, y: 100};
+        POS = {x:1350 ,y: 55};
         RADIUS = 10;
         LINEWIDTH = 5;
-        FONTSIZE = 40;
+        FONTSIZE = 50;
         TEXT = "X";
-        DEFCOLOR = {infill: '#4949497e', outline: '#00000060'};
-        HOVERCOLOR = {infill: '#353535ce', outline: '#00000060'};
-        PRESSCOLOR = {infill: '#353535ce', outline: '#88a8d800'};
-        FONTCOLOR = '#ffffff9d';
+        DEFCOLOR = {infill: '#ed2626', outline: '#ffffff'};
+        HOVERCOLOR = {infill: '#ed26269c', outline: '#ffffff'};
+        PRESSCOLOR = {infill: '#ed26269c', outline: '#88a8d800'};
+        FONTCOLOR = '#ffffff';
         this.menuReturn.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menuReturn.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
     }
@@ -107,17 +107,19 @@ export class ButtonHandler{
             this.menu.update(command, mousePos);
         } else {
             this.menuReturn.update(command, mousePos);
+            if(this.menuReturn.isPressed()){this.viewingMenu = false;}
         }
+        if(this.menu.isPressed()){this.viewingMenu = true;}
     }
 
     draw(ctx){
-        if(!this.viewingMenu){
-            this.submit.draw(ctx);
-            this.next.draw(ctx);
-            this.prev.draw(ctx);
-            this.menu.draw(ctx);
-        } else {
-            this.menuReturn.draw(ctx);
-        }
+        this.submit.draw(ctx);
+        this.next.draw(ctx);
+        this.prev.draw(ctx);
+        this.menu.draw(ctx);
+    }
+
+    drawMenuReturn(ctx){
+        this.menuReturn.draw(ctx);
     }
 }

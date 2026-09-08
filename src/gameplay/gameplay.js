@@ -51,7 +51,9 @@ export class Gameplay {
     update(command, mousePos, deltaTime){
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
-        this.inputWindow.update(this.level, command, mousePos, deltaTime);
+        if(!this.buttonHandler.viewingMenu){
+            this.inputWindow.update(this.level, command, mousePos, deltaTime);
+        }
         this.buttonHandler.update(command, mousePos);
         this.foodHandler.update(this.level, command, mousePos, this.dropzone);
     }
@@ -64,6 +66,11 @@ export class Gameplay {
         this.inputWindow.draw(this.level, ctx);
         this.buttonHandler.draw(ctx);
         this.foodHandler.draw(this.level, ctx);
+
+        if(this.buttonHandler.viewingMenu){
+            this.scene.drawMenu(ctx);
+            this.buttonHandler.drawMenuReturn(ctx);
+        }
     }
 }
 

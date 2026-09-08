@@ -10,6 +10,7 @@ export class Scene{
         this.blackHorizBox = null;
         this.boy = null;
         this.girl = null;
+        this.menu = null;
     }
 
     changeScale(scale){
@@ -41,6 +42,10 @@ export class Scene{
         if(this.girl){
             this.girl.size = {x: this.girl.initial.size.x * this.scale, y: this.girl.initial.size.y * this.scale};
             this.girl.pos = {x: this.girl.initial.pos.x * this.scale, y: this.girl.initial.pos.y * this.scale};
+        }
+        if(this.menu){
+            this.menu.size = {x: this.menu.initial.size.x * this.scale, y: this.menu.initial.size.y * this.scale};
+            this.menu.pos = {x: this.menu.initial.pos.x * this.scale, y: this.menu.initial.pos.y * this.scale};
         }
     }
 
@@ -102,6 +107,14 @@ export class Scene{
             pos: {...POS}, 
             initial: { size: {...CHAR_SIZE}, pos: {...POS} }
         }
+        SIZE = {x: 1050, y: 1050};
+        POS = {x: (GAME_SIZE.x / 2) - (SIZE.x / 2), y: 0};
+        this.menu = {
+            texture: assets.getAsset('menuboard'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
     }
 
     update(deltaTime){
@@ -120,5 +133,9 @@ export class Scene{
         ctx.fillRect(this.blackHorizBox.pos.x, this.blackHorizBox.pos.y, this.blackHorizBox.size.x, this.blackHorizBox.size.y);
         ctx.drawImage(this.boy.texture, this.boy.pos.x, this.boy.pos.y, this.boy.size.x, this.boy.size.y);
         ctx.drawImage(this.girl.texture, this.girl.pos.x, this.girl.pos.y, this.girl.size.x, this.girl.size.y);
+    }
+
+    drawMenu(ctx){
+        ctx.drawImage(this.menu.texture, this.menu.pos.x, this.menu.pos.y, this.menu.size.x, this.menu.size.y);
     }
 }
