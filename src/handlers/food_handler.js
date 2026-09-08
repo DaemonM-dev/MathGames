@@ -1,4 +1,4 @@
-import { GAME_SIZE, getRandomInt, shuffle } from '../globals.js'
+import { GAME_SIZE, getRandomInt, shuffle, pointIntersects } from '../globals.js'
 import { Command } from '../enums/commands.js'
 import { FoodItem } from '../gameplay/elements/food_item.js'
 
@@ -44,6 +44,7 @@ export class FoodHandler{
         this.foodItems = [];
         this.copies = [];
         this.duplicates = [];
+        this.foodInDropzone = [];
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -75,7 +76,48 @@ export class FoodHandler{
             this.foodItems[i].setDynamic(VALUE, POS);
         }
         this.randomiseDynamic();
-        console.log(this.foodItems);
+    }
+
+    update(level, command, mousePos, dropzone){
+        if(level === 2 || level === 5){
+            switch(command){
+                case Command.MOUSE_DOWN:
+                    if(!this.itemSelected){
+                        for(let i = 0; i < this.foodItems.length; i++){
+                            if(pointIntersects(mousePos, this.foodItems[i])){
+                                this.foodItems[i].select();
+                                this.selectionIndex = i;
+                                this.itemSelected = true;
+                            }
+                        }
+                    }
+                break;
+                case Command.MOUSE_UP:
+                    if(this.itemSelected){
+                        if(pointIntersects(this.foodItems[this.selectionIndex], dropzone)){
+                            this.foodInDropzone.push(this.foodItems[this.selectionIndex]);
+                            console.log("Adding food to dropzone", this.foodInDropzone);
+                        } else {
+                            for(let i = 0; i < this.foodInDropzone.length; i++){
+                                if(this.foodItems[this.selectionIndex] === this.foodInDropzone[i]){
+                                    this.foodInDropzone.splice(i, 1);
+                                    console.log("Removing food from dropzone", this.foodInDropzone );
+                                    break;
+                                }
+                            }
+                            this.foodItems[this.selectionIndex].reset();
+                        }
+                    }
+                    this.foodItems[this.selectionIndex].deselect();
+                    this.selectionIndex = 0;
+                    this.itemSelected = false;
+                break;
+            }
+
+            if(this.itemSelected){
+                this.foodItems[this.selectionIndex].drag(mousePos);
+            }
+        }
     }
 
     draw(level, ctx){
@@ -100,6 +142,46 @@ export class FoodHandler{
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setDynamic(VALUE, POS);
+        }
+    }
+
+    duplicateRandom(){
+        this.duplicates = [];
+        const COUNT = getRandomInt(2, 6);
+        const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+        const ORIGINAL = this.foodItems[INDEX];
+        let sum = 0;
+        for(let i = 0; i < COUNT; i++){
+            const COPY = new FoodItem();
+            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size});
+            COPY.init(ORIGINAL.value, {...this.dropzonePoints[i].pos});
+            COPY.changeScale(this.scale);
+            this.duplicates.push(COPY);
+            sum = sum + ORIGINAL.value;
+        }
+    }
+
+    copyRandom(){
+        this.copies = [];
+        const COUNT = getRandomInt(2, 3);
+        const INDICES = [];
+        let sum = 0;
+        while(INDICES.length < COUNT){
+            const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+            if(!INDICES.includes(INDEX)){INDICES.push(INDEX);}
+        }
+        for(let i = 0; i < COUNT; i++){
+            const ORIGINAL = this.foodItems[INDICES[i]];
+            const COPY = new FoodItem();
+            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size}, ORIGINAL.type);
+            switch(i){
+                case 0: COPY.init(ORIGINAL.value, {...this.dropzonePoints[0].pos}); break;
+                case 1: COPY.init(ORIGINAL.value, {...this.dropzonePoints[2].pos}); break;
+                case 2: COPY.init(ORIGINAL.value, {...this.dropzonePoints[4].pos}); break;
+            }
+            COPY.changeScale(this.scale);
+            this.copies.push(COPY);
+            sum = sum + ORIGINAL.value;
         }
     }
 }

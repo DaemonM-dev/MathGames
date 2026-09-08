@@ -48,7 +48,8 @@ export class Gameplay {
     update(command, mousePos, deltaTime){
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
-        this.inputWindow.update(command, mousePos, deltaTime);
+        this.inputWindow.update(this.level, command, mousePos, deltaTime);
+        this.foodHandler.update(this.level, command, mousePos, this.dropzone);
     }
 
     draw(ctx){
@@ -56,7 +57,7 @@ export class Gameplay {
         this.progressWindow.draw(ctx);
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
-        this.inputWindow.draw(ctx);
+        this.inputWindow.draw(this.level, ctx);
         this.foodHandler.draw(this.level, ctx);
     }
 }
@@ -79,7 +80,7 @@ export function removeKeyboardInput(gameplay){
     }
 }
 export function pressButton(gameplay, button){
-    if(gameplay.inputType === InputType.KEYBOARD && gameplay.inputWindow.awaitingInput){
+    if(gameplay.inputWindow.awaitingInput){
         if(!button.pressed){button.pressed = true;}
     }
 }

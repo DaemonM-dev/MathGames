@@ -59,10 +59,12 @@ export class InputWindow{
         this.kuro.texture = assets.getAsset('kuro');
     }
 
-    update(command, mousePos, deltaTime){
-        this.animateCursor(deltaTime);
-        this.handleInputs(command, mousePos);
-        if(this.awaitingInput){this.getKeyInputs()};
+    update(level, command, mousePos, deltaTime){
+        if(level === 1 || level === 3 || level === 4){
+            this.animateCursor(deltaTime);
+            this.handleInputs(command, mousePos);
+            if(this.awaitingInput){this.getKeyInputs()};
+        }
     }
 
     animateCursor(deltaTime){
@@ -127,30 +129,30 @@ export class InputWindow{
         }
     }
 
-    draw(ctx){
-        ctx.fillStyle = this.color.infill;
-        ctx.lineWidth = this.outlineWidth;
-        ctx.strokeStyle = this.color.outline;
-        ctx.beginPath();
-        ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
-        ctx.fill();
-        ctx.stroke();
-        if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
-
-        ctx.textAlign = 'start';
-        ctx.textBaseline = 'middle';
-
-        if(!this.awaitingInput && this.inputMsg === ""){
-            ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
-            ctx.fillStyle = '#00000041';
-            ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
-        } else {
-            ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
-            ctx.fillStyle = this.color.font;
-            ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
-            if(this.awaitingInput && this.cursor.visible){
-                const textWidth = ctx.measureText(this.inputMsg).width + 5 * this.scale;
-                ctx.fillRect(this.textPos.x + textWidth, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+    draw(level, ctx){
+        if(level === 1 || level === 3 || level === 4){
+            ctx.fillStyle = this.color.infill;
+            ctx.lineWidth = this.outlineWidth;
+            ctx.strokeStyle = this.color.outline;
+            ctx.beginPath();
+            ctx.roundRect(this.pos.x, this.pos.y, this.size.x, this.size.y, this.radius);
+            ctx.fill();
+            ctx.stroke();
+            if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
+            ctx.textAlign = 'start';
+            ctx.textBaseline = 'middle';
+            if(!this.awaitingInput && this.inputMsg === ""){
+                ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
+                ctx.fillStyle = '#00000041';
+                ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
+            } else {
+                ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
+                ctx.fillStyle = this.color.font;
+                ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
+                if(this.awaitingInput && this.cursor.visible){
+                    const textWidth = ctx.measureText(this.inputMsg).width + 5 * this.scale;
+                    ctx.fillRect(this.textPos.x + textWidth, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
+                }
             }
         }
     }

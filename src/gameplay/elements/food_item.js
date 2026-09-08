@@ -17,8 +17,8 @@ export class FoodItem{
 
     changeScale(scale){
         this.scale = scale;
-        this.size = {x:this.initial.size.x * scale, y: this.initial.size.y * scale};
-        this.pos = {x:this.cachedPos.x * scale, y: this.cachedPos.y * scale};
+        this.size = {x:this.initial.size.x * this.scale, y: this.initial.size.y * this.scale};
+        this.pos = {x:this.cachedPos.x * this.scale, y: this.cachedPos.y * this.scale};
     }
 
     setUnique(texture, name, type, size){
@@ -42,6 +42,11 @@ export class FoodItem{
 
     deselect(){
         if(this.selected){this.selected = false;}
+    }
+
+    reset(){
+        this.cachedPos = {...this.initial.pos};
+        this.pos = {x: this.cachedPos.x * this.scale, y: this.cachedPos.y * this.scale};
     }
 
     drag(mousePos){
