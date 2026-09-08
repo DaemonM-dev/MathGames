@@ -68,9 +68,7 @@ export class Gameplay {
         this.buttonHandler.update(command, mousePos);
         this.foodHandler.update(this.level, command, mousePos, this.dropzone);
         this.dialogue.update(Game.ctx);
-        if(this.buttonHandler.pressedButton !== null){
-            console.log("Button Pressed", this.buttonHandler.pressedButton.text);
-        }
+        this.handleButtonPresses();
     }
 
     draw(ctx){
@@ -85,6 +83,19 @@ export class Gameplay {
         if(this.buttonHandler.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttonHandler.drawMenuReturn(ctx);
+        }
+    }
+
+    handleButtonPresses(){
+        if(this.buttonHandler.pressedButton !== null){
+            console.log("Button Pressed", this.buttonHandler.pressedButton.text);
+            switch(this.buttonHandler.pressedButton){
+                case this.buttonHandler.submit:
+                break;
+                case this.buttonHandler.next:
+                case this.buttonHandler.prev:
+                break;
+            }
         }
     }
 }

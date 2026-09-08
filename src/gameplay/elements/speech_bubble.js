@@ -47,7 +47,7 @@ export class SpeechBubble{
             case 'RIGHT': ctx.drawImage(this.imgRight, this.pos.x, this.pos.y, this.size.x, this.size.y); break;
         }
 
-        this.drawTextBounds(ctx);
+       // this.drawTextBounds(ctx);
     }
 
     changeDirection(){

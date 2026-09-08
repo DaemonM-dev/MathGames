@@ -11,12 +11,12 @@ export class Dialogue{
             y: bounds.pos.y + (bounds.size.y / 2)
         };
         this.initial = {fontSize: this.fontSize, bounds: {...bounds}, center: {...this.center}};
+
         this.instructionIndex = 0;
-        this.instructionalMsg = [
+        this.instructionMsg = [
             "Select the Kuro icon with your mouse to begin typing your answers!",
             "Try clicking and dragging the food items over to the large white box!"
         ];
-
 
         this.activeText = "This is a new text with words of different sizes that I am using to test a hypothesis. ";
         this.cachedText = "";
@@ -58,31 +58,43 @@ export class Dialogue{
         }
     }
 
-wrapText(ctx){
-    this.wordArray = [];
-    this.lines = [];
-    ctx.font = `${this.fontSize}px PoppinsBold`;
-    this.wordArray = this.activeText.split(' ');
+    wrapText(ctx){
+        this.wordArray = [];
+        this.lines = [];
+        ctx.font = `${this.fontSize}px PoppinsBold`;
+        this.wordArray = this.activeText.split(' ');
 
-    let line = '';
-    for(let i = 0; i < this.wordArray.length; i++){
-        let testLine = '';
-        if(line === ''){
-            testLine = this.wordArray[i];
-        } else {
-            testLine = line + ' ' + this.wordArray[i];
+        let line = '';
+        for(let i = 0; i < this.wordArray.length; i++){
+            let testLine = '';
+            if(line === ''){
+                testLine = this.wordArray[i];
+            } else {
+                testLine = line + ' ' + this.wordArray[i];
+            }
+            const testWidth = ctx.measureText(testLine).width;
+            if(testWidth > this.bounds.size.x){
+                this.lines.push(line);
+                line = this.wordArray[i];
+            } else {
+                line = testLine;
+            }
         }
-        const testWidth = ctx.measureText(testLine).width;
-        if(testWidth > this.bounds.size.x){
-            this.lines.push(line);
-            line = this.wordArray[i];
+        if(line !== ''){ this.lines.push(line); }
+    }
+
+    toggleInstruction(level){
+        switch(level){
+            case 1: case 3: case 5: this.instructionIndex = 0; break;
+            case 2: case 5: this.instructionIndex = 1; break;
+        }
+        if(this.activeText !== this.instructionMsg[this.instructionIndex]){
+            this.cachedText = this.activeText;
+            this.activeText = this.instructionMsg[this.instructionIndex];
         } else {
-            line = testLine;
+            this.activeText = this.cachedText;
         }
     }
-    if(line !== ''){ this.lines.push(line); }
-}
-
 
     setText(text){
         this.activeText = text;
