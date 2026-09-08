@@ -9,6 +9,7 @@ import { Dropzone } from './elements/dropzone.js'
 import { SpeechBubble } from './elements/speech_bubble.js'
 import { InputWindow } from './elements/input_window.js'
 import { FoodHandler } from '../handlers/food_handler.js'
+import { ButtonHandler } from '../handlers/button_handler.js'
 
 const LEVEL_LIMIT = 5;
 const Q_LIMIT = 5;
@@ -26,6 +27,7 @@ export class Gameplay {
         this.dropzone = new Dropzone();
         this.speechBubble = new SpeechBubble();
         this.inputWindow = new InputWindow();
+        this.buttonHandler = new ButtonHandler();
         this.foodHandler = new FoodHandler();
     }
     changeScale(scale){
@@ -34,6 +36,7 @@ export class Gameplay {
         if(this.dropzone){this.dropzone.changeScale(scale);}
         if(this.speechBubble){this.speechBubble.changeScale(scale);}
         if(this.inputWindow){this.inputWindow.changeScale(scale);}
+        if(this.buttonHandler){this.buttonHandler.changeScale(scale);}
         if(this.foodHandler){this.foodHandler.changeScale(scale);}
     }
 
@@ -49,6 +52,7 @@ export class Gameplay {
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
         this.inputWindow.update(this.level, command, mousePos, deltaTime);
+        this.buttonHandler.update(command, mousePos);
         this.foodHandler.update(this.level, command, mousePos, this.dropzone);
     }
 
@@ -58,6 +62,7 @@ export class Gameplay {
         this.dropzone.draw(ctx);
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(this.level, ctx);
+        this.buttonHandler.draw(ctx);
         this.foodHandler.draw(this.level, ctx);
     }
 }

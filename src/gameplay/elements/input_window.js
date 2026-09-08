@@ -82,7 +82,7 @@ export class InputWindow{
             case ButtonState.NONE:
                 if(pointIntersects(mousePos, this)){
                     if(!this.awaitingInput){
-                        this.color = {infill: '#c5c5c5', outline: '#00000077' , font: 'black'};
+                        this.color = {infill: '#c5c5c597', outline: '#000000' , font: 'black'};
                         this.state = ButtonState.HOVER;
                     }
                 } else {

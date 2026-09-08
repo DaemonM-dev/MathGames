@@ -98,7 +98,7 @@ export class Button{
         ctx.fillStyle = this.fontColor;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.text, this.center.x, this.center.y);
+        ctx.fillText(this.text, this.center.x, this.center.y + 3 * this.scale);
     }
 
     isPressed(){
