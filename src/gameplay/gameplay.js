@@ -94,6 +94,8 @@ export class Gameplay {
                 break;
                 case this.buttonHandler.next:
                 case this.buttonHandler.prev:
+                    this.dialogue.toggleInstruction(this.level);
+                    this.speechBubble.changeDirection();
                 break;
             }
         }

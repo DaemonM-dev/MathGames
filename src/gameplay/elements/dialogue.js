@@ -21,28 +21,36 @@ export class Dialogue{
         this.activeText = "This is a new text with words of different sizes that I am using to test a hypothesis. ";
         this.cachedText = "";
 
-        this.wrappingText = false;
         this.wordArray = [];
         this.lines = [];
+
+        this.fontReady = false;
+        this.wrappingText = true;
+
+        document.fonts.load(`${this.fontSize}px PoppinsBold`).finally(() => {
+            this.fontReady = true;
+            this.wrappingText = true;
+        });
     }
 
     changeScale(scale){
         this.scale = scale;
         this.fontSize = this.initial.fontSize * this.scale;
-        this.bounds.pos = {x:this.bounds.pos.x * this.scale, y:this.bounds.pos.y * this.scale};
-        this.bounds.size = {x:this.bounds.size.x * this.scale, y:this.bounds.size.y * this.scale};
+        this.bounds.pos = {x:this.initial.bounds.pos.x * this.scale, y:this.initial.bounds.pos.y * this.scale};
+        this.bounds.size = {x:this.initial.bounds.size.x * this.scale, y:this.initial.bounds.size.y * this.scale};
         this.center = {x:this.initial.center.x * this.scale, y:this.initial.center.y * this.scale};
+        this.wrappingText = true;
     }
 
     update(ctx){
-        if(this.activeText !== this.cachedText || this.wrappingText){
+        if(this.wrappingText && this.fontReady){
             this.wrapText(ctx);
             this.wrappingText = false;
-            this.cachedText = this.activeText;
         }
     }
 
     draw(ctx){
+        if(!this.fontReady) return;
         ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
@@ -59,28 +67,41 @@ export class Dialogue{
     }
 
     wrapText(ctx){
-        this.wordArray = [];
-        this.lines = [];
-        ctx.font = `${this.fontSize}px PoppinsBold`;
-        this.wordArray = this.activeText.split(' ');
+        const minFontSize = 10;
+        let fontSize = Math.max(this.initial.fontSize * this.scale, minFontSize);
+        let lines = [];
 
-        let line = '';
-        for(let i = 0; i < this.wordArray.length; i++){
-            let testLine = '';
-            if(line === ''){
-                testLine = this.wordArray[i];
-            } else {
-                testLine = line + ' ' + this.wordArray[i];
+        for(fontSize; fontSize >= minFontSize; fontSize--){
+            ctx.font = `${fontSize}px PoppinsBold`;
+            lines = this.splitIntoLines(ctx, this.activeText, this.bounds.size.x);
+
+            const lineHeight = fontSize * 1.4;
+            const totalHeight = lines.length * lineHeight;
+
+            if(totalHeight <= this.bounds.size.y){
+                break;
             }
-            const testWidth = ctx.measureText(testLine).width;
-            if(testWidth > this.bounds.size.x){
-                this.lines.push(line);
-                line = this.wordArray[i];
+        }
+
+        this.fontSize = fontSize;
+        this.lines = lines;
+    }
+
+    splitIntoLines(ctx, text, maxWidth){
+        const words = text.split(' ');
+        const lines = [];
+        let line = '';
+        for(const word of words){
+            const testLine = line === '' ? word : `${line} ${word}`;
+            if(ctx.measureText(testLine).width > maxWidth && line !== ''){
+                lines.push(line);
+                line = word;
             } else {
                 line = testLine;
             }
         }
-        if(line !== ''){ this.lines.push(line); }
+        if(line !== ''){ lines.push(line); }
+        return lines;
     }
 
     toggleInstruction(level){
@@ -94,6 +115,7 @@ export class Dialogue{
         } else {
             this.activeText = this.cachedText;
         }
+        this.wrappingText = true;
     }
 
     setText(text){
