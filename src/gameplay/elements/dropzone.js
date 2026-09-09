@@ -14,8 +14,6 @@ export class Dropzone{
         this.radius = RADIUS;
         this.outlineWidth = OUTLINEWIDTH;
         this.color = COLOR;
-
-        this.itemsContained = [];
     }
 
     changeScale(scale){

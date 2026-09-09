@@ -45,6 +45,7 @@ export class FoodHandler{
         this.copies = [];
         this.duplicates = [];
         this.foodInDropzone = [];
+        this.dropzoneCount = 0;
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -96,12 +97,12 @@ export class FoodHandler{
                     if(this.itemSelected){
                         if(pointIntersects(this.foodItems[this.selectionIndex], dropzone)){
                             this.foodInDropzone.push(this.foodItems[this.selectionIndex]);
-                            console.log("Adding food to dropzone", this.foodInDropzone);
+                            this.dropzoneCount++;
                         } else {
                             for(let i = 0; i < this.foodInDropzone.length; i++){
                                 if(this.foodItems[this.selectionIndex] === this.foodInDropzone[i]){
                                     this.foodInDropzone.splice(i, 1);
-                                    console.log("Removing food from dropzone", this.foodInDropzone );
+                                    this.dropzoneCount--;
                                     break;
                                 }
                             }

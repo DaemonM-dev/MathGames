@@ -91,6 +91,11 @@ export class Gameplay {
             console.log("Button Pressed", this.buttonHandler.pressedButton.text);
             switch(this.buttonHandler.pressedButton){
                 case this.buttonHandler.submit:
+
+                if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
+                    this.checkAnswer();
+                }
+
                 break;
                 case this.buttonHandler.next:
                 case this.buttonHandler.prev:
@@ -100,10 +105,14 @@ export class Gameplay {
             }
         }
     }
+
+    checkAnswer(){
+        console.log("Checking the answer!!");
+    }
 }
 
 function clearInputBuffer(inputWindow){
-    if(inputWindow.inputMsg !== ""){inputWindow.inputMsg = "";}
+    if(inputWindow.input !== ""){inputWindow.input = "";}
 }
 export function getKeyboardInput(gameplay, key){
     const inputWindow = gameplay.inputWindow;
@@ -114,8 +123,8 @@ export function getKeyboardInput(gameplay, key){
 export function removeKeyboardInput(gameplay){
     const inputWindow = gameplay.inputWindow;
     if(gameplay.inputType === InputType.KEYBOARD && inputWindow.awaitingInput){
-        if(inputWindow.inputMsg.length > 0){
-            inputWindow.inputMsg = inputWindow.inputMsg.slice(0, -1);
+        if(inputWindow.input.length > 0){
+            inputWindow.input = inputWindow.input.slice(0, -1);
         }
     }
 }

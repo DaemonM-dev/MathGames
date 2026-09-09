@@ -34,7 +34,7 @@ export class InputWindow{
         this.awaitingInput = false;
         this.state = ButtonState.NONE;
         this.currentInput = "";
-        this.inputMsg = "";
+        this.input = "";
         this.inputLength = 0.0;
         
     }
@@ -52,7 +52,7 @@ export class InputWindow{
         this.fontSize = FONTSIZE * this.scale;
         this.cursor.size = {x: CURSOR.size.x * this.scale, y: CURSOR.size.y * this.scale};
         this.cursor.pos = {x: CURSOR.pos.x * this.scale, y: CURSOR.pos.y * this.scale};
-        this.inputLength = Game.ctx.measureText(this.inputMsg);
+        this.inputLength = Game.ctx.measureText(this.input);
     }
 
     init(assets){
@@ -121,11 +121,11 @@ export class InputWindow{
 
     getKeyInputs(){
         if (this.currentInput) {
-            if (this.inputMsg.length < MAX_INPUTS) {
-                this.inputMsg += this.currentInput;
+            if (this.input.length < MAX_INPUTS) {
+                this.input += this.currentInput;
             }
             this.currentInput = "";
-            this.inputLength = Game.ctx.measureText(this.inputMsg);
+            this.inputLength = Game.ctx.measureText(this.input);
         }
     }
 
@@ -141,16 +141,16 @@ export class InputWindow{
             if(this.kuro){ctx.drawImage(this.kuro.texture, this.kuro.pos.x, this.kuro.pos.y, this.kuro.size.x, this.kuro.size.y);}
             ctx.textAlign = 'start';
             ctx.textBaseline = 'middle';
-            if(!this.awaitingInput && this.inputMsg === ""){
+            if(!this.awaitingInput && this.input === ""){
                 ctx.font = `${this.fontSize / 1.5}px ${'PoppinsBold'}`;
                 ctx.fillStyle = '#00000041';
                 ctx.fillText(this.clickHere, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
             } else {
                 ctx.font = `${this.fontSize}px ${'PoppinsBold'}`;
                 ctx.fillStyle = this.color.font;
-                ctx.fillText(this.inputMsg, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
+                ctx.fillText(this.input, this.textPos.x, this.textPos.y + (4 * this.scale), this.size.x);
                 if(this.awaitingInput && this.cursor.visible){
-                    const textWidth = ctx.measureText(this.inputMsg).width + 5 * this.scale;
+                    const textWidth = ctx.measureText(this.input).width + 5 * this.scale;
                     ctx.fillRect(this.textPos.x + textWidth, this.cursor.pos.y, this.cursor.size.x, this.cursor.size.y);
                 }
             }
@@ -158,6 +158,6 @@ export class InputWindow{
     }
 
     getInput(){
-        return this.inputMsg;
+        return this.input;
     }
 }
