@@ -1,6 +1,7 @@
 import { GAME_SIZE, getRandomInt, shuffle, pointIntersects } from '../globals.js'
 import { Command } from '../enums/commands.js'
 import { FoodItem } from '../gameplay/elements/food_item.js'
+import { Pricetag } from '../gameplay/elements/pricetag.js';
 
 const MAX_FOOD = 8;
 
@@ -40,6 +41,7 @@ export class FoodHandler{
         ];
 
         this.prices = [ 2, 3, 4, 5, 6, 7, 8, 9 ];
+        this.priceTags = [];
 
         this.foodItems = [];
         this.copies = [];
@@ -62,6 +64,9 @@ export class FoodHandler{
         for(let i = 0; i < this.duplicates.length;i++){
             if(this.duplicates[i]){this.duplicates[i].changeScale(this.scale);}
         }
+        for(let i = 0; i < this.priceTags.length;i++){
+            if(this.priceTags[i]){this.priceTags[i].changeScale(this.scale);}
+        }
     }
 
     init(assets){
@@ -75,6 +80,7 @@ export class FoodHandler{
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setUnique(TEXTURE, NAME, TYPE, SIZE);
             this.foodItems[i].setDynamic(VALUE, POS);
+            this.priceTags.push(new Pricetag({x: POS.x + 25, y: POS.y + 150}, VALUE));
         }
         this.randomiseDynamic();
     }
@@ -123,6 +129,7 @@ export class FoodHandler{
 
     draw(level, ctx){
         for(let i = 0; i < this.foodItems.length; i++){
+            if(this.priceTags[i]){this.priceTags[i].draw(ctx);}
             if(this.foodItems[i]){this.foodItems[i].draw(ctx);}
         }
         if(level === 1 || level === 3){
@@ -143,6 +150,7 @@ export class FoodHandler{
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setDynamic(VALUE, POS);
+            this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
         }
     }
 
