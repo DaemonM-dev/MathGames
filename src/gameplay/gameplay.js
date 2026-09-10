@@ -64,16 +64,20 @@ export class Gameplay {
     }
 
     update(command, mousePos, deltaTime){
-        this.handleLevelSwap(this.level);
-        this.scene.update(deltaTime);
-        this.progressWindow.update(this.question, this.level);
-        if(!this.buttonHandler.viewingMenu){
-            this.inputWindow.update(this.level, command, mousePos, deltaTime);
+        if(!this.viewingFeedback){
+            this.handleLevelSwap(this.level);
+            this.scene.update(deltaTime);
+            this.progressWindow.update(this.question, this.level);
+            if(!this.buttonHandler.viewingMenu){
+                this.inputWindow.update(this.level, command, mousePos, deltaTime);
+            }
+            this.buttonHandler.update(command, mousePos);
+            this.foodHandler.update(this.level, command, mousePos, this.dropzone);
+            this.dialogue.update(Game.ctx);
+            this.handleButtonPresses();
+        } else {
+
         }
-        this.buttonHandler.update(command, mousePos);
-        this.foodHandler.update(this.level, command, mousePos, this.dropzone);
-        this.dialogue.update(Game.ctx);
-        this.handleButtonPresses();
     }
 
     draw(ctx){
@@ -88,6 +92,11 @@ export class Gameplay {
         if(this.buttonHandler.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttonHandler.drawMenuReturn(ctx);
+        }
+
+        if(this.viewingFeedback){
+            this.scene.drawFeedback(this.answerCorrect, ctx);
+            console.log("Drawing feedback");
         }
     }
 
@@ -142,11 +151,26 @@ export class Gameplay {
     }
 
     generateNextLvlOneQuestion(){
+        this.foodHandler.randomiseDynamic();
         this.foodHandler.copyRandom();
+        this.dialogue.initLvlOneQuestion(this.foodHandler.copies);
+        this.correctAnswer = this.dialogue.getAnswer();
+        this.speechBubble.changeDirection();
     }
 
     checkAnswer(){
-        console.log("Checking the answer!!");
+        switch(this.level){
+            case 1: case 3: case 4:
+                if(parseFloat(this.inputWindow.input) === this.correctAnswer){
+                    this.answerCorrect = true;
+                    console.log("Answer is correct!");
+                } else {
+                    console.log("Answer is incorrect!");
+                    this.answerCorrect = false;
+                }
+                break;
+        }
+        clearInputBuffer(this.inputWindow);
     }
 }
 

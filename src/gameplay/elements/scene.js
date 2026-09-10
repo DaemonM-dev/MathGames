@@ -11,6 +11,13 @@ export class Scene{
         this.boy = null;
         this.girl = null;
         this.menu = null;
+
+        this.posFeedback1 = null;
+        this.posFeedback2 = null;
+        this.posFeedback3 = null;
+        this.negFeedback = null;
+        this.feedbackIndex = 0;
+        this.posFeedback = [];
     }
 
     changeScale(scale){
@@ -46,6 +53,15 @@ export class Scene{
         if(this.menu){
             this.menu.size = {x: this.menu.initial.size.x * this.scale, y: this.menu.initial.size.y * this.scale};
             this.menu.pos = {x: this.menu.initial.pos.x * this.scale, y: this.menu.initial.pos.y * this.scale};
+        }
+        if(this.negFeedback){
+            this.negFeedback.size = {x: this.negFeedback.initial.size.x * this.scale, y: this.negFeedback.initial.size.y * this.scale};
+            this.negFeedback.pos = {x: this.negFeedback.initial.pos.x * this.scale, y: this.negFeedback.initial.pos.y * this.scale};
+        }
+        for(let i = 0; i < this.posFeedback.length; i++){
+            this.posFeedback[i].size =
+            this.posFeedback[i].size = {x: this.posFeedback[i].initial.size.x * this.scale, y: this.posFeedback[i].initial.size.y * this.scale};
+            this.posFeedback[i].pos = {x: this.posFeedback[i].initial.pos.x * this.scale, y: this.posFeedback[i].initial.pos.y * this.scale};
         }
     }
 
@@ -115,7 +131,38 @@ export class Scene{
             pos: {...POS}, 
             initial: { size: {...SIZE}, pos: {...POS} }
         }
+        this.initFeedback(assets);
     }
+
+    initFeedback(assets){
+        const SIZE = {x: 500, y: 250};
+        const POS = {x: 1350, y: 300};
+        this.posFeedback.push({
+            texture: assets.getAsset('goodjob1'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        });
+        this.posFeedback.push({
+            texture: assets.getAsset('goodjob2'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        });
+        this.posFeedback.push({
+            texture: assets.getAsset('goodjob3'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        });
+        this.negFeedback = {
+            texture: assets.getAsset('tryagain1'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+    }
+
 
     update(deltaTime){
 
@@ -137,5 +184,25 @@ export class Scene{
 
     drawMenu(ctx){
         ctx.drawImage(this.menu.texture, this.menu.pos.x, this.menu.pos.y, this.menu.size.x, this.menu.size.y);
+    }
+
+    drawFeedback(positive, ctx){
+        if(positive){
+            ctx.drawImage(this.posFeedback[this.feedbackIndex].texture,
+                 this.posFeedback[this.feedbackIndex].pos.x,
+                  this.posFeedback[this.feedbackIndex].pos.y,
+                   this.posFeedback[this.feedbackIndex].size.x,
+                    this.posFeedback[this.feedbackIndex].size.y);
+        } else {
+            ctx.drawImage(this.negFeedback.texture,
+                 this.negFeedback.pos.x,
+                  this.negFeedback.pos.y,
+                   this.negFeedback.size.x,
+                    this.negFeedback.size.y);
+        }
+    }
+
+    randomisePosFeedback(){
+        this.feedbackIndex = getRandomInt(0, 2);
     }
 }

@@ -151,6 +151,8 @@ export class FoodHandler{
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setDynamic(VALUE, POS);
             this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
+            this.foodItems[i].changeScale(this.scale);
+            this.priceTags[i].changeScale(this.scale);
         }
     }
 

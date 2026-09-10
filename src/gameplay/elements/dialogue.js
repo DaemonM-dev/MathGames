@@ -31,6 +31,8 @@ export class Dialogue{
             this.fontReady = true;
             this.wrappingText = true;
         });
+
+        this.answer = -1;
     }
 
     changeScale(scale){
@@ -122,4 +124,29 @@ export class Dialogue{
         this.activeText = text;
         this.wrappingText = true;
     }
+
+    getAnswer(){
+        return this.answer;
+    }
+
+    initLvlOneQuestion(copies){
+        if(!copies || copies.length < 2) return;
+        
+        const food1 = copies[0];
+        const food2 = copies[1];
+        const food3 = copies[2];
+        
+        if(food1 && food2){
+            if(!food3){
+                this.activeText = "I would like to buy " + food1.name + " and " + food2.name + ". How much will it cost?";
+                this.answer = food1.value + food2.value;
+            } else {
+                this.activeText = "I would like to buy " + food1.name + ", " + food2.name + ", and " + food3.name + ". How much will it cost?";
+                this.answer = food1.value + food2.value + food3.value;
+            }
+        }
+    }
+
+
+
 }
