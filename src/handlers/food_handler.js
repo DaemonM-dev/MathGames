@@ -162,8 +162,8 @@ export class FoodHandler{
         let sum = 0;
         for(let i = 0; i < COUNT; i++){
             const COPY = new FoodItem();
-            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size});
-            COPY.init(ORIGINAL.value, {...this.dropzonePoints[i].pos});
+            COPY.setUnique(ORIGINAL.texture, ORIGINAL.name, ORIGINAL.type, {...ORIGINAL.initial.size});
+            COPY.setDynamic(ORIGINAL.value, {...this.dropzonePoints[i].pos});
             COPY.changeScale(this.scale);
             this.duplicates.push(COPY);
             sum = sum + ORIGINAL.value;
@@ -176,17 +176,17 @@ export class FoodHandler{
         const INDICES = [];
         let sum = 0;
         while(INDICES.length < COUNT){
-            const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+            const INDEX = getRandomInt(0, this.foodItems.length - 1);
             if(!INDICES.includes(INDEX)){INDICES.push(INDEX);}
         }
         for(let i = 0; i < COUNT; i++){
             const ORIGINAL = this.foodItems[INDICES[i]];
             const COPY = new FoodItem();
-            COPY.setUnique(ORIGINAL.name, ORIGINAL.texture, {...ORIGINAL.initial.size}, ORIGINAL.type);
+            COPY.setUnique(ORIGINAL.texture, ORIGINAL.name, ORIGINAL.type, {...ORIGINAL.initial.size});
             switch(i){
-                case 0: COPY.init(ORIGINAL.value, {...this.dropzonePoints[0].pos}); break;
-                case 1: COPY.init(ORIGINAL.value, {...this.dropzonePoints[2].pos}); break;
-                case 2: COPY.init(ORIGINAL.value, {...this.dropzonePoints[4].pos}); break;
+                case 0: COPY.setDynamic(ORIGINAL.value, {...this.dropzonePoints[0].pos}); break;
+                case 1: COPY.setDynamic(ORIGINAL.value, {...this.dropzonePoints[2].pos}); break;
+                case 2: COPY.setDynamic(ORIGINAL.value, {...this.dropzonePoints[4].pos}); break;
             }
             COPY.changeScale(this.scale);
             this.copies.push(COPY);

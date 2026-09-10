@@ -114,7 +114,7 @@ export class Gameplay {
         if(this.level !== this.prevLevel){
             switch(level){
                 case 1:
-                    // this.generateNextLvlOneQuestion();
+                    this.generateNextLvlOneQuestion();
                     this.inputType = InputType.KEYBOARD;
                 break;
                 case 2:
@@ -139,6 +139,10 @@ export class Gameplay {
             this.prevLevel = this.level;
             this.speechBubble.changeDirection();
         }
+    }
+
+    generateNextLvlOneQuestion(){
+        this.foodHandler.copyRandom();
     }
 
     checkAnswer(){
