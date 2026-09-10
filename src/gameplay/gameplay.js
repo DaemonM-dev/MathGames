@@ -18,11 +18,10 @@ const Q_LIMIT = 5;
 export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
-        this.numericAnswer = 0;
+
         this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
-
 
         this.scene = null;
         this.progressWindow = null;
@@ -32,6 +31,11 @@ export class Gameplay {
         this.buttonHandler = null;
         this.foodHandler = null;
         this.dialogue = null;
+
+        this.playerAnswer = 0;
+        this.correctAnswer = 0;
+        this.viewingFeedback = false;
+        this.answerCorrect = false;
     }
     changeScale(scale){
         if(this.scene){this.scene.changeScale(scale);}
@@ -60,6 +64,7 @@ export class Gameplay {
     }
 
     update(command, mousePos, deltaTime){
+        this.handleLevelSwap(this.level);
         this.scene.update(deltaTime);
         this.progressWindow.update(this.question, this.level);
         if(!this.buttonHandler.viewingMenu){
@@ -91,11 +96,10 @@ export class Gameplay {
             console.log("Button Pressed", this.buttonHandler.pressedButton.text);
             switch(this.buttonHandler.pressedButton){
                 case this.buttonHandler.submit:
-
                 if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
                     this.checkAnswer();
+                    this.viewingFeedback = true;
                 }
-
                 break;
                 case this.buttonHandler.next:
                 case this.buttonHandler.prev:
@@ -103,6 +107,37 @@ export class Gameplay {
                     this.speechBubble.changeDirection();
                 break;
             }
+        }
+    }
+
+    handleLevelSwap(level){
+        if(this.level !== this.prevLevel){
+            switch(level){
+                case 1:
+                    // this.generateNextLvlOneQuestion();
+                    this.inputType = InputType.KEYBOARD;
+                break;
+                case 2:
+                    // this.generateNextLvlTwoQuestion();
+                    this.inputType = InputType.DRAG_DROP;
+                break;
+                case 3:
+                    // this.generateNextLvlThreeQuestion();
+                    this.inputType = InputType.KEYBOARD;
+                break;
+                case 4:
+                    // this.generateNextLvlFourQuestion();
+                    // this.dialogue.mathVisible = true;
+                    this.inputType = InputType.KEYBOARD;
+                break;
+                case 5:
+                    // this.generateNextLvlFiveQuestion();
+                    // this.dialogue.mathVisible = false;
+                    this.inputType = InputType.DRAG_DROP;
+                break;
+            }
+            this.prevLevel = this.level;
+            this.speechBubble.changeDirection();
         }
     }
 
