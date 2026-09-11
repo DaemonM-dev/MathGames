@@ -21,7 +21,7 @@ export class Gameplay {
 
         this.level = 1;
         this.prevLevel = 0;
-        this.question = 1;
+        this.question = 5;
         this.prevQuestion = 0;
 
         this.scene = null;
@@ -153,7 +153,7 @@ export class Gameplay {
                     this.inputType = InputType.KEYBOARD;
                 break;
                 case 2:
-                    // this.generateNextLvlTwoQuestion();
+                    this.generateNextLvlTwoQuestion();
                     this.inputType = InputType.DRAG_DROP;
                 break;
                 case 3:
@@ -185,6 +185,15 @@ export class Gameplay {
         this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
         console.log("Answer: ", this.correctAnswer);
+    }
+
+    generateNextLvlTwoQuestion(){
+        this.foodHandler.randomiseDynamic();
+        this.foodHandler.copyRandom();
+        this.dialogue.initLvlTwoQuestion(this.foodHandler.copies);
+        this.dialogue.wrappingText = true;
+        this.correctAnswer = this.dialogue.getAnswer();
+        this.speechBubble.changeDirection();
     }
 
     checkAnswer(){

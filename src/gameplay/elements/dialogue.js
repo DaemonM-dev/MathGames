@@ -130,8 +130,7 @@ export class Dialogue{
     }
 
     initLvlOneQuestion(copies){
-        if(!copies || copies.length < 2) return;
-        
+        if(!copies || copies.length < 2) {return;}
         const food1 = copies[0];
         const food2 = copies[1];
         const food3 = copies[2];
@@ -147,6 +146,25 @@ export class Dialogue{
         }
     }
 
-
-
+    initLvlTwoQuestion(copies){
+        if(!copies || copies.length < 2) {return;}
+        let value1 = 0;
+        let value2 = 0;
+        let value3 = 0;
+        if(copies[0]){value1 = copies[0].value;}
+        if(copies[1]){value2 = copies[1].value;}
+        if(copies[2]){value3 = copies[2].value;}
+        for(let i = 0; i < copies.length; i++){
+            console.log(copies[i].name);
+        }
+        let sum = 0;
+        if(value3 === 0){
+            sum = value1 + value2;
+            this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
+        } else {
+            sum = value1 + value2 + value3;
+            this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+        }
+        this.answer = sum;
+    }
 }
