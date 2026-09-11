@@ -12,8 +12,8 @@ import { FoodHandler } from '../handlers/food_handler.js'
 import { ButtonHandler } from '../handlers/button_handler.js'
 import { Dialogue } from './elements/dialogue.js'
 
-const LEVEL_LIMIT = 5;
-const Q_LIMIT = 5;
+const MAX_QUESTIONS = 5;
+const MAX_LEVELS = 5;
 
 export class Gameplay {
     constructor(){
@@ -22,6 +22,7 @@ export class Gameplay {
         this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
+        this.prevQuestion = 0;
 
         this.scene = null;
         this.progressWindow = null;
@@ -76,7 +77,10 @@ export class Gameplay {
             this.dialogue.update(Game.ctx);
             this.handleButtonPresses();
         } else {
-
+            if(command === Command.MOUSE_DOWN){
+                this.viewingFeedback = false;
+                this.nextQuestion();
+            }
         }
     }
 
@@ -93,10 +97,24 @@ export class Gameplay {
             this.scene.drawMenu(ctx);
             this.buttonHandler.drawMenuReturn(ctx);
         }
-
         if(this.viewingFeedback){
             this.scene.drawFeedback(this.answerCorrect, ctx);
-            console.log("Drawing feedback");
+        }
+    }
+
+    nextQuestion(){
+        if(!this.answerCorrect){
+            // Rest Food Positions
+        } else {
+            if(this.question < MAX_QUESTIONS){
+                this.question++;
+                this.generateNextQuestion(this.level);
+            } else if (this.level < MAX_LEVELS){
+                this.question = 1;
+                this.level++;
+            } else {
+                // GAMEOVER!!!
+            }
         }
     }
 
@@ -118,6 +136,14 @@ export class Gameplay {
             }
         }
     }
+
+    generateNextQuestion(level){
+        switch(level){
+            case 1: this.generateNextLvlOneQuestion();
+            break;
+        };
+    }
+
 
     handleLevelSwap(level){
         if(this.level !== this.prevLevel){
@@ -146,6 +172,7 @@ export class Gameplay {
                 break;
             }
             this.prevLevel = this.level;
+            this.prevQuestion = this.question;
             this.speechBubble.changeDirection();
         }
     }
@@ -156,6 +183,7 @@ export class Gameplay {
         this.dialogue.initLvlOneQuestion(this.foodHandler.copies);
         this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
+        console.log("Answer: ", this.correctAnswer);
     }
 
     checkAnswer(){
