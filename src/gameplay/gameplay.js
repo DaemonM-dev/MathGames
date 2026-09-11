@@ -181,6 +181,7 @@ export class Gameplay {
         this.foodHandler.randomiseDynamic();
         this.foodHandler.copyRandom();
         this.dialogue.initLvlOneQuestion(this.foodHandler.copies);
+        this.dialogue.wrappingText = true;
         this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
         console.log("Answer: ", this.correctAnswer);
