@@ -18,6 +18,8 @@ export class Scene{
         this.negFeedback = null;
         this.feedbackIndex = 0;
         this.posFeedback = [];
+
+        this.coupon = null;
     }
 
     changeScale(scale){
@@ -62,6 +64,13 @@ export class Scene{
             this.posFeedback[i].size =
             this.posFeedback[i].size = {x: this.posFeedback[i].initial.size.x * this.scale, y: this.posFeedback[i].initial.size.y * this.scale};
             this.posFeedback[i].pos = {x: this.posFeedback[i].initial.pos.x * this.scale, y: this.posFeedback[i].initial.pos.y * this.scale};
+        }
+        if(this.coupon){
+            this.coupon.size = {x: this.coupon.initial.size.x * this.scale, y: this.coupon.initial.size.y * this.scale};
+            this.coupon.pos = {x: this.coupon.initial.pos.x * this.scale, y: this.coupon.initial.pos.y * this.scale};
+            this.coupon.center = {x: this.coupon.initial.center.x * this.scale, y: this.coupon.initial.center.y * this.scale};
+            this.coupon.fontSize = this.coupon.initial.fontSize * this.scale;
+            this.coupon.linespace = this.coupon.initial.linespace * this.scale;
         }
     }
 
@@ -131,6 +140,26 @@ export class Scene{
             pos: {...POS}, 
             initial: { size: {...SIZE}, pos: {...POS} }
         }
+
+
+        SIZE = { x:460 / 1.5, y: 250 / 1.5 }
+        POS = { x:0.0, y: 0.0 }
+        const CENTER = {x:POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
+        const FONTSIZE = 30;
+        const LINESPACE = 20;
+        this.coupon = {
+            texture: assets.getAsset('coupon'),
+            size: SIZE,
+            pos: POS,
+            center: CENTER,
+            fontSize: FONTSIZE,
+            linespace: LINESPACE,
+            initial:{size: {...SIZE}, pos: {...POS}, center: {...CENTER}, fontSize: FONTSIZE, linespace: LINESPACE},
+            discount: 0,
+            line1: "",
+            line2: "",
+            moving: false,
+        }
         this.initFeedback(assets);
     }
 
@@ -161,11 +190,6 @@ export class Scene{
             pos: {...POS}, 
             initial: { size: {...SIZE}, pos: {...POS} }
         }
-    }
-
-
-    update(deltaTime){
-
     }
 
     draw(ctx){
@@ -204,5 +228,54 @@ export class Scene{
 
     randomisePosFeedback(){
         this.feedbackIndex = getRandomInt(0, 2);
+    }
+
+    setRandomDiscount(){
+        this.coupon.line1 = "";
+        this.coupon.line2 = "";
+
+        switch(getRandomInt(1,3)){
+            case 1: this.coupon.discount = 0.25; this.coupon.line1 = "25%"; break;
+            case 2: this.coupon.discount = 0.50; this.coupon.line1 = "50%"; break;
+            case 3: this.coupon.discount = 0.75; this.coupon.line1 = "75%"; break;
+        }
+
+        switch(getRandomInt(1,3)){
+            case 1: this.coupon.line2 = "Healthy Items"; break;
+            case 2: this.coupon.line2 = "Sweet Items"; break;
+            case 3: this.coupon.line2 = "All Items"; break;
+        }
+
+        this.coupon.initial.pos.x = -this.coupon.size.x;
+        this.coupon.pos.x = -this.coupon.size.x;
+        this.coupon.center = {x: this.coupon.pos.x + (this.coupon.size.x / 2), y:this.coupon.pos.y + (this.coupon.size.y / 2)};
+
+        if(!this.coupon.moving){
+            this.coupon.moving = true;
+        }
+    }
+
+    animateCoupon(deltaTime){
+        if(this.coupon.moving){
+            const SPEED = 325 * deltaTime;
+            this.coupon.initial.pos.x +=  SPEED * 1.75;
+            this.coupon.pos.x += SPEED * 1.75;
+            this.coupon.center.x += SPEED * 1.75;
+            if(this.coupon.pos.x >= 0.0){
+                this.coupon.initial.pos.x = 0.0;
+                this.coupon.pos.x = 0.0; 
+                this.coupon.moving = false;
+            }
+        }
+    }
+
+    drawCoupon(ctx){
+        ctx.drawImage(this.coupon.texture, this.coupon.pos.x, this.coupon.pos.y, this.coupon.size.x, this.coupon.size.y);
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
+        ctx.fillText(this.coupon.line1 + " OFF", this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
+        ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
 }

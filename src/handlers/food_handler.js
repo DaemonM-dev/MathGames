@@ -132,14 +132,17 @@ export class FoodHandler{
             if(this.priceTags[i]){this.priceTags[i].draw(ctx);}
             if(this.foodItems[i]){this.foodItems[i].draw(ctx);}
         }
-        if(level === 1 || level === 3){
-            for(let i = 0; i < this.copies.length; i++){
+        switch(level){
+            case 1: case 3: case 5:
+                for(let i = 0; i < this.copies.length; i++){
                 if(this.copies[i]){this.copies[i].draw(ctx);}
             }
-        } else if (level === 4){
-            for(let i = 0; i < this.duplicates.length; i++){
+            break;
+            case 4:
+                for(let i = 0; i < this.duplicates.length; i++){
                 if(this.duplicates[i]){this.duplicates[i].draw(ctx);}
             }
+            break;
         }
     }
 

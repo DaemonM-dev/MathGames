@@ -19,7 +19,7 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 4;
+        this.level = 5;
         this.prevLevel = 0;
         this.question = 1;
         this.prevQuestion = 0;
@@ -67,7 +67,6 @@ export class Gameplay {
     update(command, mousePos, deltaTime){
         if(!this.viewingFeedback){
             this.handleLevelSwap(this.level);
-            this.scene.update(deltaTime);
             this.progressWindow.update(this.question, this.level);
             if(!this.buttonHandler.viewingMenu){
                 this.inputWindow.update(this.level, command, mousePos, deltaTime);
@@ -76,6 +75,7 @@ export class Gameplay {
             this.foodHandler.update(this.level, command, mousePos, this.dropzone);
             this.dialogue.update(Game.ctx);
             this.handleButtonPresses();
+            if(this.level === 5){this.scene.animateCoupon(deltaTime);}
         } else {
             if(command === Command.MOUSE_DOWN){
                 this.viewingFeedback = false;
@@ -91,18 +91,15 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(this.level, ctx);
         this.buttonHandler.draw(ctx);
-        if(this.level === 4){
-            this.dialogue.drawMathProblem(ctx);
-        }
-        this.foodHandler.draw(this.level, ctx);
+        if(this.level === 4){ this.dialogue.drawMathProblem(ctx); }
         this.dialogue.draw(ctx);
+        if(this.level === 5){ this.scene.drawCoupon(ctx); }
+        this.foodHandler.draw(this.level, ctx);
         if(this.buttonHandler.viewingMenu){
             this.scene.drawMenu(ctx);
             this.buttonHandler.drawMenuReturn(ctx);
         }
-        if(this.viewingFeedback){
-            this.scene.drawFeedback(this.answerCorrect, ctx);
-        }
+        if(this.viewingFeedback){ this.scene.drawFeedback(this.answerCorrect, ctx); }
     }
 
     nextQuestion(){
@@ -178,6 +175,9 @@ export class Gameplay {
                 this.foodHandler.duplicateRandom();
                 this.dialogue.initLvlFourQuestion(this.foodHandler.duplicates);
                 break;
+            case 5:
+                this.scene.setRandomDiscount();
+                this.foodHandler.copyRandom();
         }
         this.dialogue.wrappingText = true;
         this.correctAnswer = this.dialogue.getAnswer();
