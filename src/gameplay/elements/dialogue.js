@@ -32,10 +32,11 @@ export class Dialogue{
             this.wrappingText = true;
         });
 
-        this.answer = -1;
-        this.foodCount = -1;
-        this.startingKuro = -1;
+        this.answer = 0;
+        this.foodCount = 0;
+        this.startingKuro = 0;
         this.mathProblem = "";
+        this.foodTypes = {healthy: 0, sweet: 0};
     }
 
     changeScale(scale){
@@ -111,7 +112,7 @@ export class Dialogue{
 
     toggleInstruction(level){
         switch(level){
-            case 1: case 3: case 5: this.instructionIndex = 0; break;
+            case 1: case 3: case 4: this.instructionIndex = 0; break;
             case 2: case 5: this.instructionIndex = 1; break;
         }
         if(this.activeText !== this.instructionMsg[this.instructionIndex]){
@@ -137,7 +138,7 @@ export class Dialogue{
     }
 
     initLvlOneQuestion(copies){
-        this.answer = -1;
+        this.answer = 0;
         if(!copies || copies.length < 2) {return;}
         const food1 = copies[0];
         const food2 = copies[1];
@@ -155,8 +156,8 @@ export class Dialogue{
     }
 
     initLvlTwoQuestion(copies){
-        this.answer = -1;
-        this.foodCount = -1;
+        this.answer = 0;
+        this.foodCount = 0;
         if(!copies || copies.length < 2) {return;}
         let value1 = 0;
         let value2 = 0;
@@ -261,6 +262,98 @@ export class Dialogue{
         this.activeText = start + middle + count + name + "?";
         this.mathProblem = duplicates[0].value + " x " + duplicates.length + " = ";
         this.answer = duplicates[0].value * duplicates.length;
+    }
+
+    initLvlFiveQuestion(coupon, copies){
+
+        const DISCOUNT = coupon.discount;
+        const DISCOUNT_STR = coupon.line1;
+        const TYPE_STR = coupon.line2;
+
+        this.foodTypes = {healthy: 0, sweet: 0};
+        this.answer = 0;
+        this.foodCount = copies.length;
+        this.startingKuro = 0;
+
+        let sumBeforeDiscount = 0;
+        let sumAfterDiscount = 0;
+
+        let foodCountString = "";
+        let healthyCountString = "";
+        let sweetCountString = "";
+
+        for(let i = 0; i < copies.length; i++){
+            sumBeforeDiscount = sumBeforeDiscount + copies[i].value;
+            switch(copies[i].type){
+                case 'Healthy': this.foodTypes.healthy++; break;
+                case 'Sweet': this.foodTypes.sweet++; break;
+            }
+            switch(TYPE_STR){
+                case "Healthy Items":
+                    switch(copies[i].type){
+                        case 'Healthy':
+                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                        break;
+                        case 'Sweet':
+                            sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                        break;
+                    }
+                break;
+                case "Sweet Items":
+                    switch(copies[i].type){
+                        case 'Sweet':
+                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                        break;
+                        case 'Healthy':
+                            sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                        break;
+                    }
+                break;
+                case "All Items":
+                    sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                break;
+            }
+        }
+        this.startingKuro = sumAfterDiscount;
+        this.answer = sumBeforeDiscount;
+        console.log("Healthy: ", this.foodTypes.healthy, "Sweet: ", this.foodTypes.sweet);
+        console.log("Sum after discount", sumAfterDiscount);
+
+        let zero = "";
+        if(sumAfterDiscount - Math.floor(sumAfterDiscount) > 0){
+            zero = "0";
+        }
+
+
+        this.activeText = "We have " + this.startingKuro + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
+
+        switch (this.foodTypes.healthy){
+            case 1: healthyCountString = "ONE";     break;
+            case 2: healthyCountString = "TWO";     break;
+            case 3: healthyCountString = "THREE";   break;
+        }
+        switch (this.foodTypes.sweet){
+            case 1: sweetCountString = "ONE";   break;
+            case 2: sweetCountString = "TWO";   break;
+            case 3: sweetCountString = "THREE"; break;
+        }
+
+        if(this.foodTypes.healthy > 0 && this.foodTypes.sweet > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.foodTypes.healthy > 1){this.activeText += "s";}
+            this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.foodTypes.sweet > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+        } else if (this.foodTypes.healthy > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.foodTypes.healthy > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+
+        } else if (this.foodTypes.sweet > 0){
+            this.activeText += "What " + sweetCountString + " SWEET food"; if(this.foodTypes.sweet > 1){this.activeText += "s";}
+            this.activeText += " can I purchase and have no change left over?";
+        }
+    }
+
+    getFoodTypeAnswer(){
+        return this.foodTypes;
     }
 
     drawMathProblem(ctx){

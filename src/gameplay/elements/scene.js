@@ -234,11 +234,15 @@ export class Scene{
         this.coupon.line1 = "";
         this.coupon.line2 = "";
 
+        /* // Randomizes discount
         switch(getRandomInt(1,3)){
             case 1: this.coupon.discount = 0.25; this.coupon.line1 = "25%"; break;
             case 2: this.coupon.discount = 0.50; this.coupon.line1 = "50%"; break;
             case 3: this.coupon.discount = 0.75; this.coupon.line1 = "75%"; break;
         }
+        */
+
+        this.coupon.discount = 0.50; this.coupon.line1 = "50%";
 
         switch(getRandomInt(1,3)){
             case 1: this.coupon.line2 = "Healthy Items"; break;

@@ -19,10 +19,12 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 5;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
         this.prevQuestion = 0;
+
+        this.score = {questions: 0};
 
         this.scene = null;
         this.progressWindow = null;
@@ -108,21 +110,25 @@ export class Gameplay {
         } else {
             if(this.question < MAX_QUESTIONS){
                 this.question++;
+                this.score.questions++;
                 this.foodHandler.restorePositions();
                 this.generateNextQuestion(this.level);
             } else if (this.level < MAX_LEVELS){
                 this.question = 1;
+                this.score.questions++;
                 this.level++;
             } else {
-                // GAMEOVER!!!
+                this.level = 1;
+                this.score.questions++;
+                this.question = 1;
             }
+            console.log("Total Questions Answered: ", this.score.questions);
         }
         this.viewingFeedback = false;
     }
 
     handleButtonPresses(){
         if(this.buttonHandler.pressedButton !== null){
-            console.log("Button Pressed", this.buttonHandler.pressedButton.text);
             switch(this.buttonHandler.pressedButton){
                 case this.buttonHandler.submit:
                 if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
@@ -178,12 +184,13 @@ export class Gameplay {
             case 5:
                 this.scene.setRandomDiscount();
                 this.foodHandler.copyRandom();
+                this.dialogue.initLvlFiveQuestion(this.scene.coupon, this.foodHandler.copies);
         }
         this.dialogue.wrappingText = true;
         this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
 
-        console.log(this.correctAnswer);
+        console.log("Answer: ", this.correctAnswer);
     }
 
     checkAnswer(){
@@ -206,6 +213,32 @@ export class Gameplay {
                     this.answerCorrect = false;
                 }
             break;
+            case 5:
+
+                let rightSum = false;
+                let rightTypes = false;
+                let rightCount = false;
+
+                if(this.foodHandler.getSumFromDropzone() === this.correctAnswer){
+                    rightSum = true;
+                }
+
+                const foodTypeAnswer = this.dialogue.getFoodTypeAnswer();
+                const foodInDropzone = this.foodHandler.getFoodTypesFromDropzone();
+                if(foodTypeAnswer.healthy === foodInDropzone.healthy && foodTypeAnswer.sweet === foodInDropzone.sweet){
+                    rightTypes = true;
+                }
+
+                if(this.dialogue.getAnswerFoodCount() === this.foodHandler.getCountFromDropzone()){
+                    rightCount = true;
+                }
+
+                if(rightSum && rightTypes && rightCount){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+
         }
         clearInputBuffer(this.inputWindow);
     }
@@ -229,5 +262,5 @@ export function removeKeyboardInput(gameplay){
     }
 }
 export function pressButton(viewingMenu, button){
-    if(!button.pressed && !viewingMenu){console.log("Pressing Enter Key to Submit!!"); button.pressed = true;}
+    if(!button.pressed && !viewingMenu){button.pressed = true;}
 }

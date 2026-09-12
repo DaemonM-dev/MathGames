@@ -133,7 +133,7 @@ export class FoodHandler{
             if(this.foodItems[i]){this.foodItems[i].draw(ctx);}
         }
         switch(level){
-            case 1: case 3: case 5:
+            case 1: case 3:
                 for(let i = 0; i < this.copies.length; i++){
                 if(this.copies[i]){this.copies[i].draw(ctx);}
             }
@@ -208,6 +208,19 @@ export class FoodHandler{
 
     getCountFromDropzone(){
         return this.foodInDropzone.length;
+    }
+    getFoodTypesFromDropzone(){
+        let foodTypes = {healthy: 0, sweet: 0};
+
+        for(let i = 0; i < this.foodInDropzone.length; i++){
+            switch(this.foodInDropzone[i].type){
+                case 'Healthy': foodTypes.healthy++; break;
+                case 'Sweet': foodTypes.sweet++; break;
+            }
+        }
+
+        return foodTypes;
+
     }
 
     restorePositions(){
