@@ -19,7 +19,7 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 2;
+        this.level = 1;
         this.prevLevel = 0;
         this.question = 1;
         this.prevQuestion = 0;
@@ -138,62 +138,44 @@ export class Gameplay {
         }
     }
 
-    generateNextQuestion(level){
-        switch(level){
-            case 1: this.generateNextLvlOneQuestion(); break;
-            case 2: this.generateNextLvlTwoQuestion(); break;
-        };
-    }
-
     handleLevelSwap(level){
         if(this.level !== this.prevLevel){
             switch(level){
-                case 1:
-                    this.generateNextLvlOneQuestion();
-                    this.inputType = InputType.KEYBOARD;
+                case 1: case 3: case 4:
+                    this.inputType = InputType.KEYBOARD; 
                 break;
-                case 2:
-                    this.generateNextLvlTwoQuestion();
-                    this.inputType = InputType.DRAG_DROP;
-                break;
-                case 3:
-                    // this.generateNextLvlThreeQuestion();
-                    this.inputType = InputType.KEYBOARD;
-                break;
-                case 4:
-                    // this.generateNextLvlFourQuestion();
-                    // this.dialogue.mathVisible = true;
-                    this.inputType = InputType.KEYBOARD;
-                break;
-                case 5:
-                    // this.generateNextLvlFiveQuestion();
-                    // this.dialogue.mathVisible = false;
+                case 2: case 5:
                     this.inputType = InputType.DRAG_DROP;
                 break;
             }
+            this.generateNextQuestion(this.level);
             this.prevLevel = this.level;
             this.prevQuestion = this.question;
             this.speechBubble.changeDirection();
         }
     }
 
-    generateNextLvlOneQuestion(){
+    generateNextQuestion(level){
         this.foodHandler.randomiseDynamic();
-        this.foodHandler.copyRandom();
-        this.dialogue.initLvlOneQuestion(this.foodHandler.copies);
+        switch(level){
+            case 1: 
+                this.foodHandler.copyRandom();
+                this.dialogue.initLvlOneQuestion(this.foodHandler.copies);
+            break;
+            case 2:
+                this.foodHandler.copyRandom();
+                this.dialogue.initLvlTwoQuestion(this.foodHandler.copies);
+            break;
+            case 3:
+                this.foodHandler.copyRandom();
+                this.dialogue.initLvlThreeQuestion(this.foodHandler.copies);
+            break;
+        }
         this.dialogue.wrappingText = true;
         this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
-        console.log("Answer: ", this.correctAnswer);
-    }
 
-    generateNextLvlTwoQuestion(){
-        this.foodHandler.randomiseDynamic();
-        this.foodHandler.copyRandom();
-        this.dialogue.initLvlTwoQuestion(this.foodHandler.copies);
-        this.dialogue.wrappingText = true;
-        this.correctAnswer = this.dialogue.getAnswer();
-        this.speechBubble.changeDirection();
+        console.log(this.correctAnswer);
     }
 
     checkAnswer(){
