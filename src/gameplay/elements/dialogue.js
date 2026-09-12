@@ -34,6 +34,7 @@ export class Dialogue{
 
         this.answer = -1;
         this.foodCount = -1;
+        this.startingKuro = -1;
     }
 
     changeScale(scale){
@@ -176,5 +177,43 @@ export class Dialogue{
             this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
         }
         this.answer = sum;
+    }
+
+    initLvlThreeQuestion(copies){
+        this.startingKuro = -1;
+        this.answer = -1;
+
+        let max = 0;
+        let min = 0;
+        let inc = 0;
+
+        const food1 = copies[0];
+        const food2 = copies[1];
+        const food3 = copies[2];
+
+        switch(getRandomInt(1, 3)){
+            case 1: inc = 0.25; break;
+            case 2: inc = 0.50; break;
+            case 3: inc = 0.75; break;
+        }
+        
+        if(food1 && food2){
+            if(!food3){
+                min = food1.value + food2.value;
+            } else {
+                min = food1.value + food2.value + food3.value;
+            }
+        }
+
+        max = min + 10;
+        this.startingKuro = getRandomInt(min, max) + inc;
+        this.answer = this.startingKuro - min;
+
+        let zero = "";
+        if(inc === 0.50){
+            zero = "0";
+        }
+
+        this.activeText = "I have " + this.startingKuro + zero + " KURO. How much will I have remaining after buying these food items?";
     }
 }
