@@ -19,7 +19,7 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 3;
+        this.level = 4;
         this.prevLevel = 0;
         this.question = 1;
         this.prevQuestion = 0;
@@ -91,6 +91,9 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(this.level, ctx);
         this.buttonHandler.draw(ctx);
+        if(this.level === 4){
+            this.dialogue.drawMathProblem(ctx);
+        }
         this.foodHandler.draw(this.level, ctx);
         this.dialogue.draw(ctx);
         if(this.buttonHandler.viewingMenu){
@@ -108,6 +111,7 @@ export class Gameplay {
         } else {
             if(this.question < MAX_QUESTIONS){
                 this.question++;
+                this.foodHandler.restorePositions();
                 this.generateNextQuestion(this.level);
             } else if (this.level < MAX_LEVELS){
                 this.question = 1;
@@ -170,6 +174,10 @@ export class Gameplay {
                 this.foodHandler.copyRandom();
                 this.dialogue.initLvlThreeQuestion(this.foodHandler.copies);
             break;
+            case 4:
+                this.foodHandler.duplicateRandom();
+                this.dialogue.initLvlFourQuestion(this.foodHandler.duplicates);
+                break;
         }
         this.dialogue.wrappingText = true;
         this.correctAnswer = this.dialogue.getAnswer();

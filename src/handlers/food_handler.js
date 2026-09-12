@@ -159,16 +159,16 @@ export class FoodHandler{
     duplicateRandom(){
         this.duplicates = [];
         const COUNT = getRandomInt(2, 6);
-        const INDEX = getRandomInt(0, TOTAL_FOOD - 1);
+        const INDEX = getRandomInt(0, this.foodItems.length - 1);
         const ORIGINAL = this.foodItems[INDEX];
-        let sum = 0;
+
         for(let i = 0; i < COUNT; i++){
-            const COPY = new FoodItem();
-            COPY.setUnique(ORIGINAL.texture, ORIGINAL.name, ORIGINAL.type, {...ORIGINAL.initial.size});
-            COPY.setDynamic(ORIGINAL.value, {...this.dropzonePoints[i].pos});
-            COPY.changeScale(this.scale);
-            this.duplicates.push(COPY);
-            sum = sum + ORIGINAL.value;
+            const ORIGINAL = this.foodItems[INDEX];
+            const DUP = new FoodItem();
+            DUP.setUnique(ORIGINAL.texture, ORIGINAL.name, ORIGINAL.type, {...ORIGINAL.initial.size});
+            DUP.setDynamic(ORIGINAL.value, {...this.dropzonePoints[i].pos});
+            DUP.changeScale(this.scale);
+            this.duplicates.push(DUP);
         }
     }
 
@@ -176,7 +176,6 @@ export class FoodHandler{
         this.copies = [];
         const COUNT = getRandomInt(2, 3);
         const INDICES = [];
-        let sum = 0;
         while(INDICES.length < COUNT){
             const INDEX = getRandomInt(0, this.foodItems.length - 1);
             if(!INDICES.includes(INDEX)){INDICES.push(INDEX);}
@@ -192,7 +191,6 @@ export class FoodHandler{
             }
             COPY.changeScale(this.scale);
             this.copies.push(COPY);
-            sum = sum + ORIGINAL.value;
         }
     }
 
