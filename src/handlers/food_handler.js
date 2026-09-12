@@ -195,4 +195,24 @@ export class FoodHandler{
             sum = sum + ORIGINAL.value;
         }
     }
+
+    getSumFromDropzone(){
+        if(!this.foodInDropzone || this.foodInDropzone.length === 0){return 0;}
+        let SUM = 0;
+        for(let i = 0; i < this.foodInDropzone.length; i++){
+            SUM = SUM + this.foodInDropzone[i].value;
+        }
+        return SUM;
+    }
+
+    getCountFromDropzone(){
+        return this.foodInDropzone.length;
+    }
+
+    restorePositions(){
+        this.foodInDropzone = [];
+        for(let i = 0; i < this.foodItems.length; i++){
+            this.foodItems[i].reset();
+        }
+    }
 }

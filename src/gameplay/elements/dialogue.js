@@ -33,6 +33,7 @@ export class Dialogue{
         });
 
         this.answer = -1;
+        this.foodCount = -1;
     }
 
     changeScale(scale){
@@ -129,7 +130,12 @@ export class Dialogue{
         return this.answer;
     }
 
+    getAnswerFoodCount(){
+        return this.foodCount;
+    }
+
     initLvlOneQuestion(copies){
+        this.answer = -1;
         if(!copies || copies.length < 2) {return;}
         const food1 = copies[0];
         const food2 = copies[1];
@@ -147,6 +153,8 @@ export class Dialogue{
     }
 
     initLvlTwoQuestion(copies){
+        this.answer = -1;
+        this.foodCount = -1;
         if(!copies || copies.length < 2) {return;}
         let value1 = 0;
         let value2 = 0;
@@ -160,9 +168,11 @@ export class Dialogue{
         let sum = 0;
         if(value3 === 0){
             sum = value1 + value2;
+            this.foodCount = 2;
             this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
         } else {
             sum = value1 + value2 + value3;
+            this.foodCount = 3;
             this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
         }
         this.answer = sum;

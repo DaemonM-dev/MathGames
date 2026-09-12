@@ -19,9 +19,9 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 1;
+        this.level = 2;
         this.prevLevel = 0;
-        this.question = 5;
+        this.question = 1;
         this.prevQuestion = 0;
 
         this.scene = null;
@@ -104,7 +104,7 @@ export class Gameplay {
 
     nextQuestion(){
         if(!this.answerCorrect){
-            // Rest Food Positions
+            this.foodHandler.restorePositions();
         } else {
             if(this.question < MAX_QUESTIONS){
                 this.question++;
@@ -116,6 +116,7 @@ export class Gameplay {
                 // GAMEOVER!!!
             }
         }
+        this.viewingFeedback = false;
     }
 
     handleButtonPresses(){
@@ -125,7 +126,7 @@ export class Gameplay {
                 case this.buttonHandler.submit:
                 if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
                     this.checkAnswer();
-                    this.viewingFeedback = true;
+                    if(!this.viewingFeedback){this.viewingFeedback = true;}
                 }
                 break;
                 case this.buttonHandler.next:
@@ -139,11 +140,10 @@ export class Gameplay {
 
     generateNextQuestion(level){
         switch(level){
-            case 1: this.generateNextLvlOneQuestion();
-            break;
+            case 1: this.generateNextLvlOneQuestion(); break;
+            case 2: this.generateNextLvlTwoQuestion(); break;
         };
     }
-
 
     handleLevelSwap(level){
         if(this.level !== this.prevLevel){
@@ -201,12 +201,21 @@ export class Gameplay {
             case 1: case 3: case 4:
                 if(parseFloat(this.inputWindow.input) === this.correctAnswer){
                     this.answerCorrect = true;
-                    console.log("Answer is correct!");
                 } else {
-                    console.log("Answer is incorrect!");
                     this.answerCorrect = false;
                 }
-                break;
+            break;
+            case 2:
+                const SUM = this.foodHandler.getSumFromDropzone();
+                const ANSWER_SUM = this.correctAnswer;
+                const COUNT = this.foodHandler.foodInDropzone.length;
+                const ANSWER_COUNT = this.dialogue.getAnswerFoodCount();
+                if(SUM === ANSWER_SUM && COUNT === ANSWER_COUNT){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+            break;
         }
         clearInputBuffer(this.inputWindow);
     }
