@@ -26,6 +26,14 @@ export const Game = {
 
     activeCommand: Command.NONE,
     gamestate: GameState.LOADING,
+
+    transition: {
+        playing: false,
+        state: 'none',
+        alpha: 0.0,
+        targetAlpha: 0.0,
+        speed: 0.0
+     }
 };
 
 export function init(options = {}){
@@ -79,15 +87,24 @@ function update(deltaTime){
             Game.gamestate = GameState.MAIN_MENU;
             break;
         case GameState.MAIN_MENU:
-            Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
-            if(Game.mainMenu.easyButton.isPressed()){
-                Game.gamestate = GameState.GAMEPLAY
-            };
+            if(!Game.transition.playing){
+                Game.activeCommand = Game.inputHandler.getActiveCommand();
+                Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
+                if(Game.mainMenu.easyButton.isPressed()){
+                    startFadeToBlack(0.5, Game.transition);
+                };
+            } else {
+                updateTransition(Game.transition, deltaTime);
+                if(!Game.transition.playing){
+                    Game.gamestate = GameState.GAMEPLAY;
+                    startFadeFromBlack(0.25, Game.transition);
+                }
+            }
             break;
         case GameState.GAMEPLAY:
-            Game.activeCommand = Game.inputHandler.getActiveCommand();
-            Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
+                Game.activeCommand = Game.inputHandler.getActiveCommand();
+                Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
+                updateTransition(Game.transition, deltaTime);
             break;
         case GameState.GAME_COMPLETE:
             break;
@@ -106,9 +123,11 @@ function draw(){
             break;
         case GameState.MAIN_MENU:
             Game.mainMenu.draw(Game.ctx);
+            if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
             break;
         case GameState.GAMEPLAY:
             Game.gameplay.draw(Game.ctx);
+            if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
             break;
         case GameState.GAME_COMPLETE:
             Game.ctx.fillStyle = "#000";
@@ -141,4 +160,48 @@ export function resizeCanvas(){
 
     if(Game.gameplay){Game.gameplay.changeScale(Game.scale);}
     if(Game.mainMenu){Game.mainMenu.changeScale(Game.scale);}
+}
+
+function startFadeToBlack(duration, transition){
+        transition.playing = true;
+        transition.state = 'fadeToBlack';
+        transition.alpha = 0.0;
+        transition.targetAlpha = 1.0;
+        transition.speed = 1.0 / duration;
+}
+
+function startFadeFromBlack(duration, transition){
+    transition.playing = true;
+        transition.state = 'fadeFromBlack';
+        transition.alpha = 1.0;
+        transition.targetAlpha = 0.0;
+        transition.speed = 1.0 / duration;
+}
+
+function updateTransition(transition, deltaTime){
+    if(transition.playing){
+        switch(transition.state){
+            case 'fadeToBlack':
+                if(transition.alpha < transition.targetAlpha){
+                    transition.alpha += transition.speed * deltaTime;
+                } else {
+                    transition.alpha = transition.targetAlpha;
+                    transition.playing = false;
+                }
+                break;
+            case 'fadeFromBlack':
+                if(transition.alpha > transition.targetAlpha){
+                    transition.alpha -= transition.speed * deltaTime;
+                } else {
+                    transition.alpha = transition.targetAlpha;
+                    transition.playing = false;
+                }
+                break;
+        }
+    }
+}
+
+function drawTransition(transition, ctx){
+   ctx.fillStyle = `rgba(0, 0, 0, ${transition.alpha})`;
+   ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
 }
