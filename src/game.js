@@ -5,6 +5,7 @@ import { GameState } from './enums/game_states.js'
 import { AssetHandler } from './handlers/asset_handler.js'
 import { InputHandler } from './handlers/input_handler.js'
 import { Gameplay } from './gameplay/gameplay.js'
+import { MainMenu } from './gameplay/elements/main_menu.js'
 
 let screenCenter = {x: 0, y: 0};
 
@@ -21,6 +22,7 @@ export const Game = {
     assetHandler: new AssetHandler(),
     inputHandler: new InputHandler(),
     gameplay: new Gameplay(),
+    mainMenu: new MainMenu(),
 
     activeCommand: Command.NONE,
     gamestate: GameState.LOADING,
@@ -72,8 +74,16 @@ function update(deltaTime){
         case GameState.INITIALIZING:
             Game.gameplay.init(Game.assetHandler);
             Game.inputHandler.initInputs();
+            Game.mainMenu.init(Game.assetHandler);
             resizeCanvas();
-            Game.gamestate = GameState.GAMEPLAY;
+            Game.gamestate = GameState.MAIN_MENU;
+            break;
+        case GameState.MAIN_MENU:
+            Game.activeCommand = Game.inputHandler.getActiveCommand();
+            Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
+            if(Game.mainMenu.easyButton.isPressed()){
+                Game.gamestate = GameState.GAMEPLAY
+            };
             break;
         case GameState.GAMEPLAY:
             Game.activeCommand = Game.inputHandler.getActiveCommand();
@@ -93,6 +103,9 @@ function draw(){
             break;
         case GameState.INITIALIZING:
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
+            break;
+        case GameState.MAIN_MENU:
+            Game.mainMenu.draw(Game.ctx);
             break;
         case GameState.GAMEPLAY:
             Game.gameplay.draw(Game.ctx);
@@ -126,5 +139,6 @@ export function resizeCanvas(){
     Game.canvas.style.width = scaledWidth + 'px';
     Game.canvas.style.height = scaledHeight + 'px';
 
-    Game.gameplay.changeScale(Game.scale);
+    if(Game.gameplay){Game.gameplay.changeScale(Game.scale);}
+    if(Game.mainMenu){Game.mainMenu.changeScale(Game.scale);}
 }
