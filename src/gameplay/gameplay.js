@@ -19,7 +19,7 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 5;
+        this.level = 2;
         this.prevLevel = 0;
         this.question = 1;
         this.prevQuestion = 0;
