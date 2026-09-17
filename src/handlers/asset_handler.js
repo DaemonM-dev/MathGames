@@ -92,6 +92,6 @@ export class AssetHandler{
         this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
         this.addAsset('coupon', this.assetUrl('coupon.png'));
         this.addAsset('startMenu', this.assetUrl('startMenu.png'));
-        this.addAsset('levelSplash', this.assetUrl('levelSplash.png'));
+        this.addAsset('levelSting', this.assetUrl('levelSting.png'));
     }
 }

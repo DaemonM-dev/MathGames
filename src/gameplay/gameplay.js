@@ -19,9 +19,9 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 4;
+        this.level = 1;
         this.prevLevel = 0;
-        this.question = 5;
+        this.question = 1;
         this.prevQuestion = 0;
 
         this.score = {questions: 0};
@@ -102,6 +102,7 @@ export class Gameplay {
             this.buttonHandler.drawMenuReturn(ctx);
         }
         if(this.viewingFeedback){ this.scene.drawFeedback(this.answerCorrect, ctx); }
+        // this.scene.drawSting(ctx);
     }
 
     nextQuestion(){
