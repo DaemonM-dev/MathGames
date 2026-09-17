@@ -19,9 +19,9 @@ export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 2;
+        this.level = 4;
         this.prevLevel = 0;
-        this.question = 1;
+        this.question = 5;
         this.prevQuestion = 0;
 
         this.score = {questions: 0};
@@ -122,7 +122,7 @@ export class Gameplay {
                 this.score.questions++;
                 this.question = 1;
             }
-            console.log("Total Questions Answered: ", this.score.questions);
+            console.log("Answered Correctly: ", this.score.questions);
         }
         this.viewingFeedback = false;
     }
@@ -133,7 +133,9 @@ export class Gameplay {
                 case this.buttonHandler.submit:
                 if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
                     this.checkAnswer();
-                    if(!this.viewingFeedback){this.viewingFeedback = true;}
+                    if(!this.viewingFeedback){
+                        this.viewingFeedback = true;
+                    }
                 }
                 break;
                 case this.buttonHandler.next:
@@ -187,58 +189,88 @@ export class Gameplay {
                 this.dialogue.initLvlFiveQuestion(this.scene.coupon, this.foodHandler.copies);
         }
         this.dialogue.wrappingText = true;
-        this.correctAnswer = this.dialogue.getAnswer();
         this.speechBubble.changeDirection();
-
-        console.log("Answer: ", this.correctAnswer);
     }
 
     checkAnswer(){
         switch(this.level){
-            case 1: case 3: case 4:
-                if(parseFloat(this.inputWindow.input) === this.correctAnswer){
-                    this.answerCorrect = true;
+
+            case 1:
+                if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
+                this.answerCorrect = true;
                 } else {
-                    this.answerCorrect = false;
+                this.answerCorrect = false;
                 }
-            break;
+                break;
+            
             case 2:
                 const SUM = this.foodHandler.getSumFromDropzone();
-                const ANSWER_SUM = this.correctAnswer;
-                const COUNT = this.foodHandler.foodInDropzone.length;
-                const ANSWER_COUNT = this.dialogue.getAnswerFoodCount();
-                if(SUM === ANSWER_SUM && COUNT === ANSWER_COUNT){
+                const COUNT = this.foodHandler.getDropzoneCount();
+
+                if(SUM === this.dialogue.getFoodSum() && COUNT === this.dialogue.getFoodCount()){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                break;
+
+            case 3:
+                if(parseFloat(this.inputWindow.input) === this.dialogue.getAnswer()){
+                    this.answerCorrect = true;
+                } else {
+                    this.answerCorrect = false;
+                }
+                break;
+
+            case 4:
+                if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                     this.answerCorrect = true;
                 } else {
                     this.answerCorrect = false;
                 }
             break;
+
             case 5:
 
-                let rightSum = false;
-                let rightTypes = false;
-                let rightCount = false;
+                let correctSum      = false;
+                let correctTypes    = false;
+                let correctCount    = false;
 
-                if(this.foodHandler.getSumFromDropzone() === this.correctAnswer){
-                    rightSum = true;
+                // Answers
+                const A_SUM     = this.dialogue.getFoodSum();
+                const A_TYPES   = this.dialogue.getFoodTypes();
+                const A_COUNT   = this.dialogue.getFoodCount();
+
+                // Inputs
+                const I_SUM     = this.foodHandler.getSumFromDropzone();
+                const I_TYPES   = this.foodHandler.getTypesFromDropzone();
+                const I_COUNT   = this.foodHandler.getDropzoneCount();
+
+                if(A_SUM === I_SUM){
+                    correctSum = true;
+                } else {
+                    console.log("Incorrect Result: SUM");
                 }
 
-                const foodTypeAnswer = this.dialogue.getFoodTypeAnswer();
-                const foodInDropzone = this.foodHandler.getFoodTypesFromDropzone();
-                if(foodTypeAnswer.healthy === foodInDropzone.healthy && foodTypeAnswer.sweet === foodInDropzone.sweet){
-                    rightTypes = true;
+                if(A_TYPES.healthy === I_TYPES.healthy && A_TYPES.sweet === I_TYPES.sweet){
+                    correctTypes = true;
+                } else{
+                    console.log("Incorrect Result: TYPE");
                 }
 
-                if(this.dialogue.getAnswerFoodCount() === this.foodHandler.getCountFromDropzone()){
-                    rightCount = true;
+                if(A_COUNT === I_COUNT){
+                    correctCount = true;
+                } else{
+                    console.log("Incorrect Result: COUNT");
                 }
 
-                if(rightSum && rightTypes && rightCount){
+                if(correctSum && correctTypes && correctCount){
                     this.answerCorrect = true;
                 } else {
                     this.answerCorrect = false;
                 }
 
+            break;
         }
         clearInputBuffer(this.inputWindow);
     }

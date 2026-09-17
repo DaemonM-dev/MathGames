@@ -47,7 +47,6 @@ export class FoodHandler{
         this.copies = [];
         this.duplicates = [];
         this.foodInDropzone = [];
-        this.dropzoneCount = 0;
 
         this.itemSelected = false;
         this.selectionIndex = 0;
@@ -103,12 +102,10 @@ export class FoodHandler{
                     if(this.itemSelected){
                         if(pointIntersects(this.foodItems[this.selectionIndex], dropzone)){
                             this.foodInDropzone.push(this.foodItems[this.selectionIndex]);
-                            this.dropzoneCount++;
                         } else {
                             for(let i = 0; i < this.foodInDropzone.length; i++){
                                 if(this.foodItems[this.selectionIndex] === this.foodInDropzone[i]){
                                     this.foodInDropzone.splice(i, 1);
-                                    this.dropzoneCount--;
                                     break;
                                 }
                             }
@@ -198,29 +195,43 @@ export class FoodHandler{
     }
 
     getSumFromDropzone(){
-        if(!this.foodInDropzone || this.foodInDropzone.length === 0){return 0;}
+
+        if(!this.foodInDropzone || this.foodInDropzone.length === 0){
+            return 0;
+        }
+
         let SUM = 0;
+
         for(let i = 0; i < this.foodInDropzone.length; i++){
             SUM = SUM + this.foodInDropzone[i].value;
         }
+
+        console.log("Player Input: FOOD_SUM =", SUM);
+
         return SUM;
     }
 
-    getCountFromDropzone(){
-        return this.foodInDropzone.length;
-    }
-    getFoodTypesFromDropzone(){
+    getTypesFromDropzone(){
+
         let foodTypes = {healthy: 0, sweet: 0};
 
         for(let i = 0; i < this.foodInDropzone.length; i++){
             switch(this.foodInDropzone[i].type){
-                case 'Healthy': foodTypes.healthy++; break;
-                case 'Sweet': foodTypes.sweet++; break;
+                case 'Healthy': foodTypes.healthy++; 
+                break;
+                case 'Sweet': foodTypes.sweet++; 
+                break;
             }
         }
 
-        return foodTypes;
+        console.log("Player Input: FOOD_TYPES =", foodTypes);
 
+        return foodTypes;
+    }
+
+    getDropzoneCount(){
+        console.log("Player Input: FOOD_COUNT =", this.foodInDropzone.length);
+        return this.foodInDropzone.length;
     }
 
     restorePositions(){

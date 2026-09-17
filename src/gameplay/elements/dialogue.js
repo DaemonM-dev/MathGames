@@ -37,6 +37,13 @@ export class Dialogue{
         this.startingKuro = 0;
         this.mathProblem = "";
         this.foodTypes = {healthy: 0, sweet: 0};
+
+        // Returnable answer parameters
+        this.ANSWER = 0;
+        this.FOOD_COUNT = 0;
+        this.FOOD_SUM = 0;
+        this.START_KURO = 0;
+        this.FOOD_TYPES = {healthy: 0, sweet: 0};
     }
 
     changeScale(scale){
@@ -129,69 +136,77 @@ export class Dialogue{
         this.wrappingText = true;
     }
 
-    getAnswer(){
-        return this.answer;
-    }
-
-    getAnswerFoodCount(){
-        return this.foodCount;
-    }
-
     initLvlOneQuestion(copies){
-        this.answer = 0;
-        if(!copies || copies.length < 2) {return;}
-        const food1 = copies[0];
-        const food2 = copies[1];
-        const food3 = copies[2];
-        
-        if(food1 && food2){
-            if(!food3){
-                this.activeText = "I would like to buy " + food1.name + " and " + food2.name + ". How much will it cost?";
-                this.answer = food1.value + food2.value;
-            } else {
-                this.activeText = "I would like to buy " + food1.name + ", " + food2.name + ", and " + food3.name + ". How much will it cost?";
-                this.answer = food1.value + food2.value + food3.value;
+
+        if(!copies || copies.length < 2) {
+            return;
+        }
+
+        this.FOOD_SUM = 0;
+
+        for(let i = 0; i < copies.length; i++){
+            if(copies[i]){
+                this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
             }
         }
+        
+        if(copies[0] && copies[1]){
+            if(!copies[2]){
+                this.activeText = "I would like to buy " + copies[0].name + " and " + copies[1].name + ". How much will it cost?";
+            } else {
+                this.activeText = "I would like to buy " + copies[0].name + ", " + copies[1].name + ", and " + copies[2].name + ". How much will it cost?";
+            }
+        }
+
+        console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
     initLvlTwoQuestion(copies){
-        this.answer = 0;
-        this.foodCount = 0;
-        if(!copies || copies.length < 2) {return;}
-        let value1 = 0;
-        let value2 = 0;
-        let value3 = 0;
-        if(copies[0]){value1 = copies[0].value;}
-        if(copies[1]){value2 = copies[1].value;}
-        if(copies[2]){value3 = copies[2].value;}
+        
+        if(!copies || copies.length < 2) {
+            return;
+        }
+
+        this.FOOD_COUNT = 0;
+        this.FOOD_SUM = 0;
+
         for(let i = 0; i < copies.length; i++){
-            console.log(copies[i].name);
+            if(copies[i]){
+                this.FOOD_COUNT++;
+                this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+            }
         }
-        let sum = 0;
-        if(value3 === 0){
-            sum = value1 + value2;
-            this.foodCount = 2;
-            this.activeText = "I have " + sum + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
-        } else {
-            sum = value1 + value2 + value3;
-            this.foodCount = 3;
-            this.activeText = "I have " + sum + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+
+        if(copies[0] && copies[1]){
+            if(!copies[2]){
+                this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
+            } else {
+                this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+            }
         }
-        this.answer = sum;
+
+        console.log("Correct Answer: FOOD_COUNT =", this.FOOD_COUNT);
+        console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
     initLvlThreeQuestion(copies){
-        this.startingKuro = -1;
-        this.answer = -1;
+
+        if(!copies || copies.length < 2) {
+            return;
+        }
+
+        this.ANSWER = 0;
+        this.START_KURO = 0;
+        this.FOOD_SUM = 0;
 
         let max = 0;
-        let min = 0;
         let inc = 0;
 
-        const food1 = copies[0];
-        const food2 = copies[1];
-        const food3 = copies[2];
+        for(let i = 0; i < copies.length; i++){
+            if(copies[i]){
+                this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+            }
+        }
 
         switch(getRandomInt(1, 3)){
             case 1: inc = 0.25; break;
@@ -199,31 +214,45 @@ export class Dialogue{
             case 3: inc = 0.75; break;
         }
         
-        if(food1 && food2){
-            if(!food3){
-                min = food1.value + food2.value;
+        if(copies[0] && copies[1]){
+            if(!copies[2]){
+                this.FOOD_SUM = copies[0].value + copies[1].value;
             } else {
-                min = food1.value + food2.value + food3.value;
+                this.FOOD_SUM = copies[0].value + copies[1].value + copies[2].value;
             }
         }
 
-        max = min + 10;
-        this.startingKuro = getRandomInt(min, max) + inc;
-        this.answer = this.startingKuro - min;
+        max = this.FOOD_SUM + 10;
+
+        this.START_KURO = getRandomInt(this.FOOD_SUM, max) + inc;
+        this.ANSWER = this.START_KURO - this.FOOD_SUM;
 
         let zero = "";
         if(inc === 0.50){
             zero = "0";
         }
 
-        this.activeText = "I have " + this.startingKuro + zero + " KURO. How much will I have remaining after buying these food items?";
+        this.activeText = "I have " + this.START_KURO + zero + " KURO. How much will I have remaining after buying these food items?";
+
+        console.log("Correct Answer: ANSWER =", this.ANSWER);
     }
 
     initLvlFourQuestion(duplicates){
+
+        if(!duplicates || duplicates.length < 2 || duplicates.length > 6){
+            return;
+        }
+
+        this.FOOD_SUM = 0;
+
         let count = "";
         let name = "";
         let start = "";
         let middle = "";
+
+        for(let i = 0; i < duplicates.length; i++){
+            this.FOOD_SUM = this.FOOD_SUM + duplicates[i].value;
+        }
 
         switch(duplicates.length){
             case 2: count = "TWO ";     break;
@@ -261,99 +290,108 @@ export class Dialogue{
 
         this.activeText = start + middle + count + name + "?";
         this.mathProblem = duplicates[0].value + " x " + duplicates.length + " = ";
-        this.answer = duplicates[0].value * duplicates.length;
+
+        console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
     initLvlFiveQuestion(coupon, copies){
 
+        if(!coupon || !copies){
+            return;
+        }
+
+        this.START_KURO = 0;
+        this.FOOD_COUNT = 0;
+        this.FOOD_SUM = 0;
+        this.FOOD_TYPES = {healthy: 0, sweet: 0};
+
         const DISCOUNT = coupon.discount;
         const DISCOUNT_STR = coupon.line1;
         const TYPE_STR = coupon.line2;
-
-        this.foodTypes = {healthy: 0, sweet: 0};
-        this.answer = 0;
-        this.foodCount = copies.length;
-        this.startingKuro = 0;
-
-        let sumBeforeDiscount = 0;
         let sumAfterDiscount = 0;
-
-        let foodCountString = "";
         let healthyCountString = "";
         let sweetCountString = "";
 
+        this.FOOD_COUNT = copies.length;
+
         for(let i = 0; i < copies.length; i++){
-            sumBeforeDiscount = sumBeforeDiscount + copies[i].value;
-            switch(copies[i].type){
-                case 'Healthy': this.foodTypes.healthy++; break;
-                case 'Sweet': this.foodTypes.sweet++; break;
-            }
+
+            this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+
             switch(TYPE_STR){
+                case "All Items":
+                    sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                    switch(copies[i].type){
+                        case 'Healthy':
+                            this.FOOD_TYPES.healthy++;
+                        break;
+                        case 'Sweet':
+                            this.FOOD_TYPES.sweet++;
+                        break;
+                    }
+                break;
                 case "Healthy Items":
                     switch(copies[i].type){
                         case 'Healthy':
                             sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                            this.FOOD_TYPES.healthy++;
                         break;
                         case 'Sweet':
                             sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                            this.FOOD_TYPES.sweet++;
                         break;
                     }
                 break;
                 case "Sweet Items":
                     switch(copies[i].type){
-                        case 'Sweet':
-                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
-                        break;
                         case 'Healthy':
                             sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                            this.FOOD_TYPES.healthy++;
+                        break;
+                        case 'Sweet':
+                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                            this.FOOD_TYPES.sweet++;
                         break;
                     }
                 break;
-                case "All Items":
-                    sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
-                break;
             }
         }
-        this.startingKuro = sumAfterDiscount;
-        this.answer = sumBeforeDiscount;
-        console.log("Healthy: ", this.foodTypes.healthy, "Sweet: ", this.foodTypes.sweet);
-        console.log("Sum after discount", sumAfterDiscount);
+
+        this.START_KURO = sumAfterDiscount;
 
         let zero = "";
         if(sumAfterDiscount - Math.floor(sumAfterDiscount) > 0){
             zero = "0";
         }
 
+        this.activeText = "We have " + this.START_KURO + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
 
-        this.activeText = "We have " + this.startingKuro + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
-
-        switch (this.foodTypes.healthy){
+        switch (this.FOOD_TYPES.healthy){
             case 1: healthyCountString = "ONE";     break;
             case 2: healthyCountString = "TWO";     break;
             case 3: healthyCountString = "THREE";   break;
         }
-        switch (this.foodTypes.sweet){
+        switch (this.FOOD_TYPES.sweet){
             case 1: sweetCountString = "ONE";   break;
             case 2: sweetCountString = "TWO";   break;
             case 3: sweetCountString = "THREE"; break;
         }
 
-        if(this.foodTypes.healthy > 0 && this.foodTypes.sweet > 0){
-            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.foodTypes.healthy > 1){this.activeText += "s";}
-            this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.foodTypes.sweet > 1){this.activeText += "s";}
+        if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
+            this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
             this.activeText += " can I purchase and have no change left over?";
-        } else if (this.foodTypes.healthy > 0){
-            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.foodTypes.healthy > 1){this.activeText += "s";}
+        } else if (this.FOOD_TYPES.healthy > 0){
+            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
             this.activeText += " can I purchase and have no change left over?";
-
-        } else if (this.foodTypes.sweet > 0){
-            this.activeText += "What " + sweetCountString + " SWEET food"; if(this.foodTypes.sweet > 1){this.activeText += "s";}
+        } else if (this.FOOD_TYPES.sweet > 0){
+            this.activeText += "What " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
             this.activeText += " can I purchase and have no change left over?";
         }
-    }
 
-    getFoodTypeAnswer(){
-        return this.foodTypes;
+        console.log("Correct Answer: FOOD_COUNT =", this.FOOD_COUNT);
+        console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
+        console.log("Correct Answer: FOOD_TYPES =", this.FOOD_TYPES);
     }
 
     drawMathProblem(ctx){
@@ -364,5 +402,21 @@ export class Dialogue{
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.mathProblem, POS.x, POS.y);
+    }
+
+    getFoodCount(){
+        return this.FOOD_COUNT;
+    }
+
+    getFoodSum(){
+        return this.FOOD_SUM;
+    }
+
+    getAnswer(){
+        return this.ANSWER;
+    }
+
+    getFoodTypes(){
+        return this.FOOD_TYPES;
     }
 }
