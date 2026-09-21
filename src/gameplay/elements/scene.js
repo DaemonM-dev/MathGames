@@ -19,8 +19,6 @@ export class Scene{
         this.feedbackIndex = 0;
         this.posFeedback = [];
 
-        this.leveSting = null;
-
         this.coupon = null;
     }
 
@@ -73,12 +71,6 @@ export class Scene{
             this.coupon.center = {x: this.coupon.initial.center.x * this.scale, y: this.coupon.initial.center.y * this.scale};
             this.coupon.fontSize = this.coupon.initial.fontSize * this.scale;
             this.coupon.linespace = this.coupon.initial.linespace * this.scale;
-        }
-        if(this.levelSting){
-            this.levelSting.size.x = this.levelSting.initial.size.x * this.scale;
-            this.levelSting.size.y = this.levelSting.initial.size.y * this.scale;
-            this.levelSting.pos.x = this.levelSting.initial.pos.x * this.scale;
-            this.levelSting.pos.y = this.levelSting.initial.pos.y * this.scale;
         }
     }
 
@@ -167,17 +159,6 @@ export class Scene{
             moving: false,
         }
         this.initFeedback(assets);
-        SIZE = { x:1920, y: 1080 };
-        POS = { x: 0.0, y: 0.0 };
-        this.levelSting = {
-            texture: assets.getAsset('levelSting'),
-            size: SIZE,
-            pos: POS,
-            initial: {size: {...SIZE}, pos: {...POS}},
-            checkPoint: 'left',
-            cachedCheckPoint: 'left',
-            moving: false
-        }
     }
 
     initFeedback(assets){
@@ -292,7 +273,4 @@ export class Scene{
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
 
-    drawSting(ctx){
-        ctx.drawImage(this.levelSting.texture, this.levelSting.pos.x, this.levelSting.pos.y, this.levelSting.size.x, this.levelSting.size.y);
-    }
 }

@@ -39,6 +39,14 @@ export class InputHandler{
                     }
                     event.preventDefault();
                     break;
+
+                case 'KeyW':
+                    if(this.activeCommand !== Command.ARROW){
+                        this.activeCommand = Command.ARROW;
+                    }
+                    event.preventDefault();
+                    break;
+
                 case 'Backspace':
                     removeKeyboardInput(Game.gameplay);
                     event.preventDefault();

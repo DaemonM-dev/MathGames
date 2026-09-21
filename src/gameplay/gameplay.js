@@ -11,6 +11,7 @@ import { InputWindow } from './elements/input_window.js'
 import { FoodHandler } from '../handlers/food_handler.js'
 import { ButtonHandler } from '../handlers/button_handler.js'
 import { Dialogue } from './elements/dialogue.js'
+import { LevelSting } from './elements/levelSting.js'
 
 const MAX_QUESTIONS = 5;
 const MAX_LEVELS = 5;
@@ -34,6 +35,7 @@ export class Gameplay {
         this.buttonHandler = null;
         this.foodHandler = null;
         this.dialogue = null;
+        this.levelSting = null;
 
         this.playerAnswer = 0;
         this.correctAnswer = 0;
@@ -41,14 +43,15 @@ export class Gameplay {
         this.answerCorrect = false;
     }
     changeScale(scale){
-        if(this.scene){this.scene.changeScale(scale);}
-        if(this.progressWindow){this.progressWindow.changeScale(scale);}
-        if(this.dropzone){this.dropzone.changeScale(scale);}
-        if(this.speechBubble){this.speechBubble.changeScale(scale);}
-        if(this.inputWindow){this.inputWindow.changeScale(scale);}
-        if(this.buttonHandler){this.buttonHandler.changeScale(scale);}
-        if(this.foodHandler){this.foodHandler.changeScale(scale);}
-        if(this.dialogue){this.dialogue.changeScale(scale);}
+        if(this.scene)          {this.scene.changeScale(scale);}
+        if(this.progressWindow) {this.progressWindow.changeScale(scale);}
+        if(this.dropzone)       {this.dropzone.changeScale(scale);}
+        if(this.speechBubble)   {this.speechBubble.changeScale(scale);}
+        if(this.inputWindow)    {this.inputWindow.changeScale(scale);}
+        if(this.buttonHandler)  {this.buttonHandler.changeScale(scale);}
+        if(this.foodHandler)    {this.foodHandler.changeScale(scale);}
+        if(this.dialogue)       {this.dialogue.changeScale(scale);}
+        if(this.levelSting)     {this.levelSting.changeScale(scale);}
     }
 
     init(assets){
@@ -64,6 +67,8 @@ export class Gameplay {
         this.foodHandler = new FoodHandler();
         this.foodHandler.init(assets);
         this.dialogue = new Dialogue(this.speechBubble.textBounds);
+        this.levelSting = new LevelSting();
+        this.levelSting.init(assets);
     }
 
     update(command, mousePos, deltaTime){
@@ -84,6 +89,12 @@ export class Gameplay {
                 this.nextQuestion();
             }
         }
+
+        if(command === Command.ARROW){
+            this.levelSting.play();
+        }
+
+        this.levelSting.update(deltaTime);
     }
 
     draw(ctx){
@@ -102,7 +113,8 @@ export class Gameplay {
             this.buttonHandler.drawMenuReturn(ctx);
         }
         if(this.viewingFeedback){ this.scene.drawFeedback(this.answerCorrect, ctx); }
-        // this.scene.drawSting(ctx);
+
+        this.levelSting.draw(ctx);
     }
 
     nextQuestion(){
