@@ -2,11 +2,11 @@ import { GAME_SIZE } from '../../globals.js'
 
 const SIZE = { x:1920, y: 1080 };
 
-const LOWER =   { x: 0, y: GAME_SIZE.y };
+const LOWER =   { x: 0, y: GAME_SIZE.y - 200 };
 const MIDDLE =  { x: 0, y: 0 };
-const HIGHER =  { x: 0, y: -SIZE.y };
+const HIGHER =  { x: 0, y: -SIZE.y + 100 };
 
-const SPEED = 800;
+const SPEED = 1800;
 
 export class LevelSting {
 
@@ -23,6 +23,10 @@ export class LevelSting {
         this.newDest = 'lower';
 
         this.moving = false;
+
+        this.alpha = 0.0;
+        this.targetAlpha = 0.5;
+        this.fadeSpeed = 1.0;
     }
 
     changeScale(scale){
@@ -39,20 +43,27 @@ export class LevelSting {
     play(){
         if(!this.moving && this.dest === this.newDest){
             switch(this.dest){
-                case 'lower': this.newDest = 'middle'; break;
-                case 'middle': this.newDest = 'higher'; break;
+                case 'lower':   this.newDest = 'middle'; this.targetAlpha = 0.5; break;
+                case 'middle':  this.newDest = 'higher'; this.targetAlpha = 0.0; break;
             }
             this.moving = true;
         }
     }
 
     update(deltaTime){
+
         if(this.moving){
 
             this.pos.y -= SPEED * deltaTime;
             this.cachedPos.y -= SPEED * deltaTime;
 
             if(this.newDest === 'middle'){
+
+                if(this.alpha < this.targetAlpha){
+                    this.alpha += this.fadeSpeed * deltaTime;
+                } else {
+                    this.alpha = this.targetAlpha
+                }
 
                 if(this.pos.y < MIDDLE.y * this.scale){
 
@@ -64,6 +75,13 @@ export class LevelSting {
                 }
 
             } else if (this.newDest === 'higher'){
+
+                if(this.alpha > this.targetAlpha){
+                    this.alpha -= this.fadeSpeed * deltaTime;
+                } else {
+                    this.alpha = this.targetAlpha
+                }
+
 
                 if(this.pos.y < HIGHER.y * this.scale){
 
@@ -79,6 +97,8 @@ export class LevelSting {
     }
 
     draw(ctx){
+        ctx.fillStyle = `rgba(0, 0, 0, ${this.alpha})`;
+        ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(this.texture, this.pos.x, this.pos.y, this.size.x, this.size.y);
     }
 };
