@@ -23,6 +23,7 @@ export class LevelSting {
         this.newDest = 'lower';
 
         this.moving = false;
+        this.ended = false;
 
         this.alpha = 0.0;
         this.targetAlpha = 0.5;
@@ -90,10 +91,17 @@ export class LevelSting {
                     this.dest = 'lower';
                     this.newDest = 'lower';
                     this.moving = false;
-
+                    this.ended = true;
                 }
             }
         }
+    }
+
+    isEnded(){
+        if(this.ended){
+            this.ended = false;
+        }
+        return false;
     }
 
     draw(ctx){
