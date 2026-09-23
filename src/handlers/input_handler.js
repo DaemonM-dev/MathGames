@@ -32,6 +32,9 @@ export class InputHandler{
                     if(Game.gameplay.viewingFeedback){
                         Game.gameplay.viewingFeedback = false;
                         Game.gameplay.nextQuestion();
+                    } else if(Game.gameplay.viewingSting){
+                        Game.gameplay.levelSting.play();
+                        Game.gameplay.viewingSting = false;
                     } else {
                         if(Game.gameplay.foodHandler.foodInDropzone.length > 0 || Game.gameplay.inputWindow.input !== ""){
                             pressButton(Game.gameplay.buttonHandler.viewingMenu, Game.gameplay.buttonHandler.submit);

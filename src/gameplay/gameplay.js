@@ -22,7 +22,7 @@ export class Gameplay {
 
         this.level = 1;
         this.prevLevel = 0;
-        this.question = 1;
+        this.question = 5;
         this.prevQuestion = 0;
 
         this.score = {questions: 0};
@@ -39,7 +39,9 @@ export class Gameplay {
 
         this.playerAnswer = 0;
         this.correctAnswer = 0;
+
         this.viewingFeedback = false;
+        this.viewingSting = false;
         this.answerCorrect = false;
     }
     changeScale(scale){
@@ -72,7 +74,19 @@ export class Gameplay {
     }
 
     update(command, mousePos, deltaTime){
-        if(!this.viewingFeedback){
+
+        if(this.viewingSting){
+            if(command === Command.MOUSE_DOWN){
+                this.levelSting.play();
+                this.viewingSting = false;
+                this.nextQuestion();
+            }
+        } else if(this.viewingFeedback){
+            if(command === Command.MOUSE_DOWN){
+                this.viewingFeedback = false;
+                this.nextQuestion();
+            }
+        } else {
             this.handleLevelSwap(this.level);
             this.progressWindow.update(this.question, this.level);
             if(!this.buttonHandler.viewingMenu){
@@ -83,15 +97,6 @@ export class Gameplay {
             this.dialogue.update(Game.ctx);
             this.handleButtonPresses();
             if(this.level === 5){this.scene.animateCoupon(deltaTime);}
-        } else {
-            if(command === Command.MOUSE_DOWN){
-                this.viewingFeedback = false;
-                this.nextQuestion();
-            }
-        }
-
-        if(command === Command.ARROW){
-            this.levelSting.play();
         }
 
         this.levelSting.update(deltaTime);
@@ -130,6 +135,8 @@ export class Gameplay {
                 this.question = 1;
                 this.score.questions++;
                 this.level++;
+                this.levelSting.play();
+                this.viewingSting = true;
             } else {
                 this.level = 1;
                 this.score.questions++;
