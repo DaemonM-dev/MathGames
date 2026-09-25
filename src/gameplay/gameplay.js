@@ -73,6 +73,23 @@ export class Gameplay {
         this.levelSting.init(assets);
     }
 
+    initScore(score){
+        // Copy the score from the server, e.g. if page reloads
+        // Current question is 1 more than the score
+        console.log("Initial score: ", score);
+        if (score.score === MAX_QUESTIONS) {
+            this.level = score.level + 1;
+            this.question = 1;
+        } else {
+            this.level = score.level;
+            this.question = score.score + 1;
+        }
+        if (this.level > MAX_LEVELS) {
+            this.level = 1;
+            this.question = 1;
+        }
+    }
+
     update(command, mousePos, deltaTime){
 
         if(this.viewingSting){
@@ -218,6 +235,7 @@ export class Gameplay {
             case 1:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                 this.answerCorrect = true;
+                this.notifyAnswer(this.level, this.question);
                 } else {
                 this.answerCorrect = false;
                 }
@@ -229,6 +247,7 @@ export class Gameplay {
 
                 if(SUM === this.dialogue.getFoodSum() && COUNT === this.dialogue.getFoodCount()){
                     this.answerCorrect = true;
+                    this.notifyAnswer(this.level, this.question);
                 } else {
                     this.answerCorrect = false;
                 }
@@ -237,6 +256,7 @@ export class Gameplay {
             case 3:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getAnswer()){
                     this.answerCorrect = true;
+                    this.notifyAnswer(this.level, this.question);
                 } else {
                     this.answerCorrect = false;
                 }
@@ -245,6 +265,7 @@ export class Gameplay {
             case 4:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                     this.answerCorrect = true;
+                    this.notifyAnswer(this.level, this.question);
                 } else {
                     this.answerCorrect = false;
                 }
@@ -286,6 +307,7 @@ export class Gameplay {
 
                 if(correctSum && correctTypes && correctCount){
                     this.answerCorrect = true;
+                    this.notifyAnswer(this.level, this.question);
                 } else {
                     this.answerCorrect = false;
                 }
@@ -293,6 +315,20 @@ export class Gameplay {
             break;
         }
         clearInputBuffer(this.inputWindow);
+    }
+
+    notifyAnswer(level, score){
+        // If running inside a container, notify the container of the update to
+        // progress.
+        console.log("Notifying answer: ", level, score);
+        if (Game.onAnswer){
+            Game.onAnswer({
+                level: level,
+                score: score,
+                classroomPin: Game.session?.team?.classroomPin ?? '',
+                teamName: Game.session?.team?.animal ?? '',
+            });
+        }
     }
 }
 
