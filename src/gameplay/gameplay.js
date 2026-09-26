@@ -22,8 +22,8 @@ export class Gameplay {
 
         this.level = 1;
         this.prevLevel = 0;
-        this.question = 5;
-        this.prevQuestion = 0;
+        this.question = 1;
+        this.prevQuestion = 1;
 
         this.score = {questions: 0};
 
@@ -186,7 +186,11 @@ export class Gameplay {
     }
 
     handleLevelSwap(level){
-        if(this.level !== this.prevLevel){
+
+        if(this.question !== this.prevQuestion){
+            this.generateNextQuestion(this.level);
+            this.prevQuestion = this.question;
+        } else if(this.level !== this.prevLevel){
             switch(level){
                 case 1: case 3: case 4:
                     this.inputType = InputType.KEYBOARD; 
@@ -197,7 +201,6 @@ export class Gameplay {
             }
             this.generateNextQuestion(this.level);
             this.prevLevel = this.level;
-            this.speechBubble.changeDirection();
         }
     }
 
