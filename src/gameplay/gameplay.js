@@ -3,6 +3,7 @@ import { Game }                     from '../game.js'
 import { Command }                  from '../enums/commands.js'
 import { InputType }                from '../enums/input_types.js'
 import { Difficulty }               from '../enums/difficulty.js'
+import { Language }                 from '../enums/language.js'
 
 import { FoodHandler }              from '../handlers/food_handler.js'
 import { ButtonHandler }            from '../handlers/button_handler.js'
@@ -23,6 +24,7 @@ export class Gameplay {
         this.inputType = InputType.KEYBOARD;
 
         this.difficulty = Difficulty.NONE;
+        this.language = Language.ENGLISH;
 
         this.level          = 1;
         this.prevLevel      = 0;

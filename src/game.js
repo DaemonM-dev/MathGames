@@ -108,7 +108,12 @@ function update(deltaTime){
             } else {
                 updateTransition(Game.transition, deltaTime);
                 if(!Game.transition.playing){
-                    Game.gamestate = GameState.INITIALIZING;
+
+                    if(Game.gameplay.level !== 1 || Game.gameplay.question !== 1){
+                        Game.gamestate = GameState.GAMEPLAY;
+                    } else {
+                        Game.gamestate = GameState.INITIALIZING;
+                    }
                     startFadeFromBlack(0.25, Game.transition);
                 }
             }
