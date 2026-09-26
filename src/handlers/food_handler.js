@@ -1,7 +1,9 @@
 import { GAME_SIZE, getRandomInt, shuffle, pointIntersects } from '../globals.js'
 import { Command } from '../enums/commands.js'
+import { Difficulty } from '../enums/difficulty.js'
 import { FoodItem } from '../gameplay/elements/food_item.js'
-import { Pricetag } from '../gameplay/elements/pricetag.js';
+import { Pricetag } from '../gameplay/elements/pricetag.js'
+import { Game } from '../game.js'
 
 const MAX_FOOD = 8;
 
@@ -78,8 +80,27 @@ export class FoodHandler{
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setUnique(TEXTURE, NAME, TYPE, SIZE);
-            this.foodItems[i].setDynamic(VALUE, POS);
-            this.priceTags.push(new Pricetag({x: POS.x + 25, y: POS.y + 150}, VALUE));
+            // this.foodItems[i].setDynamic(VALUE, POS);
+            // this.priceTags.push(new Pricetag({x: POS.x + 25, y: POS.y + 150}, VALUE));
+
+
+            if(Game.gameplay.difficulty === Difficulty.REGULAR){
+                this.foodItems[i].setDynamic(VALUE, POS);
+                this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
+            } else if (Game.gameplay.difficulty === Difficulty.CHALLENGE){
+                
+                let inc = 0;
+                const n = getRandomInt(1,4);
+
+                switch (n){
+                    case 1: inc = 0.0;  break;
+                    case 2: inc = 0.25; break;
+                    case 3: inc = 0.50; break;
+                    case 4: inc = 0.75; break;
+                }
+                this.foodItems[i].setDynamic(VALUE + inc, POS);
+                this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE + inc);
+            }
         }
         this.randomiseDynamic();
     }
@@ -149,8 +170,25 @@ export class FoodHandler{
         for(let i = 0; i < this.shelfPoints.length; i++){
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
-            this.foodItems[i].setDynamic(VALUE, POS);
-            this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
+
+            if(Game.gameplay.difficulty === Difficulty.REGULAR){
+                this.foodItems[i].setDynamic(VALUE, POS);
+                this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
+            } else if (Game.gameplay.difficulty === Difficulty.CHALLENGE){
+                
+                let inc = 0;
+                const n = getRandomInt(1,4);
+
+                switch (n){
+                    case 1: inc = 0.0;  break;
+                    case 2: inc = 0.25; break;
+                    case 3: inc = 0.50; break;
+                    case 4: inc = 0.75; break;
+                }
+                this.foodItems[i].setDynamic(VALUE + inc, POS);
+                this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE + inc);
+            }
+
             this.foodItems[i].changeScale(this.scale);
             this.priceTags[i].changeScale(this.scale);
         }

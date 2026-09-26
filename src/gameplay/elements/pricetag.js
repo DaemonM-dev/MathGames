@@ -11,10 +11,16 @@ export class Pricetag{
         this.color = {infill: '#fde8d7', outline: 'black'};
         this.initial = {size: {x:100, y: 50}, pos: {...pos}, center: {...this.center}, radius: 5, lineWidth: 2};
 
-        this.fontSize = 35;
-        this.initialFontSize = 35;
+        this.fontSize = 30;
+        this.initialFontSize = 30;
 
-        this.price = price;
+        if(price % 1 === 0.5){
+            this.price = price + "0";
+        } else if (price % 1 === 0){
+            this.price = price + ".00";
+        } else {
+            this.price = price;
+        }
     }
 
     changeScale(scale){

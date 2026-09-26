@@ -116,12 +116,10 @@ function update(deltaTime){
         case GameState.INITIALIZING:
             console.log("=== Starting to Initialize Gameplay ===");
             Game.gameplay.init(Game.assetHandler);
-            // Game.inputHandler.initInputs();
-            // Game.mainMenu.init(Game.assetHandler);
+            Game.gameplay.handleLevelSwap(Game.gameplay.level);
             resizeCanvas();
             console.log("=== Finished Initializing Gameplay ===");
             Game.gamestate = GameState.GAMEPLAY;
-            // Game.gameplay.initScore(Game.initial_score);
             break;
         case GameState.GAMEPLAY:
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
