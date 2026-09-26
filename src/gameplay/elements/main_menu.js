@@ -30,7 +30,7 @@ export class MainMenu{
         let RADIUS = 15;
         let LINEWIDTH = 2;
         let FONTSIZE = 40;
-        let TEXT = "Regular Mode";
+        let TEXT = "Regular";
 
         // Colors
         let DEF = {infill: '#f3b255', outline: '#f3b255'};
@@ -43,7 +43,7 @@ export class MainMenu{
 
 
         POS = {x:1220, y:530};
-        TEXT = "Challenge Mode";
+        TEXT = "Challenge";
 
         this.hardButton.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.hardButton.setColors(DEF, HOVER, PRESS, FONT);
