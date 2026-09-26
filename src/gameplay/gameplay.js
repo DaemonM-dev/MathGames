@@ -79,7 +79,11 @@ export class Gameplay {
             if(command === Command.MOUSE_DOWN){
                 this.levelSting.play();
                 this.viewingSting = false;
-                this.nextQuestion();
+                if(this.level !== this.prevLevel){
+                    return;
+                } else {
+                    this.nextQuestion();
+                }
             }
         } else if(this.viewingFeedback){
             if(command === Command.MOUSE_DOWN){
@@ -130,7 +134,6 @@ export class Gameplay {
                 this.question++;
                 this.score.questions++;
                 this.foodHandler.restorePositions();
-                this.generateNextQuestion(this.level);
             } else if (this.level < MAX_LEVELS){
                 this.question = 1;
                 this.score.questions++;
@@ -142,9 +145,7 @@ export class Gameplay {
                 this.score.questions++;
                 this.question = 1;
             }
-            console.log("Answered Correctly: ", this.score.questions);
         }
-        this.viewingFeedback = false;
     }
 
     handleButtonPresses(){
@@ -179,7 +180,6 @@ export class Gameplay {
             }
             this.generateNextQuestion(this.level);
             this.prevLevel = this.level;
-            this.prevQuestion = this.question;
             this.speechBubble.changeDirection();
         }
     }
