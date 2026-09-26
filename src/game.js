@@ -41,6 +41,7 @@ export function init(options = {}){
     Game.container = options.container ?? Game.canvas?.parentElement ?? null;
     Game.session = options.session ?? null;
     Game.onAnswer = options.onAnswer ?? null;
+    Game.initial_score = options.score ?? {level:1, score:0};
     Game.ctx = Game.canvas.getContext('2d');
     Game.assetHandler.loadAll();
     Game.running = true;
@@ -85,6 +86,7 @@ function update(deltaTime){
             Game.mainMenu.init(Game.assetHandler);
             resizeCanvas();
             Game.gamestate = GameState.MAIN_MENU;
+            Game.gameplay.initScore(Game.initial_score);
             break;
         case GameState.MAIN_MENU:
             if(!Game.transition.playing){
