@@ -30,7 +30,7 @@ export class MainMenu{
         let RADIUS = 15;
         let LINEWIDTH = 2;
         let FONTSIZE = 40;
-        let TEXT = "Easy Mode";
+        let TEXT = "Regular Mode";
 
         // Colors
         let DEF = {infill: '#f3b255', outline: '#f3b255'};
@@ -43,20 +43,16 @@ export class MainMenu{
 
 
         POS = {x:1220, y:530};
-        TEXT = "Hard Mode";
-
-        DEF = {infill: '#aaaaaa', outline: '#aaaaaa'};
-        // DEF = {infill: '#f3b155', outline: '#f3b255'};
-        HOVER = {infill: '#f3b155bb', outline: '#f3b255'};
-        PRESS = {infill: '#f3b15576', outline: '#f3b15500'};
+        TEXT = "Challenge Mode";
 
         this.hardButton.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.hardButton.setColors(DEF, HOVER, PRESS, FONT);
 
     }
 
-    update(command, mousePos, deltaTime){
+    update(command, mousePos){
         this.easyButton.update(command, mousePos);
+        this.hardButton.update(command, mousePos);
     }
 
     draw(ctx){

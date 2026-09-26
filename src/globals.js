@@ -1,5 +1,4 @@
 export const CANVAS_ID = 'game_canvas';
-
 export const GAME_SIZE = {x:1920, y: 1080};
 
 export function pointIntersects(point, object){

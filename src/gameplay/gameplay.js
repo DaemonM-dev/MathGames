@@ -1,48 +1,52 @@
-import { Game } from '../game.js'
-import { GAME_SIZE, getRandomInt } from "../globals.js"
-import { Command } from '../enums/commands.js'
-import { InputType } from '../enums/input_types.js'
+import { Game }                     from '../game.js'
 
-import { Scene } from '../gameplay/elements/scene.js'
-import { ProgressWindow } from './elements/progress_window.js'
-import { Dropzone } from './elements/dropzone.js'
-import { SpeechBubble } from './elements/speech_bubble.js'
-import { InputWindow } from './elements/input_window.js'
-import { FoodHandler } from '../handlers/food_handler.js'
-import { ButtonHandler } from '../handlers/button_handler.js'
-import { Dialogue } from './elements/dialogue.js'
-import { LevelSting } from './elements/levelSting.js'
+import { Command }                  from '../enums/commands.js'
+import { InputType }                from '../enums/input_types.js'
+import { Difficulty }               from '../enums/difficulty.js'
+
+import { FoodHandler }              from '../handlers/food_handler.js'
+import { ButtonHandler }            from '../handlers/button_handler.js'
+
+import { Scene }                    from './elements/scene.js'
+import { ProgressWindow }           from './elements/progress_window.js'
+import { Dropzone }                 from './elements/dropzone.js'
+import { SpeechBubble }             from './elements/speech_bubble.js'
+import { InputWindow }              from './elements/input_window.js'
+import { Dialogue }                 from './elements/dialogue.js'
+import { LevelSting }               from './elements/levelSting.js'
 
 const MAX_QUESTIONS = 5;
-const MAX_LEVELS = 5;
+const MAX_LEVELS    = 5;
 
 export class Gameplay {
     constructor(){
         this.inputType = InputType.KEYBOARD;
 
-        this.level = 1;
-        this.prevLevel = 0;
-        this.question = 1;
-        this.prevQuestion = 1;
+        this.difficulty = Difficulty.NONE;
+
+        this.level          = 1;
+        this.prevLevel      = 0;
+        this.question       = 1;
+        this.prevQuestion   = 1;
 
         this.score = {questions: 0};
 
-        this.scene = null;
+        this.scene          = null;
         this.progressWindow = null;
-        this.dropzone = null;
-        this.speechBubble = null;
-        this.inputWindow = null;
-        this.buttonHandler = null;
-        this.foodHandler = null;
-        this.dialogue = null;
-        this.levelSting = null;
+        this.dropzone       = null;
+        this.speechBubble   = null;
+        this.inputWindow    = null;
+        this.buttonHandler  = null;
+        this.foodHandler    = null;
+        this.dialogue       = null;
+        this.levelSting     = null;
 
-        this.playerAnswer = 0;
-        this.correctAnswer = 0;
+        this.playerAnswer   = 0;
+        this.correctAnswer  = 0;
 
-        this.viewingFeedback = false;
-        this.viewingSting = false;
-        this.answerCorrect = false;
+        this.viewingFeedback    = false;
+        this.viewingSting       = false;
+        this.answerCorrect      = false;
     }
     changeScale(scale){
         if(this.scene)          {this.scene.changeScale(scale);}
@@ -57,19 +61,20 @@ export class Gameplay {
     }
 
     init(assets){
-        this.scene = new Scene();
+        this.scene =            new Scene();
+        this.progressWindow =   new ProgressWindow();
+        this.dropzone =         new Dropzone();
+        this.speechBubble =     new SpeechBubble();
+        this.inputWindow =      new InputWindow();
+        this.buttonHandler =    new ButtonHandler();
+        this.foodHandler =      new FoodHandler();
+        this.dialogue =         new Dialogue(this.speechBubble.textBounds);
+        this.levelSting =       new LevelSting();
+
         this.scene.init(assets);
-        this.progressWindow = new ProgressWindow();
-        this.dropzone = new Dropzone();
-        this.speechBubble = new SpeechBubble();
         this.speechBubble.init(assets);
-        this.inputWindow = new InputWindow();
         this.inputWindow.init(assets);
-        this.buttonHandler = new ButtonHandler();
-        this.foodHandler = new FoodHandler();
         this.foodHandler.init(assets);
-        this.dialogue = new Dialogue(this.speechBubble.textBounds);
-        this.levelSting = new LevelSting();
         this.levelSting.init(assets);
     }
 
@@ -169,12 +174,12 @@ export class Gameplay {
         if(this.buttonHandler.pressedButton !== null){
             switch(this.buttonHandler.pressedButton){
                 case this.buttonHandler.submit:
-                if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
-                    this.checkAnswer();
-                    if(!this.viewingFeedback){
-                        this.viewingFeedback = true;
+                    if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
+                        this.checkAnswer();
+                        if(!this.viewingFeedback){
+                            this.viewingFeedback = true;
+                        }
                     }
-                }
                 break;
                 case this.buttonHandler.next:
                 case this.buttonHandler.prev:
@@ -186,7 +191,6 @@ export class Gameplay {
     }
 
     handleLevelSwap(level){
-
         if(this.question !== this.prevQuestion){
             this.generateNextQuestion(this.level);
             this.prevQuestion = this.question;
@@ -234,7 +238,6 @@ export class Gameplay {
 
     checkAnswer(){
         switch(this.level){
-
             case 1:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                 this.answerCorrect = true;
@@ -243,11 +246,9 @@ export class Gameplay {
                 this.answerCorrect = false;
                 }
                 break;
-            
             case 2:
                 const SUM = this.foodHandler.getSumFromDropzone();
                 const COUNT = this.foodHandler.getDropzoneCount();
-
                 if(SUM === this.dialogue.getFoodSum() && COUNT === this.dialogue.getFoodCount()){
                     this.answerCorrect = true;
                     this.notifyAnswer(this.level, this.question);
@@ -255,7 +256,6 @@ export class Gameplay {
                     this.answerCorrect = false;
                 }
                 break;
-
             case 3:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getAnswer()){
                     this.answerCorrect = true;
@@ -264,7 +264,6 @@ export class Gameplay {
                     this.answerCorrect = false;
                 }
                 break;
-
             case 4:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                     this.answerCorrect = true;
@@ -272,8 +271,7 @@ export class Gameplay {
                 } else {
                     this.answerCorrect = false;
                 }
-            break;
-
+                break;
             case 5:
 
                 let correctSum      = false;
@@ -331,6 +329,18 @@ export class Gameplay {
                 classroomPin: Game.session?.team?.classroomPin ?? '',
                 teamName: Game.session?.team?.animal ?? '',
             });
+        }
+    }
+
+    setDifficulty(difficulty){
+        if(this.difficulty !== difficulty && difficulty !== Difficulty.NONE){
+            switch(difficulty){
+                case Difficulty.REGULAR: console.log("Setting Difficulty: REGULAR")
+                    break;
+                case Difficulty.CHALLENGE: console.log("Setting Difficulty: CHALLENGE")
+                    break;
+            }
+            this.difficulty = difficulty;
         }
     }
 }

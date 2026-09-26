@@ -1,6 +1,7 @@
 import { CANVAS_ID, GAME_SIZE} from './globals.js'
 import { Command } from './enums/commands.js'
 import { GameState } from './enums/game_states.js'
+import { Difficulty } from './enums/difficulty.js'
 
 import { AssetHandler } from './handlers/asset_handler.js'
 import { InputHandler } from './handlers/input_handler.js'
@@ -76,32 +77,51 @@ function gameLoop(timeStamp){
 function update(deltaTime){
     switch(Game.gamestate){
         case GameState.LOADING:
+            console.log("=== Loading Assets ===");
             if(Game.assetHandler.areAllAssetsLoaded()){
-                Game.gamestate = GameState.INITIALIZING;
+                console.log("=== Assets Loaded ===");
+                Game.gamestate = GameState.INIT_MENU;
             }
             break;
-        case GameState.INITIALIZING:
-            Game.gameplay.init(Game.assetHandler);
+
+        case GameState.INIT_MENU:
+            console.log("=== Initializing Main Menu ===");
             Game.inputHandler.initInputs();
             Game.mainMenu.init(Game.assetHandler);
             resizeCanvas();
-            Game.gamestate = GameState.MAIN_MENU;
             Game.gameplay.initScore(Game.initial_score);
+            console.log("=== Finished Initializing Main Menu ===");
+            Game.gamestate = GameState.MAIN_MENU;
             break;
+
         case GameState.MAIN_MENU:
             if(!Game.transition.playing){
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
                 Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
                 if(Game.mainMenu.easyButton.isPressed()){
+                    Game.gameplay.setDifficulty(Difficulty.REGULAR);
                     startFadeToBlack(0.5, Game.transition);
-                };
+                } else if(Game.mainMenu.hardButton.isPressed()){
+                    Game.gameplay.setDifficulty(Difficulty.CHALLENGE);
+                    startFadeToBlack(0.5, Game.transition);
+                }
             } else {
                 updateTransition(Game.transition, deltaTime);
                 if(!Game.transition.playing){
-                    Game.gamestate = GameState.GAMEPLAY;
+                    Game.gamestate = GameState.INITIALIZING;
                     startFadeFromBlack(0.25, Game.transition);
                 }
             }
+            break;
+        case GameState.INITIALIZING:
+            console.log("=== Starting to Initialize Gameplay ===");
+            Game.gameplay.init(Game.assetHandler);
+            // Game.inputHandler.initInputs();
+            // Game.mainMenu.init(Game.assetHandler);
+            resizeCanvas();
+            console.log("=== Finished Initializing Gameplay ===");
+            Game.gamestate = GameState.GAMEPLAY;
+            // Game.gameplay.initScore(Game.initial_score);
             break;
         case GameState.GAMEPLAY:
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
