@@ -174,7 +174,7 @@ export class Gameplay {
         if(this.buttonHandler.pressedButton !== null){
             switch(this.buttonHandler.pressedButton){
                 case this.buttonHandler.submit:
-                    if(this.inputWindow.input !== "" || this.foodHandler.dropzoneCount !== 0 ){
+                    if(this.inputWindow.input !== "" || this.foodHandler.getDropzoneCount() !== 0){
                         this.checkAnswer();
                         if(!this.viewingFeedback){
                             this.viewingFeedback = true;
