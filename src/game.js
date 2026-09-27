@@ -101,6 +101,9 @@ function update(deltaTime){
             if(!Game.transition.playing){
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
                 Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
+
+                Game.gameplay.buttonHandler.updateOptions(Game.activeCommand, Game.inputHandler.mousePos);
+
                 if(Game.mainMenu.easyButton.isPressed()){
                     Game.gameplay.setDifficulty(Difficulty.REGULAR);
                     startFadeToBlack(0.5, Game.transition);
@@ -151,12 +154,21 @@ function draw(){
             break;
         case GameState.MAIN_MENU:
             Game.mainMenu.draw(Game.ctx);
-            // Game.gameplay.buttonHandler.drawOptions(Game.ctx);
-            if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
+            Game.gameplay.buttonHandler.drawOptions(Game.ctx);
+            if(Game.transition.playing){
+                drawTransition(Game.transition, Game.ctx);
+            }
             break;
         case GameState.GAMEPLAY:
             Game.gameplay.draw(Game.ctx);
-            if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
+            if(!Game.gameplay.buttonHandler.viewingOptions){
+                Game.gameplay.buttonHandler.drawOptions(Game.ctx);
+            } else {
+                Game.gameplay.buttonHandler.drawOptionButtons(Game.ctx);
+            }
+            if(Game.transition.playing){
+                drawTransition(Game.transition, Game.ctx);
+            }
             break;
         case GameState.GAME_COMPLETE:
             Game.ctx.fillStyle = "#000";

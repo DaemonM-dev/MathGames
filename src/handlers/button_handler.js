@@ -1,5 +1,7 @@
 import { GAME_SIZE } from '../globals.js'
 import { Button } from '../gameplay/elements/button.js'
+import { GameState } from '../enums/game_states.js'
+import { Game } from '../game.js'
 
 export class ButtonHandler{
     constructor(){
@@ -11,20 +13,19 @@ export class ButtonHandler{
         this.menu       = new Button();
         this.menuReturn = new Button();
 
-        this.resume     = new Button();
-        // this.sound      = new Button();
-        // this.language   = new Button();
-        // this.mainMenu   = new Button();
-        // this.exit       = new Button();
-        
-        this.options = [
-            this.resume,
-            // this.sound,
-            // this.language,
-            // this.mainMenu,
-            // this.exit
-        ];
+        this.options    = new Button();
 
+        this.resume     = new Button();
+        this.sound      = new Button();  
+        this.language   = new Button();
+        this.exit       = new Button();
+        
+        this.optionsArray = [
+            this.resume,
+            this.sound,
+            this.language,
+            this.exit
+        ];
 
         this.buttonArray = [
             this.submit,
@@ -46,23 +47,26 @@ export class ButtonHandler{
         for(let i = 0; i < this.buttonArray.length; i++){
             if(this.buttonArray[i]){this.buttonArray[i].changeScale(this.scale);}
         }
-        for(let i = 0; i < this.options.length; i++){
-            if(this.options[i]){
-                this.options[i].changeScale(this.scale);
+        for(let i = 0; i < this.optionsArray.length; i++){
+            if(this.optionsArray[i]){
+                this.optionsArray[i].changeScale(this.scale);
             }
+        }
+        if(this.options){
+            this.options.changeScale(this.scale);
         }
     }
 
     init(){
         let SIZE        = {x:250, y: 100};
         let POS         = {x:1475 ,y: 875};
-        let RADIUS      = 35;
+        let RADIUS      = 20;
         let LINEWIDTH   = 8;
         let FONTSIZE    = 50;
         let TEXT        = "Submit";
-        let DEFCOLOR    = {infill: '#f3b15576', outline: '#f3b255'};
-        let HOVERCOLOR  = {infill: '#f3b155bb', outline: '#f3b255'};
-        let PRESSCOLOR  = {infill: '#f3b15576', outline: '#f3b15500'};
+        let DEFCOLOR = {infill: '#f3b1557e', outline: '#f3b255'};
+        let HOVERCOLOR = {infill: '#d3a25e', outline: '#d3a25e'};
+        let PRESSCOLOR = {infill: '#f3b255', outline: '#f3b255'};
         let FONTCOLOR   = 'black';
         this.submit.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.submit.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
@@ -123,8 +127,11 @@ export class ButtonHandler{
     }
 
     initOptions(){
-        let SIZE        = {x:250, y: 100};
-        let POS         = {x:(GAME_SIZE.x / 2 - SIZE.x / 2) * this.scale ,y: 175};
+
+        const SCREEN_CENTER = {x: GAME_SIZE.x / 2, y: GAME_SIZE.y / 2};
+
+        let SIZE        = {x:300, y: 100};
+        let POS         = {x:(SCREEN_CENTER.x - SIZE.x / 2) * this.scale, y: (SCREEN_CENTER.y - (SIZE.y / 2) - 150) * this.scale};
         let RADIUS      = 15;
         let LINEWIDTH   = 2;
         let FONTSIZE    = 40;
@@ -137,25 +144,85 @@ export class ButtonHandler{
 
         this.resume.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.resume.setColors(DEF, HOVER, PRESS, FONT);
+
+        POS = {x: POS.x, y: POS.y + SIZE.y + 25};
+        TEXT = "Sound";
+        this.sound.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.sound.setColors(DEF, HOVER, PRESS, FONT);
+
+        POS = {x: POS.x, y: POS.y + SIZE.y + 25};
+        TEXT = "Language";
+        this.language.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.language.setColors(DEF, HOVER, PRESS, FONT);
+
+        POS = {x: POS.x, y: POS.y + SIZE.y + 25};
+        TEXT = "Exit";
+        this.exit.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.exit.setColors(DEF, HOVER, PRESS, FONT);
+
+
+        POS = {x: 30, y: 30};
+        TEXT = "Options";
+        this.options.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.options.setColors(DEF, HOVER, PRESS, FONT);
     }
 
     update(command, mousePos){
-        if(!this.viewingMenu){
-            if(this.pressedButton){this.pressedButton = null;}
+
+        if(this.viewingMenu){
+            this.menuReturn.update(command, mousePos);
+            if(this.menuReturn.isPressed()){
+                this.viewingMenu = false;
+            }
+        } else if(this.viewingOptions){
+            for(let i = 0; i < this.optionsArray.length; i++){
+                this.optionsArray[i].update(command, mousePos);
+            }
+            if(this.resume.isPressed()){
+                this.viewingOptions = false;
+            } else if (this.sound.isPressed()){
+
+            } else if(this.language.isPressed()){
+
+            } else if (this.exit.isPressed()){
+                // Game.gamestate = GameState.INIT_MENU;
+                this.viewingOptions = false;
+            }
+        } else {
+
+            if(this.pressedButton){
+                this.pressedButton = null;
+            }
 
             this.submit.update(command, mousePos);
             this.next.update(command, mousePos);
             this.prev.update(command, mousePos);
             this.menu.update(command, mousePos);
+            this.options.update(command, mousePos);
 
             if(this.submit.isPressed()){this.pressedButton = this.submit;}
             else if (this.next.isPressed()){this.pressedButton = this.next;}
             else if (this.prev.isPressed()){this.pressedButton = this.prev;}
             else if(this.menu.isPressed()){this.viewingMenu = true;}
+            else if(this.options.isPressed()){this.viewingOptions = true;}
+        }
+    }
 
+    updateOptions(command, mousePos){
+
+        if(this.viewingOptions){
+            for(let i = 0; i < this.optionsArray.length; i++){
+                this.optionsArray[i].update(command, mousePos);
+            }
+            if(this.resume.isPressed()){
+                this.viewingOptions = false;
+            }
         } else {
-            this.menuReturn.update(command, mousePos);
-            if(this.menuReturn.isPressed()){this.viewingMenu = false;}
+            this.options.update(command, mousePos);
+
+            if(this.options.isPressed()){
+                this.viewingOptions = true;
+            }
         }
     }
 
@@ -163,13 +230,29 @@ export class ButtonHandler{
         this.submit.draw(ctx);
         this.next.draw(ctx);
         this.prev.draw(ctx);
-        this.menu.draw(ctx);
+
+        if(this.viewingMenu){
+            this.menu.draw(ctx);
+        } else if(this.viewingOptions){
+            this.drawOptionButtons(ctx);
+        }
     }
 
     drawOptions(ctx){
-        for(let i = 0; i < this.options.length; i++){
-            if(this.options[i]){
-                this.options[i].draw(ctx);
+
+        if(this.viewingOptions){
+            this.drawOptionButtons(ctx);
+        } else if(this.options){
+            this.options.draw(ctx);
+        }
+    }
+
+    drawOptionButtons(ctx){
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+        for(let i = 0; i < this.optionsArray.length; i++){
+            if(this.optionsArray[i]){
+                this.optionsArray[i].draw(ctx);
             }
         }
     }
