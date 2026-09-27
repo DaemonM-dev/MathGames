@@ -1,19 +1,22 @@
-import { getRandomInt, getRandomFloat } from '../../globals.js'
+import { getRandomInt } from '../../globals.js'
 
 export class Dialogue{
     constructor(bounds){
-        this.scale = 1.0;
-
-        this.fontSize = 30;
-        this.bounds = {...bounds};
-        this.center = {
+        this.scale      = 1.0;
+        this.fontSize   = 30;
+        this.bounds     = {...bounds};
+        this.center     = {
             x: bounds.pos.x + (bounds.size.x / 2),
             y: bounds.pos.y + (bounds.size.y / 2)
         };
-        this.initial = {fontSize: this.fontSize, bounds: {...bounds}, center: {...this.center}};
+        this.initial    = {
+            fontSize: this.fontSize, 
+            bounds: {...bounds}, 
+            center: {...this.center}
+        };
 
-        this.instructionIndex = 0;
-        this.instructionMsg = [
+        this.instructionIndex   = 0;
+        this.instructionMsg     = [
             "Select the Kuro icon with your mouse to begin typing your answers!",
             "Try clicking and dragging the food items over to the large white box!"
         ];
@@ -21,38 +24,38 @@ export class Dialogue{
         this.activeText = "This is a new text with words of different sizes that I am using to test a hypothesis. ";
         this.cachedText = "";
 
-        this.wordArray = [];
-        this.lines = [];
+        this.wordArray  = [];
+        this.lines      = [];
 
-        this.fontReady = false;
-        this.wrappingText = true;
+        this.fontReady      = false;
+        this.wrappingText   = true;
 
         document.fonts.load(`${this.fontSize}px PoppinsBold`).finally(() => {
             this.fontReady = true;
             this.wrappingText = true;
         });
 
-        this.answer = 0;
-        this.foodCount = 0;
-        this.startingKuro = 0;
-        this.mathProblem = "";
-        this.foodTypes = {healthy: 0, sweet: 0};
+        this.answer         = 0;
+        this.foodCount      = 0;
+        this.startingKuro   = 0;
+        this.mathProblem    = "";
+        this.foodTypes      = {healthy: 0, sweet: 0};
 
         // Returnable answer parameters
-        this.ANSWER = 0;
+        this.ANSWER     = 0;
         this.FOOD_COUNT = 0;
-        this.FOOD_SUM = 0;
+        this.FOOD_SUM   = 0;
         this.START_KURO = 0;
         this.FOOD_TYPES = {healthy: 0, sweet: 0};
     }
 
     changeScale(scale){
-        this.scale = scale;
-        this.fontSize = this.initial.fontSize * this.scale;
-        this.bounds.pos = {x:this.initial.bounds.pos.x * this.scale, y:this.initial.bounds.pos.y * this.scale};
-        this.bounds.size = {x:this.initial.bounds.size.x * this.scale, y:this.initial.bounds.size.y * this.scale};
-        this.center = {x:this.initial.center.x * this.scale, y:this.initial.center.y * this.scale};
-        this.wrappingText = true;
+        this.scale          = scale;
+        this.fontSize       = this.initial.fontSize * this.scale;
+        this.bounds.pos     = {x:this.initial.bounds.pos.x * this.scale, y:this.initial.bounds.pos.y * this.scale};
+        this.bounds.size    = {x:this.initial.bounds.size.x * this.scale, y:this.initial.bounds.size.y * this.scale};
+        this.center         = {x:this.initial.center.x * this.scale, y:this.initial.center.y * this.scale};
+        this.wrappingText   = true;
     }
 
     update(ctx){

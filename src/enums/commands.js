@@ -1,6 +1,6 @@
 export const Command = {
-    NONE: 'none',
+    NONE:       'none',
     MOUSE_DOWN: 'mouse_down',
-    MOUSE_UP: 'mouse_up',
-    ARROW: 'arrow'
+    MOUSE_UP:   'mouse_up',
+    ARROW:      'arrow'
 }

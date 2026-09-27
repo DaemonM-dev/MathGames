@@ -1,5 +1,5 @@
 export const Language = {
-    NONE: 'none',
-    ENGLISH: 'english',
-    IRISH: 'irish'
+    NONE:       'none',
+    ENGLISH:    'english',
+    IRISH:      'irish'
 }

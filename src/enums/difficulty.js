@@ -1,5 +1,5 @@
 export const Difficulty = {
-    NONE: 'none',
-    REGULAR: 'regular',
-    CHALLENGE: 'challenge',
+    NONE:       'none',
+    REGULAR:    'regular',
+    CHALLENGE:  'challenge',
 }

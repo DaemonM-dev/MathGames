@@ -1,4 +1,4 @@
-import { GAME_SIZE, getRandomInt, shuffle, pointIntersects } from '../globals.js'
+import { getRandomInt, shuffle, pointIntersects } from '../globals.js'
 import { Command } from '../enums/commands.js'
 import { Difficulty } from '../enums/difficulty.js'
 import { FoodItem } from '../gameplay/elements/food_item.js'
@@ -273,9 +273,12 @@ export class FoodHandler{
     }
 
     restorePositions(){
-        this.foodInDropzone = [];
         for(let i = 0; i < this.foodItems.length; i++){
             this.foodItems[i].reset();
         }
+    }
+
+    clearDropzoneFood(){
+        this.foodInDropzone = [];
     }
 }

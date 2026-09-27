@@ -1,58 +1,58 @@
-import { GAME_SIZE, pointIntersects } from '../../globals.js'
-import { ButtonState } from '../../enums/button_states.js'
-import { Command } from '../../enums/commands.js'
+import { pointIntersects }  from '../../globals.js'
+import { ButtonState }      from '../../enums/button_states.js'
+import { Command }          from '../../enums/commands.js'
 
 export class Button{
     constructor(){
-        this.scale = 1.0;
-        this.size = null;
-        this.pos = null;
-        this.center = null;
-        this.radius = 0;
-        this.lineWidth = 0;
-        this.text = "";
-        this.fontSize = 0;
-        this.state = ButtonState.NONE;
-        this.pressed = false;
-        this.initial = {size: null, pos: null, center: null, radius: 0, lineWidth: 0, fontSize: 0};
-        this.color = {infill:'white', outline: 'white'};
-        this.defColor = {infill:'white', outline: 'white'};
+        this.scale      = 1.0;
+        this.size       = null;
+        this.pos        = null;
+        this.center     = null;
+        this.radius     = 0;
+        this.lineWidth  = 0;
+        this.text       = "";
+        this.fontSize   = 0;
+        this.state      = ButtonState.NONE;
+        this.pressed    = false;
+        this.initial    = {size: null, pos: null, center: null, radius: 0, lineWidth: 0, fontSize: 0};
+        this.color      = {infill:'white', outline: 'white'};
+        this.defColor   = {infill:'white', outline: 'white'};
         this.hoverColor = {infill:'white', outline: 'white'};
         this.pressColor = {infill:'white', outline: 'white'};
-        this.fontColor = 'white';
+        this.fontColor  = 'white';
     }
 
     changeScale(scale){
-        this.scale = scale;
-        this.size = {x: this.initial.size.x * this.scale, y: this.initial.size.y * this.scale};
-        this.pos = {x: this.initial.pos.x * this.scale, y: this.initial.pos.y * this.scale};
-        this.center = {x: this.initial.center.x * this.scale, y: this.initial.center.y * this.scale};
-        this.radius = this.initial.radius * this.scale;
-        this.lineWidth = this.initial.lineWidth * this.scale;
-        this.fontSize = this.initial.fontSize * this.scale;
+        this.scale      = scale;
+        this.size       = {x: this.initial.size.x * this.scale, y: this.initial.size.y * this.scale};
+        this.pos        = {x: this.initial.pos.x * this.scale, y: this.initial.pos.y * this.scale};
+        this.center     = {x: this.initial.center.x * this.scale, y: this.initial.center.y * this.scale};
+        this.radius     = this.initial.radius * this.scale;
+        this.lineWidth  = this.initial.lineWidth * this.scale;
+        this.fontSize   = this.initial.fontSize * this.scale;
     }
 
     setShape(size, pos, radius, lineWidth, fontSize, text){
-        this.size = {...size};
-        this.initial.size = {...size};
-        this.pos = {...pos};
-        this.initial.pos = {...pos};
-        this.center = {x:pos.x + (size.x / 2), y: pos.y + (size.y / 2)};
-        this.initial.center = {...this.center};
-        this.radius = radius;
-        this.initial.radius = radius;
-        this.lineWidth = lineWidth;
-        this.initial.lineWidth = lineWidth;
-        this.fontSize = fontSize;
-        this.initial.fontSize = fontSize;
-        this.text = text;
+        this.size               = {...size};
+        this.initial.size       = {...size};
+        this.pos                = {...pos};
+        this.initial.pos        = {...pos};
+        this.center             = {x:pos.x + (size.x / 2), y: pos.y + (size.y / 2)};
+        this.initial.center     = {...this.center};
+        this.radius             = radius;
+        this.initial.radius     = radius;
+        this.lineWidth          = lineWidth;
+        this.initial.lineWidth  = lineWidth;
+        this.fontSize           = fontSize;
+        this.initial.fontSize   = fontSize;
+        this.text               = text;
     }
     setColors(def, hover, press, font){
-        this.color = {...def};
-        this.defColor = {...def};
+        this.color      = {...def};
+        this.defColor   = {...def};
         this.hoverColor = {...hover};
         this.pressColor = {...press};
-        this.fontColor = font;
+        this.fontColor  = font;
     }
 
     update(command, mousePos){
@@ -102,8 +102,10 @@ export class Button{
     }
 
     isPressed(){
-        const PRESSED = this.pressed;
-        if(this.pressed){this.pressed = false;}
-        return PRESSED;
+        if(this.pressed){
+            this.pressed = false;
+            return true;
+        }
+        return false;
     }
 }

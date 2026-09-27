@@ -151,17 +151,15 @@ export class Gameplay {
     }
 
     nextQuestion(){
-        if(!this.answerCorrect){
-            this.foodHandler.restorePositions();
-        } else {
+        if(this.answerCorrect){
             if(this.question < MAX_QUESTIONS){
                 this.question++;
                 this.score.questions++;
-                this.foodHandler.restorePositions();
             } else if (this.level < MAX_LEVELS){
                 this.question = 1;
                 this.score.questions++;
                 this.level++;
+                this.food
                 this.levelSting.play();
                 this.viewingSting = true;
             } else {
@@ -170,6 +168,8 @@ export class Gameplay {
                 this.question = 1;
             }
         }
+        this.foodHandler.clearDropzoneFood();
+        this.foodHandler.restorePositions();
     }
 
     handleButtonPresses(){
@@ -317,6 +317,7 @@ export class Gameplay {
 
             break;
         }
+        this.foodHandler.clearDropzoneFood();
         clearInputBuffer(this.inputWindow);
     }
 
