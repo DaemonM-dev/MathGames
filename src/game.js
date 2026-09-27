@@ -5,6 +5,7 @@ import { Difficulty } from './enums/difficulty.js'
 
 import { AssetHandler } from './handlers/asset_handler.js'
 import { InputHandler } from './handlers/input_handler.js'
+import { ButtonHandler } from './handlers/button_handler.js'
 import { Gameplay } from './gameplay/gameplay.js'
 import { MainMenu } from './gameplay/elements/main_menu.js'
 
@@ -87,6 +88,8 @@ function update(deltaTime){
         case GameState.INIT_MENU:
             console.log("=== Initializing Main Menu ===");
             Game.inputHandler.initInputs();
+            Game.gameplay.buttonHandler = new ButtonHandler();
+            Game.gameplay.buttonHandler.init();
             Game.mainMenu.init(Game.assetHandler);
             resizeCanvas();
             Game.gameplay.initScore(Game.initial_score);
@@ -148,6 +151,7 @@ function draw(){
             break;
         case GameState.MAIN_MENU:
             Game.mainMenu.draw(Game.ctx);
+            // Game.gameplay.buttonHandler.drawOptions(Game.ctx);
             if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
             break;
         case GameState.GAMEPLAY:

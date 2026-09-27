@@ -68,7 +68,6 @@ export class Gameplay {
         this.dropzone =         new Dropzone();
         this.speechBubble =     new SpeechBubble();
         this.inputWindow =      new InputWindow();
-        this.buttonHandler =    new ButtonHandler();
         this.foodHandler =      new FoodHandler();
         this.dialogue =         new Dialogue(this.speechBubble.textBounds);
         this.levelSting =       new LevelSting();

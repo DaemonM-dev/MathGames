@@ -5,11 +5,26 @@ export class ButtonHandler{
     constructor(){
         this.scale = 1.0;
 
-        this.submit = new Button();
-        this.next = new Button();
-        this.prev = new Button();
-        this.menu = new Button();
+        this.submit     = new Button();
+        this.next       = new Button();
+        this.prev       = new Button();
+        this.menu       = new Button();
         this.menuReturn = new Button();
+
+        this.resume     = new Button();
+        // this.sound      = new Button();
+        // this.language   = new Button();
+        // this.mainMenu   = new Button();
+        // this.exit       = new Button();
+        
+        this.options = [
+            this.resume,
+            // this.sound,
+            // this.language,
+            // this.mainMenu,
+            // this.exit
+        ];
+
 
         this.buttonArray = [
             this.submit,
@@ -19,8 +34,9 @@ export class ButtonHandler{
             this.menuReturn
         ];
 
-        this.viewingMenu = false;
-        this.pressedButton = null;
+        this.viewingMenu    = false;
+        this.viewingOptions = false;
+        this.pressedButton  = null;
 
         this.init();
     }
@@ -30,73 +46,97 @@ export class ButtonHandler{
         for(let i = 0; i < this.buttonArray.length; i++){
             if(this.buttonArray[i]){this.buttonArray[i].changeScale(this.scale);}
         }
+        for(let i = 0; i < this.options.length; i++){
+            if(this.options[i]){
+                this.options[i].changeScale(this.scale);
+            }
+        }
     }
 
     init(){
-        let SIZE = {x:250, y: 100};
-        let POS = {x:1475 ,y: 875};
-        let RADIUS = 35;
-        let LINEWIDTH = 8;
-        let FONTSIZE = 50;
-        let TEXT = "Submit";
-        let DEFCOLOR = {infill: '#f3b15576', outline: '#f3b255'};
-        let HOVERCOLOR = {infill: '#f3b155bb', outline: '#f3b255'};
-        let PRESSCOLOR = {infill: '#f3b15576', outline: '#f3b15500'};
-        let FONTCOLOR = 'black';
+        let SIZE        = {x:250, y: 100};
+        let POS         = {x:1475 ,y: 875};
+        let RADIUS      = 35;
+        let LINEWIDTH   = 8;
+        let FONTSIZE    = 50;
+        let TEXT        = "Submit";
+        let DEFCOLOR    = {infill: '#f3b15576', outline: '#f3b255'};
+        let HOVERCOLOR  = {infill: '#f3b155bb', outline: '#f3b255'};
+        let PRESSCOLOR  = {infill: '#f3b15576', outline: '#f3b15500'};
+        let FONTCOLOR   = 'black';
         this.submit.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.submit.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE = {x:50, y: 50};
-        POS = {x:900 ,y: 800};
-        RADIUS = 22;
-        LINEWIDTH = 5;
-        FONTSIZE = 50;
-        TEXT = ">";
-        DEFCOLOR = {infill: '#88a8d877', outline: '#88a8d8'};
-        HOVERCOLOR = {infill: '#88a8d8ce', outline: '#88a8d8'};
-        PRESSCOLOR = {infill: '#88a8d877', outline: '#88a8d800'};
-        FONTCOLOR = '#9bd7b5';
+        SIZE        = {x:50, y: 50};
+        POS         = {x:900 ,y: 800};
+        RADIUS      = 22;
+        LINEWIDTH   = 5;
+        FONTSIZE    = 50;
+        TEXT        = ">";
+        DEFCOLOR    = {infill: '#88a8d877', outline: '#88a8d8'};
+        HOVERCOLOR  = {infill: '#88a8d8ce', outline: '#88a8d8'};
+        PRESSCOLOR  = {infill: '#88a8d877', outline: '#88a8d800'};
+        FONTCOLOR   = '#9bd7b5';
         this.next.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.next.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE = {x:50, y: 50};
-        POS = {x:325 ,y: 800};
-        RADIUS = 22;
-        LINEWIDTH = 5;
-        FONTSIZE = 50;
-        TEXT = "<";
-        DEFCOLOR = {infill: '#88a8d877', outline: '#88a8d8'};
-        HOVERCOLOR = {infill: '#88a8d8ce', outline: '#88a8d8'};
-        PRESSCOLOR = {infill: '#88a8d877', outline: '#88a8d800'};
-        FONTCOLOR = '#9bd7b5';
+        SIZE        = {x:50, y: 50};
+        POS         = {x:325 ,y: 800};
+        RADIUS      = 22;
+        LINEWIDTH   = 5;
+        FONTSIZE    = 50;
+        TEXT        = "<";
+        DEFCOLOR    = {infill: '#88a8d877', outline: '#88a8d8'};
+        HOVERCOLOR  = {infill: '#88a8d8ce', outline: '#88a8d8'};
+        PRESSCOLOR  = {infill: '#88a8d877', outline: '#88a8d800'};
+        FONTCOLOR   = '#9bd7b5';
         this.prev.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.prev.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE = {x:325, y: 40};
-        POS = {x:500 ,y: 85};
-        RADIUS = 10;
-        LINEWIDTH = 5;
-        FONTSIZE = 20;
-        TEXT = "Click here to see the menu!";
-        DEFCOLOR = {infill: '#75747400', outline: 'white'};
-        HOVERCOLOR = {infill: '#bebdbd9d', outline: 'white'};
-        PRESSCOLOR = {infill: '#bebdbd9d', outline: '#88a8d800'};
-        FONTCOLOR = 'white';
+        SIZE        = {x:325, y: 40};
+        POS         = {x:500 ,y: 85};
+        RADIUS      = 10;
+        LINEWIDTH   = 5;
+        FONTSIZE    = 20;
+        TEXT        = "Click here to see the menu!";
+        DEFCOLOR    = {infill: '#75747400', outline: 'white'};
+        HOVERCOLOR  = {infill: '#bebdbd9d', outline: 'white'};
+        PRESSCOLOR  = {infill: '#bebdbd9d', outline: '#88a8d800'};
+        FONTCOLOR   = 'white';
         this.menu.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menu.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE = {x:100, y: 100};
-        POS = {x:1350 ,y: 55};
-        RADIUS = 10;
-        LINEWIDTH = 5;
-        FONTSIZE = 50;
-        TEXT = "X";
-        DEFCOLOR = {infill: '#ed2626', outline: '#ffffff'};
-        HOVERCOLOR = {infill: '#ed26269c', outline: '#ffffff'};
-        PRESSCOLOR = {infill: '#ed26269c', outline: '#88a8d800'};
-        FONTCOLOR = '#ffffff';
+        SIZE        = {x:100, y: 100};
+        POS         = {x:1350 ,y: 55};
+        RADIUS      = 10;
+        LINEWIDTH   = 5;
+        FONTSIZE    = 50;
+        TEXT        = "X";
+        DEFCOLOR    = {infill: '#ed2626', outline: '#ffffff'};
+        HOVERCOLOR  = {infill: '#ed26269c', outline: '#ffffff'};
+        PRESSCOLOR  = {infill: '#ed26269c', outline: '#88a8d800'};
+        FONTCOLOR   = '#ffffff';
         this.menuReturn.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menuReturn.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
+
+        this.initOptions();
+    }
+
+    initOptions(){
+        let SIZE        = {x:250, y: 100};
+        let POS         = {x:(GAME_SIZE.x / 2 - SIZE.x / 2) * this.scale ,y: 175};
+        let RADIUS      = 15;
+        let LINEWIDTH   = 2;
+        let FONTSIZE    = 40;
+        let TEXT        = "Resume";
+
+        let DEF = {infill: '#f3b255', outline: '#f3b255'};
+        let HOVER = {infill: '#d3a25e', outline: '#d3a25e'};
+        let PRESS = {infill: '#f3b255', outline: '#f3b255'};
+        let FONT = 'black';
+
+        this.resume.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.resume.setColors(DEF, HOVER, PRESS, FONT);
     }
 
     update(command, mousePos){
@@ -124,6 +164,14 @@ export class ButtonHandler{
         this.next.draw(ctx);
         this.prev.draw(ctx);
         this.menu.draw(ctx);
+    }
+
+    drawOptions(ctx){
+        for(let i = 0; i < this.options.length; i++){
+            if(this.options[i]){
+                this.options[i].draw(ctx);
+            }
+        }
     }
 
     drawMenuReturn(ctx){
