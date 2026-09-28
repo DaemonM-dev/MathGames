@@ -1,13 +1,15 @@
-import { CANVAS_ID, GAME_SIZE} from './globals.js'
-import { Command } from './enums/commands.js'
-import { GameState } from './enums/game_states.js'
-import { Difficulty } from './enums/difficulty.js'
+import { CANVAS_ID, GAME_SIZE}  from './globals.js'
 
-import { AssetHandler } from './handlers/asset_handler.js'
-import { InputHandler } from './handlers/input_handler.js'
-import { ButtonHandler } from './handlers/button_handler.js'
-import { Gameplay } from './gameplay/gameplay.js'
-import { MainMenu } from './gameplay/elements/main_menu.js'
+import { Command }              from './enums/commands.js'
+import { GameState }            from './enums/game_states.js'
+import { Difficulty }           from './enums/difficulty.js'
+
+import { AssetHandler }         from './handlers/asset_handler.js'
+import { InputHandler }         from './handlers/input_handler.js'
+import { ButtonHandler }        from './handlers/button_handler.js'
+
+import { Gameplay }             from './gameplay/gameplay.js'
+import { MainMenu }             from './gameplay/elements/main_menu.js'
 
 let screenCenter = {x: 0, y: 0};
 
@@ -21,13 +23,13 @@ export const Game = {
     session: null,
     onAnswer: null,
 
-    assetHandler: new AssetHandler(),
-    inputHandler: new InputHandler(),
-    gameplay: new Gameplay(),
-    mainMenu: new MainMenu(),
+    assetHandler:   new AssetHandler(),
+    inputHandler:   new InputHandler(),
+    gameplay:       new Gameplay(),
+    mainMenu:       new MainMenu(),
 
-    activeCommand: Command.NONE,
-    gamestate: GameState.LOADING,
+    activeCommand:  Command.NONE,
+    gamestate:      GameState.LOADING,
 
     transition: {
         playing: false,
