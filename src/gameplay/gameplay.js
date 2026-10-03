@@ -66,14 +66,14 @@ export class Gameplay {
 
         this.language = language;
 
-        this.scene =            new Scene(this.language);
-        this.progressWindow =   new ProgressWindow(this.language);
-        this.dropzone =         new Dropzone();
-        this.speechBubble =     new SpeechBubble();
-        this.inputWindow =      new InputWindow(this.language);
-        this.foodHandler =      new FoodHandler();
-        this.dialogue =         new Dialogue(this.speechBubble.textBounds);
-        this.levelSting =       new LevelSting();
+        this.scene              = new Scene(this.language);
+        this.progressWindow     = new ProgressWindow(this.language);
+        this.dropzone           = new Dropzone();
+        this.speechBubble       = new SpeechBubble();
+        this.inputWindow        = new InputWindow(this.language);
+        this.foodHandler        = new FoodHandler();
+        this.dialogue           = new Dialogue(this.speechBubble.textBounds);
+        this.levelSting         = new LevelSting();
 
         this.scene.init(assets);
         this.speechBubble.init(assets);
@@ -99,36 +99,49 @@ export class Gameplay {
         }
     }
 
-    update(command, mousePos, deltaTime){
-
-        if(this.viewingSting){
-            if(command === Command.MOUSE_DOWN){
+    update(command, mousePos, deltaTime)
+    {
+        if(this.viewingSting)
+        {
+            if(command === Command.MOUSE_DOWN)
+            {
                 this.levelSting.play();
                 this.viewingSting = false;
-                if(this.level !== this.prevLevel){
+                if(this.level !== this.prevLevel)
+                {
                     return;
-                } else {
+                } 
+                else 
+                {
                     this.nextQuestion();
                 }
             }
-        } else if(this.viewingFeedback){
-            if(command === Command.MOUSE_DOWN){
+        } 
+        else if(this.viewingFeedback)
+        {
+            if(command === Command.MOUSE_DOWN)
+            {
                 this.viewingFeedback = false;
                 this.nextQuestion();
             }
-        } else {
+        } 
+        else 
+        {
             this.handleLevelSwap(this.level);
             this.progressWindow.update(this.question, this.level);
-            if(!this.buttonHandler.viewingMenu){
+            if(!this.buttonHandler.viewingMenu)
+            {
                 this.inputWindow.update(this.level, command, mousePos, deltaTime);
             }
             this.buttonHandler.update(command, mousePos);
             this.foodHandler.update(this.level, command, mousePos, this.dropzone);
             this.dialogue.update(Game.ctx);
             this.handleButtonPresses();
-            if(this.level === 5){this.scene.animateCoupon(deltaTime);}
+            if(this.level === 5)
+            {
+                this.scene.animateCoupon(deltaTime);
+            }
         }
-
         this.levelSting.update(deltaTime);
     }
 
@@ -148,7 +161,6 @@ export class Gameplay {
             this.buttonHandler.drawMenuReturn(ctx);
         }
         if(this.viewingFeedback){ this.scene.drawFeedback(this.answerCorrect, ctx); }
-
         this.levelSting.draw(ctx);
     }
 
