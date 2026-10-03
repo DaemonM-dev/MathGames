@@ -1,5 +1,4 @@
-import {GAME_SIZE} from '../../globals.js'
-import { Command } from '../../enums/commands.js';
+import { Language } from '../../enums/language.js'
 import { Button } from './button.js'
 
 export class MainMenu{
@@ -9,6 +8,11 @@ export class MainMenu{
 
         this.easyButton = null;
         this.hardButton = null;
+        this.inEnglish = null;
+        this.inIrish = null;
+
+        this.languageSelected = false;
+        this.language = Language.NONE;
     }
 
     changeScale(scale){
@@ -16,6 +20,9 @@ export class MainMenu{
 
         if(this.easyButton){this.easyButton.changeScale(this.scale);}
         if(this.hardButton){this.hardButton.changeScale(this.scale);}
+        if(this.inEnglish){this.inEnglish.changeScale(this.scale);}
+        if(this.inIrish){this.inIrish.changeScale(this.scale);}
+
     }
 
     init(assets){
@@ -23,6 +30,9 @@ export class MainMenu{
 
         this.easyButton = new Button();
         this.hardButton = new Button();
+
+        this.inEnglish = new Button();
+        this.inIrish = new Button();
 
         // Shape
         let SIZE = {x:435, y: 120};
@@ -41,23 +51,61 @@ export class MainMenu{
         this.easyButton.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.easyButton.setColors(DEF, HOVER, PRESS, FONT);
 
-
         POS = {x:1220, y:530};
         TEXT = "Challenge";
 
         this.hardButton.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.hardButton.setColors(DEF, HOVER, PRESS, FONT);
 
+
+        POS = {x:1220, y:380};
+        TEXT = "English";
+        this.inEnglish.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.inEnglish.setColors(DEF, HOVER, PRESS, FONT);
+
+        POS = {x:1220, y:530};
+        TEXT = "Gaeilge";
+        this.inIrish.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.inIrish.setColors(DEF, HOVER, PRESS, FONT);
+
     }
 
     update(command, mousePos){
-        this.easyButton.update(command, mousePos);
-        this.hardButton.update(command, mousePos);
+        if(this.languageSelected){
+            this.easyButton.update(command, mousePos);
+            this.hardButton.update(command, mousePos);
+        } else {
+            this.inEnglish.update(command, mousePos);
+            this.inIrish.update(command, mousePos);
+        }
     }
 
     draw(ctx){
         ctx.drawImage(this.bg, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        this.easyButton.draw(ctx);
-        this.hardButton.draw(ctx);
+        if(this.languageSelected){
+            this.easyButton.draw(ctx);
+            this.hardButton.draw(ctx);
+        } else {
+            this.inEnglish.draw(ctx);
+            this.inIrish.draw(ctx);
+        }
+    }
+
+    setLanguage(language){
+        if(language != this.language && language != Language.NONE){
+            this.language = language;
+            switch (this.language){
+                case Language.ENGLISH: 
+                    this.easyButton.text = "Regular";
+                    this.hardButton.text = "Challenge";
+                    break;
+                case Language.IRISH: 
+                    this.easyButton.text = "Rialta";
+                    this.hardButton.text = "Dúshlán";
+                    break;
+            }
+            console.log("Language Selected");
+            this.languageSelected = true;
+        }
     }
 }

@@ -345,6 +345,21 @@ export class Gameplay {
             this.difficulty = difficulty;
         }
     }
+
+    setLanguage(language){
+        if(this.language !== language && language !== Language.NONE){
+
+            switch(language){
+                case Language.ENGLISH: console.log("Setting Language: ENGLISH");
+                break;
+                case Language.IRISH: console.log("Setting Language: IRISH");
+                break;
+            }
+
+            this.language = language;
+
+        }
+    }
 }
 
 function clearInputBuffer(inputWindow){

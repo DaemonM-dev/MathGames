@@ -3,6 +3,7 @@ import { CANVAS_ID, GAME_SIZE}  from './globals.js'
 import { Command }              from './enums/commands.js'
 import { GameState }            from './enums/game_states.js'
 import { Difficulty }           from './enums/difficulty.js'
+import { Language }             from './enums/language.js'
 
 import { AssetHandler }         from './handlers/asset_handler.js'
 import { InputHandler }         from './handlers/input_handler.js'
@@ -30,6 +31,7 @@ export const Game = {
 
     activeCommand:  Command.NONE,
     gamestate:      GameState.LOADING,
+    language:       Language.NONE,
 
     transition: {
         playing: false,
@@ -103,13 +105,25 @@ function update(deltaTime){
             if(!Game.transition.playing){
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
                 Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
-                if(Game.mainMenu.easyButton.isPressed()){
-                    Game.gameplay.setDifficulty(Difficulty.REGULAR);
-                    startFadeToBlack(0.5, Game.transition);
-                } else if(Game.mainMenu.hardButton.isPressed()){
-                    Game.gameplay.setDifficulty(Difficulty.CHALLENGE);
-                    startFadeToBlack(0.5, Game.transition);
+
+                if(!Game.mainMenu.languageSelected){
+                    if(Game.mainMenu.inEnglish.isPressed()){
+                        Game.mainMenu.setLanguage(Language.ENGLISH);
+                        Game.language = Language.ENGLISH;
+                    } else if(Game.mainMenu.inIrish.isPressed()){
+                        Game.mainMenu.setLanguage(Language.IRISH);
+                        Game.language = Language.IRISH;
+                    }
+                } else {
+                    if(Game.mainMenu.easyButton.isPressed()){
+                        Game.gameplay.setDifficulty(Difficulty.REGULAR);
+                        startFadeToBlack(0.5, Game.transition);
+                    } else if(Game.mainMenu.hardButton.isPressed()){
+                        Game.gameplay.setDifficulty(Difficulty.CHALLENGE);
+                        startFadeToBlack(0.5, Game.transition);
+                    }
                 }
+
             } else {
                 updateTransition(Game.transition, deltaTime);
                 if(!Game.transition.playing){
