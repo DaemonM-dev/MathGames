@@ -153,13 +153,12 @@ export class Dialogue{
         this.wrappingText = true;
     }
 
-    initLvlOneQuestion(copies){
-
+    initLvlOneQuestion(copies)
+    {
         if(!copies || copies.length < 2) 
         {
             return;
         }
-
         this.FOOD_SUM = 0;
 
         for(let i = 0; i < copies.length; i++)
@@ -172,7 +171,6 @@ export class Dialogue{
         
         if(copies[0] && copies[1])
         {
-
             switch(this.language)
             {
                 case Language.ENGLISH:
@@ -197,34 +195,54 @@ export class Dialogue{
                     break;
             }
         }
-
         console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
-    initLvlTwoQuestion(copies){
-        
-        if(!copies || copies.length < 2) {
+    initLvlTwoQuestion(copies)
+    {
+        if(!copies || copies.length < 2)
+        {
             return;
         }
 
         this.FOOD_COUNT = 0;
         this.FOOD_SUM = 0;
 
-        for(let i = 0; i < copies.length; i++){
-            if(copies[i]){
+        for(let i = 0; i < copies.length; i++)
+        {
+            if(copies[i])
+            {
                 this.FOOD_COUNT++;
                 this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
             }
         }
 
-        if(copies[0] && copies[1]){
-            if(!copies[2]){
-                this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
-            } else {
-                this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+        if(copies[0] && copies[1])
+        {
+            switch(this.language)
+            {
+                case Language.ENGLISH:
+                    if(!copies[2])
+                    {
+                        this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
+                    }
+                    else
+                    {
+                        this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+                    }
+                    break;
+                case Language.IRISH:
+                    if(!copies[2])
+                    {
+                        this.activeText = "Tá " + this.FOOD_SUM + " KURO agam chun bia a cheannach. Cén DÁ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
+                    }
+                    else
+                    {
+                        this.activeText = "Tá " + this.FOOD_SUM + " KURO agam chun bia a cheannach. Cé na TRÍ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
+                    }
+                    break;
             }
         }
-
         console.log("Correct Answer: FOOD_COUNT =", this.FOOD_COUNT);
         console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
