@@ -155,23 +155,46 @@ export class Dialogue{
 
     initLvlOneQuestion(copies){
 
-        if(!copies || copies.length < 2) {
+        if(!copies || copies.length < 2) 
+        {
             return;
         }
 
         this.FOOD_SUM = 0;
 
-        for(let i = 0; i < copies.length; i++){
-            if(copies[i]){
+        for(let i = 0; i < copies.length; i++)
+        {
+            if(copies[i])
+            {
                 this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
             }
         }
         
-        if(copies[0] && copies[1]){
-            if(!copies[2]){
-                this.activeText = "I would like to buy " + copies[0].name + " and " + copies[1].name + ". How much will it cost?";
-            } else {
-                this.activeText = "I would like to buy " + copies[0].name + ", " + copies[1].name + ", and " + copies[2].name + ". How much will it cost?";
+        if(copies[0] && copies[1])
+        {
+
+            switch(this.language)
+            {
+                case Language.ENGLISH:
+                    if(!copies[2])
+                    {
+                        this.activeText = "I would like to buy " + copies[0].name + " and " + copies[1].name + ". How much will it cost?";
+                    } 
+                    else 
+                    {
+                        this.activeText = "I would like to buy " + copies[0].name + ", " + copies[1].name + ", and " + copies[2].name + ". How much will it cost?";
+                    }
+                    break;
+                case Language.IRISH:
+                    if(!copies[2])
+                    {
+                        this.activeText = "Ba mhaith liom " + copies[0].name + " agus " + copies[1].name + ". Cé mhéad a chosnóidh sé?";
+                    } 
+                    else 
+                    {
+                        this.activeText = "Ba mhaith liom " + copies[0].name + ", " + copies[1].name + ", agus " + copies[2].name + ". Cé mhéad a chosnóidh sé?";
+                    }
+                    break;
             }
         }
 
