@@ -64,7 +64,7 @@ export class MainMenu{
         this.inEnglish.setColors(DEF, HOVER, PRESS, FONT);
 
         POS = {x:1220, y:530};
-        TEXT = "Gaeilge";
+        TEXT = "as Gaeilge";
         this.inIrish.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.inIrish.setColors(DEF, HOVER, PRESS, FONT);
 

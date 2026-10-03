@@ -247,9 +247,10 @@ export class Dialogue{
         console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
-    initLvlThreeQuestion(copies){
-
-        if(!copies || copies.length < 2) {
+    initLvlThreeQuestion(copies)
+    {
+        if(!copies || copies.length < 2)
+        {
             return;
         }
 
@@ -260,22 +261,29 @@ export class Dialogue{
         let max = 0;
         let inc = 0;
 
-        for(let i = 0; i < copies.length; i++){
-            if(copies[i]){
+        for(let i = 0; i < copies.length; i++)
+        {
+            if(copies[i])
+            {
                 this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
             }
         }
 
-        switch(getRandomInt(1, 3)){
+        switch(getRandomInt(1, 3))
+        {
             case 1: inc = 0.25; break;
             case 2: inc = 0.50; break;
             case 3: inc = 0.75; break;
         }
         
-        if(copies[0] && copies[1]){
-            if(!copies[2]){
+        if(copies[0] && copies[1])
+        {
+            if(!copies[2])
+            {
                 this.FOOD_SUM = copies[0].value + copies[1].value;
-            } else {
+            } 
+            else
+            {
                 this.FOOD_SUM = copies[0].value + copies[1].value + copies[2].value;
             }
         }
@@ -286,12 +294,20 @@ export class Dialogue{
         this.ANSWER = this.START_KURO - this.FOOD_SUM;
 
         let zero = "";
-        if(inc === 0.50){
+        if(inc === 0.50)
+        {
             zero = "0";
         }
 
-        this.activeText = "I have " + this.START_KURO + zero + " KURO. How much will I have remaining after buying these food items?";
-
+        switch(this.language)
+        {
+            case Language.ENGLISH:
+                this.activeText = "I have " + this.START_KURO + zero + " KURO. How much will I have remaining after buying these food items?";
+                break;
+            case Language.IRISH:
+                this.activeText = "Tá  " + this.START_KURO + zero + " KURO agam. Cé mhéad KURO a bheidh fágtha agam tar éis dom na hearraí bia seo a cheannach?";
+                break;
+        }
         console.log("Correct Answer: ANSWER =", this.ANSWER);
     }
 
