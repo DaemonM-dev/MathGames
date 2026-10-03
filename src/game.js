@@ -139,7 +139,7 @@ function update(deltaTime){
             break;
         case GameState.INITIALIZING:
             console.log("=== Starting to Initialize Gameplay ===");
-            Game.gameplay.init(Game.assetHandler);
+            Game.gameplay.init(Game.assetHandler, Game.language);
             Game.gameplay.handleLevelSwap(Game.gameplay.level);
             resizeCanvas();
             console.log("=== Finished Initializing Gameplay ===");

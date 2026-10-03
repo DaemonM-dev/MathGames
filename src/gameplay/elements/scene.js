@@ -1,7 +1,8 @@
-import { GAME_SIZE, getRandomInt } from '../../globals.js'
+import { GAME_SIZE, getRandomInt }  from '../../globals.js'
+import { Language }                 from '../../enums/language.js'
 
 export class Scene{
-    constructor(){
+    constructor(language){
         this.scale = 1.0;
         this.bg = null;
         this.purpleBox = null;
@@ -20,6 +21,7 @@ export class Scene{
         this.posFeedback = [];
 
         this.coupon = null;
+        this.language = language;
     }
 
     changeScale(scale){
@@ -232,13 +234,24 @@ export class Scene{
         this.coupon.line1 = "";
         this.coupon.line2 = "";
 
-        this.coupon.discount = 0.50; this.coupon.line1 = "50%";
-
-        switch(getRandomInt(1,3)){
-            case 1: this.coupon.line2 = "Healthy Items"; break;
-            case 2: this.coupon.line2 = "Sweet Items"; break;
-            case 3: this.coupon.line2 = "All Items"; break;
+        if(this.language === Language.ENGLISH)
+        {
+            this.coupon.discount = 0.50; this.coupon.line1 = "Half Off";
+            switch(getRandomInt(1,3)){
+                case 1: this.coupon.line2 = "Healthy Items"; break;
+                case 2: this.coupon.line2 = "Sweet Items"; break;
+                case 3: this.coupon.line2 = "All Items"; break;
+            }
+        } else if(this.language === Language.IRISH)
+        {
+            this.coupon.discount = 0.50; this.coupon.line1 = "Leath As";
+            switch(getRandomInt(1,3)){
+                case 1: this.coupon.line2 = "Míreanna Sláintiúla"; break;
+                case 2: this.coupon.line2 = "Míreanna Milis"; break;
+                case 3: this.coupon.line2 = "Gach Mír"; break;
+            }
         }
+
 
         this.coupon.initial.pos.x = -this.coupon.size.x;
         this.coupon.pos.x = -this.coupon.size.x;
@@ -269,7 +282,7 @@ export class Scene{
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
-        ctx.fillText(this.coupon.line1 + " OFF", this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
+        ctx.fillText(this.coupon.line1, this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
 

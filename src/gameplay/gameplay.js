@@ -24,9 +24,9 @@ export class Gameplay {
         this.inputType = InputType.KEYBOARD;
 
         this.difficulty = Difficulty.NONE;
-        this.language = Language.ENGLISH;
+        this.language = Language.NONE;
 
-        this.level          = 1;
+        this.level          = 5;
         this.prevLevel      = 0;
         this.question       = 1;
         this.prevQuestion   = 1;
@@ -62,8 +62,11 @@ export class Gameplay {
         if(this.levelSting)     {this.levelSting.changeScale(scale);}
     }
 
-    init(assets){
-        this.scene =            new Scene();
+    init(assets, language){
+
+        this.language = language;
+
+        this.scene =            new Scene(language);
         this.progressWindow =   new ProgressWindow();
         this.dropzone =         new Dropzone();
         this.speechBubble =     new SpeechBubble();
