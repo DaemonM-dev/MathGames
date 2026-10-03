@@ -1,26 +1,47 @@
-import { getRandomInt, shuffle, pointIntersects } from '../globals.js'
-import { Command } from '../enums/commands.js'
-import { Difficulty } from '../enums/difficulty.js'
-import { FoodItem } from '../gameplay/elements/food_item.js'
-import { Pricetag } from '../gameplay/elements/pricetag.js'
-import { Game } from '../game.js'
+import { Game }                                     from '../game.js'
+import { getRandomInt, shuffle, pointIntersects }   from '../globals.js'
+
+import { Command }                                  from '../enums/commands.js'
+import { Difficulty }                               from '../enums/difficulty.js'
+import { Language }                                 from '../enums/language.js'
+
+import { FoodItem }                                 from '../gameplay/elements/food_item.js'
+import { Pricetag }                                 from '../gameplay/elements/pricetag.js'
 
 const MAX_FOOD = 8;
 
 export class FoodHandler{
-    constructor(){
+    constructor(language){
         this.scale = 1.0;
+        this.language = language;
 
-        this.foodID = [
-            { name: "the slice of Chocolate Cake", asset: 'chocolatecake', type: 'Sweet' },
-            { name: "the Cupcakes", asset: 'cupcakes', type: 'Sweet' },
-            { name: "the Fruit Bowl", asset: 'fruitbowl', type: 'Healthy' },
-            { name: "the slice of Fruit Cake", asset: 'fruitcake', type: 'Sweet' },
-            { name: "the slice of Matcha Cake", asset: 'mintcake', type: 'Sweet' },
-            { name: "the Rice Cakes", asset: 'onigiri', type: 'Healthy' },
-            { name: "the Salad", asset: 'salad', type: 'Healthy' },
-            { name: "the Tofu", asset: 'tofu', type: 'Healthy' }
-        ];
+        switch(this.language)
+        {
+            case Language.ENGLISH:
+                this.foodID = [
+                    { name: "the slice of Chocolate Cake",  asset: 'chocolatecake', type: 'Sweet' },
+                    { name: "the Cupcakes",                 asset: 'cupcakes',      type: 'Sweet' },
+                    { name: "the Fruit Bowl",               asset: 'fruitbowl',     type: 'Healthy' },
+                    { name: "the slice of Fruit Cake",      asset: 'fruitcake',     type: 'Sweet' },
+                    { name: "the slice of Matcha Cake",     asset: 'mintcake',      type: 'Sweet' },
+                    { name: "the Rice Cakes",               asset: 'onigiri',       type: 'Healthy' },
+                    { name: "the Salad",                    asset: 'salad',         type: 'Healthy' },
+                    { name: "the Tofu",                     asset: 'tofu',          type: 'Healthy' }
+                ];
+                break;
+            case Language.IRISH:
+                this.foodID = [
+                    { name: "slisne cáca seacláide",    asset: 'chocolatecake', type: 'Sweet' },
+                    { name: "cácaí beaga",              asset: 'cupcakes',      type: 'Sweet' },
+                    { name: "babhla torthaí",           asset: 'fruitbowl',     type: 'Healthy' },
+                    { name: "slisne cáca torthaí",      asset: 'fruitcake',     type: 'Sweet' },
+                    { name: "slisne cáca matcha",       asset: 'mintcake',      type: 'Sweet' },
+                    { name: "cácaí ríse",               asset: 'onigiri',       type: 'Healthy' },
+                    { name: "an sailéad",               asset: 'salad',         type: 'Healthy' },
+                    { name: "an tófú",                  asset: 'tofu',          type: 'Healthy' }
+                ];
+                break;
+        }
 
         this.shelfPoints = [
             {pos: {x:245,y:143}},
@@ -80,9 +101,6 @@ export class FoodHandler{
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
             this.foodItems[i].setUnique(TEXTURE, NAME, TYPE, SIZE);
-            // this.foodItems[i].setDynamic(VALUE, POS);
-            // this.priceTags.push(new Pricetag({x: POS.x + 25, y: POS.y + 150}, VALUE));
-
 
             if(Game.gameplay.difficulty === Difficulty.REGULAR){
                 this.foodItems[i].setDynamic(VALUE, POS);
