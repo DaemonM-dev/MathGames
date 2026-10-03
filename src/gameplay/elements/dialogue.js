@@ -1,8 +1,10 @@
 import { getRandomInt } from '../../globals.js'
+import { Language }     from '../../enums/language.js'
 
 export class Dialogue{
-    constructor(bounds){
+    constructor(bounds, language){
         this.scale      = 1.0;
+        this.language   = language;
         this.fontSize   = 30;
         this.bounds     = {...bounds};
         this.center     = {
@@ -16,12 +18,24 @@ export class Dialogue{
         };
 
         this.instructionIndex   = 0;
-        this.instructionMsg     = [
-            "Select the Kuro icon with your mouse to begin typing your answers!",
-            "Try clicking and dragging the food items over to the large white box!"
-        ];
 
-        this.activeText = "This is a new text with words of different sizes that I am using to test a hypothesis. ";
+        switch(this.language)
+        {
+            case Language.ENGLISH:
+                this.instructionMsg = [
+                    "Select the Kuro icon with your mouse to begin typing your answers!",
+                    "Try clicking and dragging the food items over to the large white box!"
+                ];
+                break;
+            case Language.IRISH:
+                this.instructionMsg = [
+                    "Roghnaigh an deilbhín Kuro le do luch chun tús a chur le clóscríobh do chuid freagraí!",
+                    "Bain triail as cliceáil agus tarraing na míreanna bia anonn go dtí an bosca mór bán!"
+                ];
+                break;
+        }
+
+        this.activeText = "NaN";
         this.cachedText = "";
 
         this.wordArray  = [];

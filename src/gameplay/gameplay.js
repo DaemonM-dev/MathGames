@@ -72,7 +72,7 @@ export class Gameplay {
         this.speechBubble       = new SpeechBubble();
         this.inputWindow        = new InputWindow(this.language);
         this.foodHandler        = new FoodHandler(this.language);
-        this.dialogue           = new Dialogue(this.speechBubble.textBounds);
+        this.dialogue           = new Dialogue(this.speechBubble.textBounds, this.language);
         this.levelSting         = new LevelSting();
 
         this.scene.init(assets);
