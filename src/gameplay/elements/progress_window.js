@@ -1,18 +1,18 @@
-import { GAME_SIZE } from '../../globals.js'
+import { Language } from '../../enums/language.js'
 
-const BG_SIZE = {x: 1280, y: 720};
+const SIZE          = {x: 500, y: 150};
+const POS           = { x: 1353.5 , y:20};
+const RADIUS        = 35;
+const OUTLINEWIDTH  = 8;
+const FONTSIZE      = 60;
+const LINESPACE     = 30;
+const COLOR         = {infill: 'white', outline: 'black' , font: 'black'};
+const CENTER        = {x: POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
 
-const SIZE = {x: 500, y: 150};
-const POS = { x: 1353.5 , y:20};
-const RADIUS = 35;
-const OUTLINEWIDTH = 8;
-const FONTSIZE = 60;
-const LINESPACE = 30;
-const COLOR = {infill: 'white', outline: 'black' , font: 'black'};
-const CENTER = {x: POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
-
-export class ProgressWindow{
-    constructor(){
+export class ProgressWindow
+{
+    constructor(language)
+    {
         this.scale = 1.0;
         this.size = {...SIZE};
         this.pos = {...POS};
@@ -26,9 +26,11 @@ export class ProgressWindow{
         this.question = 0;
         this.levelMsg = "";
         this.questionMsg = "";
+        this.language = language;
     }
 
-    changeScale(scale){
+    changeScale(scale)
+    {
         this.scale = scale;
         this.size = {x: SIZE.x * this.scale, y: SIZE.y * this.scale};
         this.pos = {x:POS.x * this.scale, y: POS.y * this.scale};
@@ -39,12 +41,36 @@ export class ProgressWindow{
         this.lineSpace = LINESPACE * this.scale;
     }
 
-    update(question, level){
-        if(level !== this.level){this.level = level; this.levelMsg = "Level " + this.level;}
-        if(question !== this.question){this.question = question; this.questionMsg = "Question " + this.question;}
+    update(question, level)
+    {
+        if(level !== this.level)
+        {
+            switch(this.language)
+            {
+                case Language.ENGLISH:
+                    this.level = level; this.levelMsg = "Level " + this.level;
+                    break
+                case Language.IRISH:
+                    this.level = level; this.levelMsg = "Leibhéal " + this.level;
+                    break;
+            }
+        }
+        if(question !== this.question)
+        {
+            switch(this.language)
+            {
+                case Language.ENGLISH:
+                    this.question = question; this.questionMsg = "Question " + this.question;
+                    break
+                case Language.IRISH:
+                    this.question = question; this.questionMsg = "Ceist " + this.question;
+                    break;
+            }
+        }
     }
 
-    draw(ctx){
+    draw(ctx)
+    {
         ctx.fillStyle = this.color.infill;
         ctx.lineWidth = this.outlineWidth;
         ctx.strokeStyle = this.color.outline;

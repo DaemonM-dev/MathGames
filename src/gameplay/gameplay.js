@@ -66,8 +66,8 @@ export class Gameplay {
 
         this.language = language;
 
-        this.scene =            new Scene(language);
-        this.progressWindow =   new ProgressWindow();
+        this.scene =            new Scene(this.language);
+        this.progressWindow =   new ProgressWindow(this.language);
         this.dropzone =         new Dropzone();
         this.speechBubble =     new SpeechBubble();
         this.inputWindow =      new InputWindow();
