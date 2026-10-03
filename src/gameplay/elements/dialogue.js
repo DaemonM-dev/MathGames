@@ -311,60 +311,105 @@ export class Dialogue{
         console.log("Correct Answer: ANSWER =", this.ANSWER);
     }
 
-    initLvlFourQuestion(duplicates){
-
-        if(!duplicates || duplicates.length < 2 || duplicates.length > 6){
+    initLvlFourQuestion(duplicates)
+    {
+        if(!duplicates || duplicates.length < 2 || duplicates.length > 6)
+        {
             return;
         }
 
         this.FOOD_SUM = 0;
 
-        let count = "";
-        let name = "";
-        let start = "";
-        let middle = "";
+        let count   = "";
+        let name    = "";
+        let start   = "";
+        let middle  = "";
+        let end     = "";
 
-        for(let i = 0; i < duplicates.length; i++){
+        for(let i = 0; i < duplicates.length; i++)
+        {
             this.FOOD_SUM = this.FOOD_SUM + duplicates[i].value;
         }
 
-        switch(duplicates.length){
-            case 2: count = "TWO ";     break;
-            case 3: count = "THREE ";   break;
-            case 4: count = "FOUR ";    break;
-            case 5: count = "FIVE ";    break;
-            case 6: count = "SIX ";     break;
-        }
+        if(this.language === Language.ENGLISH)
+        {
+            switch(duplicates.length)
+            {
+                case 2: count = "TWO ";     break;
+                case 3: count = "THREE ";   break;
+                case 4: count = "FOUR ";    break;
+                case 5: count = "FIVE ";    break;
+                case 6: count = "SIX ";     break;
+            }
 
-        switch(duplicates[0].name){
-            case "the slice of Chocolate Cake":     name = "slices of Chocolate Cake";  break;
-            case "the Cupcakes":                    name = "bundles of Cupcakes";       break;
-            case "the Fruit Bowl":                  name = "bowls of Fruit";            break;
-            case "the slice of Fruit Cake":         name = "slices of Fruit Cake";      break;
-            case "the slice of Matcha Cake":        name = "slices of Matcha Cake";     break;
-            case "the Rice Cakes":                  name = "bundles of Rice Cakes";     break;
-            case "the Salad":                       name = "bowls of Salad";            break;
-            case "the Tofu":                        name = "plates of Tofu";            break;
-        }
+            switch(duplicates[0].name){
+                case "the slice of Chocolate Cake":     name = "slices of Chocolate Cake";  break;
+                case "the Cupcakes":                    name = "bundles of Cupcakes";       break;
+                case "the Fruit Bowl":                  name = "bowls of Fruit";            break;
+                case "the slice of Fruit Cake":         name = "slices of Fruit Cake";      break;
+                case "the slice of Matcha Cake":        name = "slices of Matcha Cake";     break;
+                case "the Rice Cakes":                  name = "bundles of Rice Cakes";     break;
+                case "the Salad":                       name = "bowls of Salad";            break;
+                case "the Tofu":                        name = "plates of Tofu";            break;
+            }
 
-        switch(getRandomInt(1,3)){
-            case 1:
-                start = "Let's purchase some food for a picnic! ";
-                middle = "How much will it cost to buy ";
-                break;
-            case 2:
-                start = "The food here looks delicious, let's get enough for everyone! ";
-                middle = "How much for ";
-                break;
-            case 3:
-                start = "Lets get food for an event! ";
-                middle = "How much will we spend on "
-                break;
-        }
+            switch(getRandomInt(1,3)){
+                case 1:
+                    start = "Let's purchase some food for a picnic! ";
+                    middle = "How much will it cost to buy ";
+                    break;
+                case 2:
+                    start = "The food here looks delicious, let's get enough for everyone! ";
+                    middle = "How much for ";
+                    break;
+                case 3:
+                    start = "Lets get food for an event! ";
+                    middle = "How much will we spend on "
+                    break;
+            }
 
-        this.activeText = start + middle + count + name + "?";
+            this.activeText = start + middle + count + name + "?";
+        }
+        else if (this.language === Language.IRISH)
+        {
+            switch(duplicates.length)
+            {
+                case 2: count = "dó ";          break;
+                case 3: count = "trí ";         break;
+                case 4: count = "ceathair ";    break;
+                case 5: count = "cúig ";        break;
+                case 6: count = "sé ";          break;
+            }
+
+            switch(duplicates[0].name){
+                case "slisne cáca seacláide":   name = "slisíní cáca seacláide";    break;
+                case "cácaí beaga":             name = "trádairí cácaí beaga";      break;
+                case "babhla torthaí":          name = "babhlaí torthaí ";          break;
+                case "slisne cáca torthaí":     name = "slisíní cáca torthaí";      break;
+                case "slisne cáca matcha":      name = "slisíní cáca Matcha";       break;
+                case "cácaí ríse":              name = "bearta cácaí ríse";         break;
+                case "an sailéad":              name = "babhlaí sailéid";           break;
+                case "an tófú":                 name = "plátaí tofu";               break;
+            }
+
+            switch(getRandomInt(1,3)){
+                case 1:
+                    start   = "Ceannóimid bia don phicnic! ";
+                    middle  = "Cé mhéad a chosnóidh sé chun ";
+                    end     = "a cheannach";
+                    break;
+                case 2:
+                    start = "Tá cuma an–bhlasta ar an mbia anseo. Ceannóimid go leor do gach duine! ";
+                    middle = "Cé mhéad atá ar  ";
+                    break;
+                case 3:
+                    start = "Ceannóimid bia d’ócáid! ";
+                    middle = "Cé mhéad a chaithfimid ar "
+                    break;
+            }
+            this.activeText = start + middle + count + name + end + "?";
+        }
         this.mathProblem = duplicates[0].value + " x " + duplicates.length + " = ";
-
         console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
