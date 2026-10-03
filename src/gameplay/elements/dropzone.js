@@ -1,5 +1,3 @@
-import { GAME_SIZE } from '../../globals.js'
-
 const SIZE = {x: 500, y: 500};
 const POS = { x: 1353.5 , y:205};
 const RADIUS = 45;
@@ -33,8 +31,4 @@ export class Dropzone{
         ctx.fill();
         ctx.stroke();
     }
-
-    // getAccValue()
-    // getItemTypes()
-    // getItemCount()
 }

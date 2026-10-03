@@ -70,7 +70,7 @@ export class Gameplay {
         this.progressWindow =   new ProgressWindow(this.language);
         this.dropzone =         new Dropzone();
         this.speechBubble =     new SpeechBubble();
-        this.inputWindow =      new InputWindow();
+        this.inputWindow =      new InputWindow(this.language);
         this.foodHandler =      new FoodHandler();
         this.dialogue =         new Dialogue(this.speechBubble.textBounds);
         this.levelSting =       new LevelSting();

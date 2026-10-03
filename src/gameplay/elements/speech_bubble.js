@@ -1,4 +1,4 @@
-import { GAME_SIZE, getRandomInt } from '../../globals.js'
+import { getRandomInt } from '../../globals.js'
 
 const SIZE = {x: 600, y: 300};
 const POS = { x: 338 , y:755};
