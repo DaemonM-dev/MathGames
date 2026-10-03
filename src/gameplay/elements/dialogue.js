@@ -413,9 +413,10 @@ export class Dialogue{
         console.log("Correct Answer: FOOD_SUM =", this.FOOD_SUM);
     }
 
-    initLvlFiveQuestion(coupon, copies){
-
-        if(!coupon || !copies){
+    initLvlFiveQuestion(coupon, copies)
+    {
+        if(!coupon || !copies)
+        {
             return;
         }
 
@@ -433,79 +434,171 @@ export class Dialogue{
 
         this.FOOD_COUNT = copies.length;
 
-        for(let i = 0; i < copies.length; i++){
+        if(this.language === Language.ENGLISH)
+        {
+            for(let i = 0; i < copies.length; i++)
+            {
+                this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+                switch(TYPE_STR)
+                {
+                    case "All Items":
+                        sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                    case "Healthy Items":
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                    case "Sweet Items":
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                }
+            }
 
-            this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+            this.START_KURO = sumAfterDiscount;
 
-            switch(TYPE_STR){
-                case "All Items":
-                    sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
-                    switch(copies[i].type){
-                        case 'Healthy':
-                            this.FOOD_TYPES.healthy++;
-                        break;
-                        case 'Sweet':
-                            this.FOOD_TYPES.sweet++;
-                        break;
-                    }
-                break;
-                case "Healthy Items":
-                    switch(copies[i].type){
-                        case 'Healthy':
-                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
-                            this.FOOD_TYPES.healthy++;
-                        break;
-                        case 'Sweet':
-                            sumAfterDiscount = sumAfterDiscount + copies[i].value;
-                            this.FOOD_TYPES.sweet++;
-                        break;
-                    }
-                break;
-                case "Sweet Items":
-                    switch(copies[i].type){
-                        case 'Healthy':
-                            sumAfterDiscount = sumAfterDiscount + copies[i].value;
-                            this.FOOD_TYPES.healthy++;
-                        break;
-                        case 'Sweet':
-                            sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
-                            this.FOOD_TYPES.sweet++;
-                        break;
-                    }
-                break;
+            let zero = "";
+            if(sumAfterDiscount - Math.floor(sumAfterDiscount) > 0)
+            {
+                zero = "0";
+            }
+
+            this.activeText = "We have " + this.START_KURO + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
+            switch (this.FOOD_TYPES.healthy){
+                case 1: healthyCountString = "ONE";     break;
+                case 2: healthyCountString = "TWO";     break;
+                case 3: healthyCountString = "THREE";   break;
+            }
+            switch (this.FOOD_TYPES.sweet){
+                case 1: sweetCountString = "ONE";   break;
+                case 2: sweetCountString = "TWO";   break;
+                case 3: sweetCountString = "THREE"; break;
+            }
+            if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0){
+                this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
+                this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
+                this.activeText += " can I purchase and have no change left over?";
+            } else if (this.FOOD_TYPES.healthy > 0){
+                this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
+                this.activeText += " can I purchase and have no change left over?";
+            } else if (this.FOOD_TYPES.sweet > 0){
+                this.activeText += "What " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
+                this.activeText += " can I purchase and have no change left over?";
             }
         }
+        else if (this.language === Language.IRISH)
+        {
+            for(let i = 0; i < copies.length; i++)
+            {
+                this.FOOD_SUM = this.FOOD_SUM + copies[i].value;
+                switch(TYPE_STR)
+                {
+                    case "Gach Mír":
+                        sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                    case "Míreanna Sláintiúla":
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                    case "Míreanna Milis":
+                        switch(copies[i].type)
+                        {
+                            case 'Healthy':
+                                sumAfterDiscount = sumAfterDiscount + copies[i].value;
+                                this.FOOD_TYPES.healthy++;
+                            break;
+                            case 'Sweet':
+                                sumAfterDiscount = sumAfterDiscount + (copies[i].value - (copies[i].value * DISCOUNT));
+                                this.FOOD_TYPES.sweet++;
+                            break;
+                        }
+                    break;
+                }
+            }
 
-        this.START_KURO = sumAfterDiscount;
+            this.START_KURO = sumAfterDiscount;
 
-        let zero = "";
-        if(sumAfterDiscount - Math.floor(sumAfterDiscount) > 0){
-            zero = "0";
-        }
+            let zero = "";
+            if(sumAfterDiscount - Math.floor(sumAfterDiscount) > 0)
+            {
+                zero = "0";
+            }
 
-        this.activeText = "We have " + this.START_KURO + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
+            this.activeText = "Tá " + this.START_KURO + zero + " KURO againn. Tá lascaine " + DISCOUNT_STR + " ar bhia " + TYPE_STR + ". ";
 
-        switch (this.FOOD_TYPES.healthy){
-            case 1: healthyCountString = "ONE";     break;
-            case 2: healthyCountString = "TWO";     break;
-            case 3: healthyCountString = "THREE";   break;
-        }
-        switch (this.FOOD_TYPES.sweet){
-            case 1: sweetCountString = "ONE";   break;
-            case 2: sweetCountString = "TWO";   break;
-            case 3: sweetCountString = "THREE"; break;
-        }
+            switch (this.FOOD_TYPES.healthy){
+                case 1: healthyCountString = "aon";     break;
+                case 2: healthyCountString = "dó";      break;
+                case 3: healthyCountString = "trí";     break;
+            }
 
-        if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0){
-            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
-            this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
-            this.activeText += " can I purchase and have no change left over?";
-        } else if (this.FOOD_TYPES.healthy > 0){
-            this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
-            this.activeText += " can I purchase and have no change left over?";
-        } else if (this.FOOD_TYPES.sweet > 0){
-            this.activeText += "What " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
-            this.activeText += " can I purchase and have no change left over?";
+            switch (this.FOOD_TYPES.sweet){
+                case 1: sweetCountString = "aon";   break;
+                case 2: sweetCountString = "dó";    break;
+                case 3: sweetCountString = "trí";   break;
+            }
+
+            if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0)
+            {
+                this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
+                this.activeText += " agus cad é an " + sweetCountString + " bhia milis";
+                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+            } 
+            else if (this.FOOD_TYPES.healthy > 0)
+            {
+                this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
+                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+            } 
+            else if (this.FOOD_TYPES.sweet > 0)
+            {
+                this.activeText += "Cad é an " + sweetCountString + " bhia milis";
+                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+            }
         }
 
         console.log("Correct Answer: FOOD_COUNT =", this.FOOD_COUNT);

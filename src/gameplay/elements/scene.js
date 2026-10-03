@@ -145,7 +145,7 @@ export class Scene{
         SIZE = { x:460 / 1.5, y: 250 / 1.5 };
         POS = { x:0.0, y: 0.0 };
         const CENTER = {x:POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
-        const FONTSIZE = 30;
+        const FONTSIZE = 20;
         const LINESPACE = 20;
         this.coupon = {
             texture: assets.getAsset('coupon'),
