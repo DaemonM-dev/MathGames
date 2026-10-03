@@ -22,7 +22,6 @@ export class MainMenu{
         if(this.hardButton){this.hardButton.changeScale(this.scale);}
         if(this.inEnglish){this.inEnglish.changeScale(this.scale);}
         if(this.inIrish){this.inIrish.changeScale(this.scale);}
-
     }
 
     init(assets){

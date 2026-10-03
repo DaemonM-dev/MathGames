@@ -48,6 +48,7 @@ export class Gameplay {
 
         this.viewingFeedback    = false;
         this.viewingSting       = false;
+        this.viewingGameover    = false;
         this.answerCorrect      = false;
     }
     changeScale(scale){
@@ -94,6 +95,7 @@ export class Gameplay {
             this.question = score.score + 1;
         }
         if (this.level > MAX_LEVELS) {
+            this.viewingGameover = true;
             this.level = 1;
             this.question = 1;
         }
@@ -125,7 +127,14 @@ export class Gameplay {
                 this.nextQuestion();
             }
         } 
-        else 
+        else if(this.viewingGameover)
+        {
+            if(command === Command.MOUSE_DOWN)
+            {
+                this.viewingGameover = false;
+            }
+        }
+        else
         {
             this.handleLevelSwap(this.level);
             this.progressWindow.update(this.question, this.level);
@@ -162,6 +171,10 @@ export class Gameplay {
         }
         if(this.viewingFeedback){ this.scene.drawFeedback(this.answerCorrect, ctx); }
         this.levelSting.draw(ctx);
+
+        if(this.viewingGameover){
+            this.scene.drawGameover(ctx);
+        }
     }
 
     nextQuestion(){
@@ -177,6 +190,7 @@ export class Gameplay {
                 this.levelSting.play();
                 this.viewingSting = true;
             } else {
+                this.viewingGameover = true;
                 this.level = 1;
                 this.score.questions++;
                 this.question = 1;
@@ -370,9 +384,7 @@ export class Gameplay {
                 case Language.IRISH: console.log("Setting Language: IRISH");
                 break;
             }
-
             this.language = language;
-
         }
     }
 }

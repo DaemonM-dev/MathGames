@@ -12,6 +12,7 @@ export class Scene{
         this.boy = null;
         this.girl = null;
         this.menu = null;
+        this.gameover = null;
 
         this.posFeedback1 = null;
         this.posFeedback2 = null;
@@ -74,11 +75,24 @@ export class Scene{
             this.coupon.fontSize = this.coupon.initial.fontSize * this.scale;
             this.coupon.linespace = this.coupon.initial.linespace * this.scale;
         }
+
+        if(this.gameover){
+            this.gameover.size = {x: this.gameover.initial.size.x * this.scale, y: this.gameover.initial.size.y * this.scale};
+            this.gameover.pos = {x: this.gameover.initial.pos.x * this.scale, y: this.gameover.initial.pos.y * this.scale};
+        }
     }
 
     init(assets){
-        let SIZE = {x: 1280, y: 720};
+        let SIZE = GAME_SIZE;
         let POS = {x: 0, y: 0};
+        this.gameover = {
+            texture: assets.getAsset('gameover'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+        SIZE = {x: 1280, y: 720};
+        POS = {x: 0, y: 0};
         this.bg = {
             texture: assets.getAsset('background'),
             size: {...SIZE},
@@ -284,6 +298,10 @@ export class Scene{
         ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
         ctx.fillText(this.coupon.line1, this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
+    }
+
+    drawGameover(ctx){
+        ctx.drawImage(this.gameover.texture, this.gameover.pos.x, this.gameover.pos.y, this.gameover.size.x, this.gameover.size.y);
     }
 
 }
