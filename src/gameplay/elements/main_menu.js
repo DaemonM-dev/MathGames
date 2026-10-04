@@ -25,13 +25,14 @@ export class MainMenu{
     }
 
     init(assets){
-        this.bg = assets.getAsset('startMenu');
+        this.bg_english = assets.getMenuAsset('startMenu_english');
+        this.bg_irish   = assets.getMenuAsset('startMenu_irish');
 
         this.easyButton = new Button();
         this.hardButton = new Button();
 
-        this.inEnglish = new Button();
-        this.inIrish = new Button();
+        this.inEnglish  = new Button();
+        this.inIrish    = new Button();
 
         // Shape
         let SIZE = {x:435, y: 120};
@@ -70,23 +71,46 @@ export class MainMenu{
     }
 
     update(command, mousePos){
-        if(this.languageSelected){
-            this.easyButton.update(command, mousePos);
-            this.hardButton.update(command, mousePos);
-        } else {
+        if(!this.languageSelected){
             this.inEnglish.update(command, mousePos);
             this.inIrish.update(command, mousePos);
+        } else {
+            this.easyButton.update(command, mousePos);
+            this.hardButton.update(command, mousePos);
         }
     }
 
-    draw(ctx){
-        ctx.drawImage(this.bg, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    draw(ctx)
+    {
+        switch(this.language)
+        {
+            case Language.NONE:
+            case Language.ENGLISH:
+                ctx.drawImage(this.bg_english, 0, 0, ctx.canvas.width, ctx.canvas.height);
+            break;
+            case Language.IRISH:
+                ctx.drawImage(this.bg_irish, 0, 0, ctx.canvas.width, ctx.canvas.height);
+            break;
+        }
+
         if(this.languageSelected){
-            this.easyButton.draw(ctx);
-            this.hardButton.draw(ctx);
+            if(this.easyButton)
+            {
+                this.easyButton.draw(ctx);
+            }
+            if(this.hardButton)
+            {
+                this.hardButton.draw(ctx);
+            }
         } else {
-            this.inEnglish.draw(ctx);
-            this.inIrish.draw(ctx);
+            if(this.inEnglish)
+            {
+                this.inEnglish.draw(ctx);
+            }
+            if(this.inIrish)
+            {
+                this.inIrish.draw(ctx);
+            }
         }
     }
 

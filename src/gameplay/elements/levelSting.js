@@ -1,4 +1,5 @@
 import { GAME_SIZE } from '../../globals.js'
+import { Language } from '../../enums/language.js'
 
 const SIZE = { x:1920, y: 1080 };
 
@@ -10,8 +11,9 @@ const SPEED = 1800;
 
 export class LevelSting {
 
-    constructor(){
+    constructor(language){
 
+        this.language = language;
         this.scale = 1.0;
         this.texture = null;
 
@@ -38,7 +40,15 @@ export class LevelSting {
     }
 
     init(assets){
-        this.texture = assets.getAsset('levelSting');
+
+        if(this.language === Language.ENGLISH)
+        {
+            this.texture = assets.getEnglishAsset('levelSting_english');
+        }
+        else if(this.language === Language.IRISH)
+        {
+            this.texture = assets.getIrishAsset('levelSting_irish');
+        }
     }
 
     play(){

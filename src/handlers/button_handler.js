@@ -1,8 +1,10 @@
 import { GAME_SIZE } from '../globals.js'
 import { Button } from '../gameplay/elements/button.js'
+import {Language } from '../enums/language.js'
 
 export class ButtonHandler{
-    constructor(){
+    constructor(language){
+        this.language = language;
         this.scale = 1.0;
 
         this.submit     = new Button();

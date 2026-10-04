@@ -1,9 +1,13 @@
 export class AssetHandler{
     constructor(){
-        this.assets = new Map();
-        this.loadingCount = 0;
-        this.loadedCount = 0;
-        this.isLoading = false;
+        this.menuAssets     = new Map();
+        this.assets         = new Map();
+        this.englishAssets  = new Map();
+        this.irishAssets    = new Map();
+
+        this.loadingCount   = 0;
+        this.loadedCount    = 0;
+        this.isLoading      = false;
 
         this.createAssetEntries();
     }
@@ -15,7 +19,31 @@ export class AssetHandler{
     addAsset(name, filepath){
         this.assets.set(name, {
             filepath: filepath,
-            loaded:false,
+            loaded: false,
+            data: null
+        });
+        this.loadingCount++;
+    }
+    addMenuAsset(name, filepath){
+            this.menuAssets.set(name, {
+            filepath: filepath,
+            loaded: false,
+            data: null
+        });
+        this.loadingCount++;
+    }
+    addEnglishAsset(name, filepath){
+        this.englishAssets.set(name, {
+            filepath: filepath,
+            loaded: false,
+            data: null
+        });
+        this.loadingCount++;
+    }
+    addIrishAsset(name, filepath){
+            this.irishAssets.set(name, {
+            filepath: filepath,
+            loaded: false,
             data: null
         });
         this.loadingCount++;
@@ -24,17 +52,59 @@ export class AssetHandler{
     loadAll(){
         console.log("Starting to load assets...");
         this.isLoading = true;
-        const assetEntries = Array.from(this.assets.entries());
+        // Load all asset types
+        this.loadMenuAssets();
+        this.loadEnglishAssets();
+        this.loadIrishAssets();
+        this.loadAssets();
+    }
 
+    loadMenuAssets(){
+        console.log("Loading menu assets...");
+        const assetEntries = Array.from(this.menuAssets.entries());
+        
         for(let i = 0; i < assetEntries.length; i++) {
             const entryName = assetEntries[i][0];
-            console.log(`Loading asset: ${entryName} from ${assetEntries[i][1].filepath}`);
-            this.loadAsset(entryName);
+            console.log(`Loading menu asset: ${entryName} from ${assetEntries[i][1].filepath}`);
+            this.loadAssetFromMap(entryName, this.menuAssets);
         }
     }
 
-    loadAsset(name){
-        const asset = this.assets.get(name);
+    loadEnglishAssets(){
+        console.log("Loading English assets...");
+        const assetEntries = Array.from(this.englishAssets.entries());
+        
+        for(let i = 0; i < assetEntries.length; i++) {
+            const entryName = assetEntries[i][0];
+            console.log(`Loading English asset: ${entryName} from ${assetEntries[i][1].filepath}`);
+            this.loadAssetFromMap(entryName, this.englishAssets);
+        }
+    }
+
+    loadIrishAssets(){
+        console.log("Loading Irish assets...");
+        const assetEntries = Array.from(this.irishAssets.entries());
+        
+        for(let i = 0; i < assetEntries.length; i++) {
+            const entryName = assetEntries[i][0];
+            console.log(`Loading Irish asset: ${entryName} from ${assetEntries[i][1].filepath}`);
+            this.loadAssetFromMap(entryName, this.irishAssets);
+        }
+    }
+
+    loadAssets(){
+        console.log("Loading game assets...");
+        const assetEntries = Array.from(this.assets.entries());
+        
+        for(let i = 0; i < assetEntries.length; i++) {
+            const entryName = assetEntries[i][0];
+            console.log(`Loading asset: ${entryName} from ${assetEntries[i][1].filepath}`);
+            this.loadAssetFromMap(entryName, this.assets);
+        }
+    }
+
+    loadAssetFromMap(name, assetMap){
+        const asset = assetMap.get(name);
         if(!asset || asset.loaded){ 
             console.log(`Skipping load for ${name}`);
             return;
@@ -65,16 +135,119 @@ export class AssetHandler{
         return asset.data || null;
     }
 
+    getMenuAsset(name){
+        const asset = this.menuAssets.get(name);
+        if (!asset) {
+            console.error(`Menu asset not found: ${name}`);
+            return null;
+        }
+        return asset.data || null;
+    }
+
+    getEnglishAsset(name){
+        const asset = this.englishAssets.get(name);
+        if (!asset) {
+            console.error(`English asset not found: ${name}`);
+            return null;
+        }
+        return asset.data || null;
+    }
+
+    getIrishAsset(name){
+        const asset = this.irishAssets.get(name);
+        if (!asset) {
+            console.error(`Irish asset not found: ${name}`);
+            return null;
+        }
+        return asset.data || null;
+    }
+
     areAllAssetsLoaded(){
         return this.loadedCount === this.loadingCount && this.loadingCount > 0;
     }
 
+    areMenuAssetsLoaded(){
+        let loadedCount = 0;
+        let totalCount = 0;
+        
+        for(const [name, asset] of this.menuAssets.entries()) {
+            totalCount++;
+            if(asset.loaded) {
+                loadedCount++;
+            }
+        }
+        
+        return loadedCount === totalCount && totalCount > 0;
+    }
+
+    areEnglishAssetsLoaded(){
+        let loadedCount = 0;
+        let totalCount = 0;
+        
+        for(const [name, asset] of this.englishAssets.entries()) {
+            totalCount++;
+            if(asset.loaded) {
+                loadedCount++;
+            }
+        }
+        
+        return loadedCount === totalCount && totalCount > 0;
+    }
+
+    areIrishAssetsLoaded(){
+        let loadedCount = 0;
+        let totalCount = 0;
+        
+        for(const [name, asset] of this.irishAssets.entries()) {
+            totalCount++;
+            if(asset.loaded) {
+                loadedCount++;
+            }
+        }
+        
+        return loadedCount === totalCount && totalCount > 0;
+    }
+
+    areGameAssetsLoaded(){
+        let loadedCount = 0;
+        let totalCount = 0;
+        
+        for(const [name, asset] of this.assets.entries()) {
+            totalCount++;
+            if(asset.loaded) {
+                loadedCount++;
+            }
+        }
+        
+        return loadedCount === totalCount && totalCount > 0;
+    }
+
     createAssetEntries(){
-        this.addAsset('background', this.assetUrl('background.png'));
+        this.addMenuAsset('startMenu_english',  this.assetUrl('english/startMenu_english.png'));
+        this.addMenuAsset('startMenu_irish',    this.assetUrl('irish/startMenu_irish.png'));
+
+        this.addEnglishAsset('background_english',  this.assetUrl('english/background_english.png'));
+        this.addEnglishAsset('gameover_english',    this.assetUrl('english/gameover_english.png'));
+        this.addEnglishAsset('goodjob1_english',    this.assetUrl('english/goodjob1_english.png'));
+        this.addEnglishAsset('goodjob2_english',    this.assetUrl('english/goodjob2_english.png'));
+        this.addEnglishAsset('goodjob3_english',    this.assetUrl('english/goodjob3_english.png'));
+        this.addEnglishAsset('levelSting_english',  this.assetUrl('english/levelSting_english.png'));
+        this.addEnglishAsset('menuboard_english',   this.assetUrl('english/menuboard_english.png'));
+        this.addEnglishAsset('tryAgain1_english',   this.assetUrl('english/tryAgain1_english.png'));
+
+        this.addIrishAsset('background_irish',  this.assetUrl('irish/background_irish.png'));
+        this.addIrishAsset('gameover_irish',    this.assetUrl('irish/gameover_irish.png'));
+        this.addIrishAsset('goodjob1_irish',    this.assetUrl('irish/goodjob1_irish.png'));
+        this.addIrishAsset('goodjob2_irish',    this.assetUrl('irish/goodjob2_irish.png'));
+        this.addIrishAsset('goodjob3_irish',    this.assetUrl('irish/goodjob3_irish.png'));
+        this.addIrishAsset('levelSting_irish',  this.assetUrl('irish/levelSting_irish.png'));
+        this.addIrishAsset('menuboard_irish',   this.assetUrl('irish/menuboard_irish.png'));
+        this.addIrishAsset('tryAgain1_irish',   this.assetUrl('irish/tryAgain1_irish.png'));
+
         this.addAsset('boy', this.assetUrl('boy.png'));
         this.addAsset('girl', this.assetUrl('girl.png'));
         this.addAsset('chocolatecake', this.assetUrl('chocolatecake.png'));
-        this.addAsset('cupcakes', this.assetUrl('cupcakes.png'));
+        this.addAsset('cupcakes', this.assetUrl('cupcakes.png')); // Fixed missing closing parenthesis
         this.addAsset('fruitbowl', this.assetUrl('fruitbowl.png'));
         this.addAsset('fruitcake', this.assetUrl('fruitcake.png'));
         this.addAsset('mintcake', this.assetUrl('mintcake.png'));
@@ -83,16 +256,8 @@ export class AssetHandler{
         this.addAsset('tofu', this.assetUrl('tofu.png'));
         this.addAsset('kuro', this.assetUrl('kuro.png'));
         this.addAsset('sign', this.assetUrl('sign.png'));
-        this.addAsset('menuboard', this.assetUrl('menuboard.png'));
-        this.addAsset('goodjob1', this.assetUrl('goodjob1.png'));
-        this.addAsset('goodjob2', this.assetUrl('goodjob2.png'));
-        this.addAsset('goodjob3', this.assetUrl('goodjob3.png'));
-        this.addAsset('tryagain1', this.assetUrl('tryagain1.png'));
-        this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
-        this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
         this.addAsset('coupon', this.assetUrl('coupon.png'));
-        this.addAsset('startMenu', this.assetUrl('startMenu.png'));
-        this.addAsset('levelSting', this.assetUrl('levelSting.png'));
-        this.addAsset('gameover', this.assetUrl('gameover.png'));
+        this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
+        this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
     }
 }

@@ -82,11 +82,12 @@ export class Scene{
         }
     }
 
-    init(assets){
+
+    initIrish(assets){
         let SIZE = GAME_SIZE;
         let POS = {x: 0, y: 0};
         this.gameover = {
-            texture: assets.getAsset('gameover'),
+            texture: assets.getIrishAsset('gameover_irish'),
             size: {...SIZE},
             pos: {...POS}, 
             initial: { size: {...SIZE}, pos: {...POS} }
@@ -94,13 +95,61 @@ export class Scene{
         SIZE = {x: 1280, y: 720};
         POS = {x: 0, y: 0};
         this.bg = {
-            texture: assets.getAsset('background'),
+            texture: assets.getIrishAsset('background_irish'),
             size: {...SIZE},
             pos: {...POS}, 
             initial: { size: {...SIZE}, pos: {...POS} }
         }
-        SIZE = {x: this.bg.size.x, y: GAME_SIZE.y - this.bg.size.y};
-        POS = {x: 0, y: GAME_SIZE.y - (GAME_SIZE.y - this.bg.size.y)}
+        SIZE = {x: 1050, y: 1050};
+        POS = {x: (GAME_SIZE.x / 2) - (SIZE.x / 2), y: 0};
+        this.menu = {
+            texture: assets.getIrishAsset('menuboard_irish'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+    }
+
+    initEnglish(assets){
+        let SIZE = GAME_SIZE;
+        let POS = {x: 0, y: 0};
+        this.gameover = {
+            texture: assets.getEnglishAsset('gameover_english'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+        SIZE = {x: 1280, y: 720};
+        POS = {x: 0, y: 0};
+        this.bg = {
+            texture: assets.getEnglishAsset('background_english'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+        SIZE = {x: 1050, y: 1050};
+        POS = {x: (GAME_SIZE.x / 2) - (SIZE.x / 2), y: 0};
+        this.menu = {
+            texture: assets.getEnglishAsset('menuboard_english'),
+            size: {...SIZE},
+            pos: {...POS}, 
+            initial: { size: {...SIZE}, pos: {...POS} }
+        }
+    }
+
+    init(assets){
+
+        if(this.language === Language.ENGLISH)
+        {
+            this.initEnglish(assets);
+        }
+        else if (this.language === Language.IRISH)
+        {
+            this.initIrish(assets);
+        }
+
+        let SIZE = {x: this.bg.size.x, y: GAME_SIZE.y - this.bg.size.y};
+        let POS = {x: 0, y: GAME_SIZE.y - (GAME_SIZE.y - this.bg.size.y)}
         this.purpleBox = {
             size: {...SIZE},
             pos: {...POS},
@@ -148,14 +197,6 @@ export class Scene{
             pos: {...POS}, 
             initial: { size: {...CHAR_SIZE}, pos: {...POS} }
         }
-        SIZE = {x: 1050, y: 1050};
-        POS = {x: (GAME_SIZE.x / 2) - (SIZE.x / 2), y: 0};
-        this.menu = {
-            texture: assets.getAsset('menuboard'),
-            size: {...SIZE},
-            pos: {...POS}, 
-            initial: { size: {...SIZE}, pos: {...POS} }
-        }
         SIZE = { x:460 / 1.5, y: 250 / 1.5 };
         POS = { x:0.0, y: 0.0 };
         const CENTER = {x:POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
@@ -180,29 +221,60 @@ export class Scene{
     initFeedback(assets){
         const SIZE = {x: 500, y: 250};
         const POS = {x: 1350, y: 300};
-        this.posFeedback.push({
-            texture: assets.getAsset('goodjob1'),
-            size: {...SIZE},
-            pos: {...POS}, 
-            initial: { size: {...SIZE}, pos: {...POS} }
-        });
-        this.posFeedback.push({
-            texture: assets.getAsset('goodjob2'),
-            size: {...SIZE},
-            pos: {...POS}, 
-            initial: { size: {...SIZE}, pos: {...POS} }
-        });
-        this.posFeedback.push({
-            texture: assets.getAsset('goodjob3'),
-            size: {...SIZE},
-            pos: {...POS}, 
-            initial: { size: {...SIZE}, pos: {...POS} }
-        });
-        this.negFeedback = {
-            texture: assets.getAsset('tryagain1'),
-            size: {...SIZE},
-            pos: {...POS}, 
-            initial: { size: {...SIZE}, pos: {...POS} }
+
+        if(this.language === Language.ENGLISH)
+        {
+            this.posFeedback.push({
+                texture: assets.getEnglishAsset('goodjob1_english'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.posFeedback.push({
+                texture: assets.getEnglishAsset('goodjob2_english'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.posFeedback.push({
+                texture: assets.getEnglishAsset('goodjob3_english'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.negFeedback = {
+                texture: assets.getEnglishAsset('tryAgain1_english'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            }
+        }
+        else if(this.language === Language.IRISH)
+        {
+            this.posFeedback.push({
+                texture: assets.getIrishAsset('goodjob1_irish'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.posFeedback.push({
+                texture: assets.getIrishAsset('goodjob2_irish'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.posFeedback.push({
+                texture: assets.getIrishAsset('goodjob3_irish'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            });
+            this.negFeedback = {
+                texture: assets.getIrishAsset('tryAgain1_irish'),
+                size: {...SIZE},
+                pos: {...POS}, 
+                initial: { size: {...SIZE}, pos: {...POS} }
+            }
         }
     }
 

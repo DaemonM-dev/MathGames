@@ -1,8 +1,10 @@
 export const GameState = {
-    LOADING:        'loading',
-    INIT_MENU:      'init_menu',
-    INITIALIZING:   'initializing',
-    MAIN_MENU:      'main_menu',
-    GAMEPLAY:       'gameplay',
-    GAME_COMPLETE:  'game_complete'
+    LOADING_MENU:       'loading_menu',
+    INIT_MENU:          'init_menu',
+    MAIN_MENU:          'main_menu',
+    LOADING_GAMEPLAY:   'loading_gameplay',
+    INIT_GAMEPLAY:      'int_gameplay',
+    GAMEPLAY:           'gameplay',
+    INIT_GAMEOVER:      'init_gameover',
+    GAMEOVER:           'gameover'
 }

@@ -30,7 +30,7 @@ export const Game = {
     mainMenu:       new MainMenu(),
 
     activeCommand:  Command.NONE,
-    gamestate:      GameState.LOADING,
+    gamestate:      GameState.LOADING_MENU,
     language:       Language.NONE,
 
     transition: {
@@ -49,7 +49,7 @@ export function init(options = {}){
     Game.onAnswer = options.onAnswer ?? null;
     Game.initial_score = options.score ?? {level:1, score:0};
     Game.ctx = Game.canvas.getContext('2d');
-    Game.assetHandler.loadAll();
+    Game.assetHandler.loadMenuAssets();
     Game.running = true;
     Game.lastTime = 0;
     resizeCanvas();
@@ -79,71 +79,79 @@ function gameLoop(timeStamp){
     requestAnimationFrame(gameLoop); // Restart game loop
 }
 
-function update(deltaTime){
-    switch(Game.gamestate){
-        case GameState.LOADING:
-            console.log("=== Loading Assets ===");
-            if(Game.assetHandler.areAllAssetsLoaded()){
-                console.log("=== Assets Loaded ===");
+function update(deltaTime)
+{
+    switch(Game.gamestate)
+    {
+        case GameState.LOADING_MENU:
+            if(Game.assetHandler.areMenuAssetsLoaded()){
                 Game.gamestate = GameState.INIT_MENU;
             }
-            break;
+        break;
 
         case GameState.INIT_MENU:
-            console.log("=== Initializing Main Menu ===");
-            Game.inputHandler.initInputs();
-            Game.gameplay.buttonHandler = new ButtonHandler();
-            Game.gameplay.buttonHandler.init();
             Game.mainMenu.init(Game.assetHandler);
+            Game.inputHandler.initInputs();
             resizeCanvas();
-            Game.gameplay.initScore(Game.initial_score);
-            console.log("=== Finished Initializing Main Menu ===");
             Game.gamestate = GameState.MAIN_MENU;
-            break;
+        break;
 
         case GameState.MAIN_MENU:
             if(!Game.transition.playing){
-                Game.activeCommand = Game.inputHandler.getActiveCommand();
-                Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
 
-                if(!Game.mainMenu.languageSelected){
-                    if(Game.mainMenu.inEnglish.isPressed()){
+                Game.activeCommand = Game.inputHandler.getActiveCommand();
+                Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos);
+
+                if(!Game.mainMenu.languageSelected)
+                {
+                    if(Game.mainMenu.inEnglish.isPressed())
+                    {
                         Game.mainMenu.setLanguage(Language.ENGLISH);
+                        Game.assetHandler.loadEnglishAssets();
                         Game.language = Language.ENGLISH;
-                    } else if(Game.mainMenu.inIrish.isPressed()){
+                    } 
+                    else if(Game.mainMenu.inIrish.isPressed())
+                    {
                         Game.mainMenu.setLanguage(Language.IRISH);
+                        Game.assetHandler.loadIrishAssets();
                         Game.language = Language.IRISH;
                     }
-                } else {
-                    if(Game.mainMenu.easyButton.isPressed()){
+                } 
+                else 
+                {
+                    if(Game.mainMenu.easyButton.isPressed())
+                    {
                         Game.gameplay.setDifficulty(Difficulty.REGULAR);
                         startFadeToBlack(0.5, Game.transition);
-                    } else if(Game.mainMenu.hardButton.isPressed()){
+                    } 
+                    else if(Game.mainMenu.hardButton.isPressed())
+                    {
                         Game.gameplay.setDifficulty(Difficulty.CHALLENGE);
                         startFadeToBlack(0.5, Game.transition);
                     }
                 }
 
-            } else {
+            } 
+            else 
+            {
                 updateTransition(Game.transition, deltaTime);
-                if(!Game.transition.playing){
 
-                    if(Game.gameplay.level !== 1 || Game.gameplay.question !== 1){
-                        Game.gamestate = GameState.GAMEPLAY;
-                    } else {
-                        Game.gamestate = GameState.INITIALIZING;
-                    }
+                if(!Game.transition.playing)
+                {
+                    Game.assetHandler.loadAssets();
+                    Game.gamestate = GameState.INIT_GAMEPLAY;
                     startFadeFromBlack(0.25, Game.transition);
                 }
             }
-            break;
-        case GameState.INITIALIZING:
-            console.log("=== Starting to Initialize Gameplay ===");
-            Game.gameplay.init(Game.assetHandler, Game.language);
-            Game.gameplay.handleLevelSwap(Game.gameplay.level);
-            resizeCanvas();
-            console.log("=== Finished Initializing Gameplay ===");
-            Game.gamestate = GameState.GAMEPLAY;
+        break;
+
+        case GameState.INIT_GAMEPLAY:
+            if(Game.assetHandler.areGameAssetsLoaded())
+            {
+                Game.gameplay.init(Game.assetHandler, Game.language);
+                resizeCanvas();
+                Game.gamestate = GameState.GAMEPLAY;
+            }
             break;
         case GameState.GAMEPLAY:
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
@@ -157,12 +165,15 @@ function update(deltaTime){
 
 function draw(){
     switch(Game.gamestate){
-        case GameState.LOADING:
+        case GameState.LOADING_MENU:
+        case GameState.LOADING_GAMEPLAY:
             Game.ctx.fillStyle = "#000";
             Game.ctx.font = `40px Arial`;
             Game.ctx.fillText("Loading...", screenCenter.x - 40, screenCenter.y);
             break;
-        case GameState.INITIALIZING:
+        case GameState.INIT_MENU:
+        case GameState.INIT_GAMEPLAY:
+        case GameState.INIT_GAMEOVER:
             Game.ctx.fillText("Initializing...", screenCenter.x - 40, screenCenter.y);
             break;
         case GameState.MAIN_MENU:
@@ -174,7 +185,7 @@ function draw(){
             Game.gameplay.draw(Game.ctx);
             if(Game.transition.playing){drawTransition(Game.transition, Game.ctx);}
             break;
-        case GameState.GAME_COMPLETE:
+        case GameState.GAMEOVER:
             Game.ctx.fillStyle = "#000";
             Game.ctx.font = `40px Arial`;
             Game.ctx.fillText("You did it! Game Complete!", screenCenter.x - 200, screenCenter.y);
