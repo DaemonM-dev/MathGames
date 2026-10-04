@@ -12,21 +12,7 @@ export class ButtonHandler{
         this.prev       = new Button();
         this.menu       = new Button();
         this.menuReturn = new Button();
-
-        this.resume     = new Button();
-        // this.sound      = new Button();
-        // this.language   = new Button();
-        // this.mainMenu   = new Button();
-        // this.exit       = new Button();
-        
-        this.options = [
-            this.resume,
-            // this.sound,
-            // this.language,
-            // this.mainMenu,
-            // this.exit
-        ];
-
+        this.restart    = new Button();
 
         this.buttonArray = [
             this.submit,
@@ -48,10 +34,9 @@ export class ButtonHandler{
         for(let i = 0; i < this.buttonArray.length; i++){
             if(this.buttonArray[i]){this.buttonArray[i].changeScale(this.scale);}
         }
-        for(let i = 0; i < this.options.length; i++){
-            if(this.options[i]){
-                this.options[i].changeScale(this.scale);
-            }
+        if(this.restart)
+        {
+            this.restart.changeScale(this.scale);
         }
     }
 
@@ -132,24 +117,23 @@ export class ButtonHandler{
         this.menuReturn.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menuReturn.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        this.initOptions();
-    }
 
-    initOptions(){
-        let SIZE        = {x:250, y: 100};
-        let POS         = {x:(GAME_SIZE.x / 2 - SIZE.x / 2) * this.scale ,y: 175};
-        let RADIUS      = 15;
-        let LINEWIDTH   = 2;
-        let FONTSIZE    = 40;
-        let TEXT        = "Resume";
+        // Shape
+        SIZE = {x:435, y: 120};
+        POS = {x:1220, y:480};
+        RADIUS = 15;
+        LINEWIDTH = 2;
+        FONTSIZE = 40;
+        TEXT = "Restart";
 
-        let DEF = {infill: '#f3b255', outline: '#f3b255'};
-        let HOVER = {infill: '#d3a25e', outline: '#d3a25e'};
-        let PRESS = {infill: '#f3b255', outline: '#f3b255'};
-        let FONT = 'black';
+        // Colors
+        DEFCOLOR = {infill: '#f3b255', outline: '#f3b255'};
+        HOVERCOLOR = {infill: '#d3a25e', outline: '#d3a25e'};
+        PRESSCOLOR = {infill: '#f3b255', outline: '#f3b255'};
+        FONTCOLOR = 'black';
+        this.restart.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
+        this.restart.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        this.resume.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
-        this.resume.setColors(DEF, HOVER, PRESS, FONT);
     }
 
     update(command, mousePos){

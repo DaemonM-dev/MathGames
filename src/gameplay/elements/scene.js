@@ -12,6 +12,7 @@ export class Scene{
         this.boy = null;
         this.girl = null;
         this.menu = null;
+        
         this.gameover = null;
 
         this.posFeedback1 = null;

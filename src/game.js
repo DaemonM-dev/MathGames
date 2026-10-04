@@ -107,13 +107,17 @@ function update(deltaTime)
                     if(Game.mainMenu.inEnglish.isPressed())
                     {
                         Game.mainMenu.setLanguage(Language.ENGLISH);
-                        Game.assetHandler.loadEnglishAssets();
+                        if(!Game.assetHandler.areEnglishAssetsLoaded()){
+                            Game.assetHandler.loadEnglishAssets();
+                        }
                         Game.language = Language.ENGLISH;
                     } 
                     else if(Game.mainMenu.inIrish.isPressed())
                     {
                         Game.mainMenu.setLanguage(Language.IRISH);
-                        Game.assetHandler.loadIrishAssets();
+                        if(!Game.assetHandler.areIrishAssetsLoaded()){
+                            Game.assetHandler.loadIrishAssets();
+                        }
                         Game.language = Language.IRISH;
                     }
                 } 
@@ -138,7 +142,9 @@ function update(deltaTime)
 
                 if(!Game.transition.playing)
                 {
-                    Game.assetHandler.loadAssets();
+                    if(!Game.assetHandler.areGameAssetsLoaded()){
+                        Game.assetHandler.loadAssets();
+                    }
                     Game.gamestate = GameState.INIT_GAMEPLAY;
                     startFadeFromBlack(0.25, Game.transition);
                 }
@@ -150,6 +156,7 @@ function update(deltaTime)
             {
                 Game.gameplay.init(Game.assetHandler, Game.language);
                 resizeCanvas();
+                Game.mainMenu.languageSelected = false;
                 Game.gamestate = GameState.GAMEPLAY;
             }
             break;
@@ -157,8 +164,6 @@ function update(deltaTime)
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
                 Game.gameplay.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
                 updateTransition(Game.transition, deltaTime);
-            break;
-        case GameState.GAME_COMPLETE:
             break;
     }
 }
@@ -260,4 +265,10 @@ function updateTransition(transition, deltaTime){
 function drawTransition(transition, ctx){
    ctx.fillStyle = `rgba(0, 0, 0, ${transition.alpha})`;
    ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+}
+
+export function changeState(game, state){
+    if(game.gamestate !== state){
+        game.gamestate = state;
+    }
 }

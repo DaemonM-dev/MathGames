@@ -1,5 +1,6 @@
-import { Game }                     from '../game.js'
+import { Game, changeState }                     from '../game.js'
 
+import { GameState }                  from '../enums/game_states.js'
 import { Command }                  from '../enums/commands.js'
 import { InputType }                from '../enums/input_types.js'
 import { Difficulty }               from '../enums/difficulty.js'
@@ -130,9 +131,10 @@ export class Gameplay {
         } 
         else if(this.viewingGameover)
         {
-            if(command === Command.MOUSE_DOWN)
-            {
+            this.buttonHandler.restart.update(command, mousePos);
+            if(this.buttonHandler.restart.isPressed()){
                 this.viewingGameover = false;
+                changeState(Game, GameState.MAIN_MENU);
             }
         }
         else
@@ -175,6 +177,7 @@ export class Gameplay {
 
         if(this.viewingGameover){
             this.scene.drawGameover(ctx);
+            this.buttonHandler.restart.draw(ctx);
         }
     }
 
