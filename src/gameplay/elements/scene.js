@@ -369,7 +369,11 @@ export class Scene{
         ctx.textBaseline = 'middle';
         ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
         ctx.fillText(this.coupon.line1, this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
-        ctx.font = `${this.coupon.fontSize * 2/3}px ${'PoppinsBold'}`;
+
+        if(this.language === Language.IRISH)
+        {
+            ctx.font = `${this.coupon.fontSize * 2/3}px ${'PoppinsBold'}`;
+        }
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
 

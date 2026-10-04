@@ -26,7 +26,7 @@ export class Gameplay {
         this.difficulty = Difficulty.NONE;
         this.language = Language.NONE;
 
-        this.level          = 5;
+        this.level          = 1;
         this.prevLevel      = 0;
         this.question       = 1;
         this.prevQuestion   = 1;

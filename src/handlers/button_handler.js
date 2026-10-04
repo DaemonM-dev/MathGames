@@ -66,6 +66,12 @@ export class ButtonHandler{
         let HOVERCOLOR  = {infill: '#f3b155bb', outline: '#f3b255'};
         let PRESSCOLOR  = {infill: '#f3b15576', outline: '#f3b15500'};
         let FONTCOLOR   = 'black';
+
+        if(this.language === Language.IRISH)
+        {
+            TEXT = "Cuir isteach";
+            FONTSIZE = 35;
+        }
         this.submit.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.submit.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
@@ -105,6 +111,11 @@ export class ButtonHandler{
         HOVERCOLOR  = {infill: '#bebdbd9d', outline: 'white'};
         PRESSCOLOR  = {infill: '#bebdbd9d', outline: '#88a8d800'};
         FONTCOLOR   = 'white';
+        if(this.language === Language.IRISH)
+        {
+            TEXT = "Cliceáil anseo chun an biachlár a fheiceáil";
+            FONTSIZE = 14;
+        }
         this.menu.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.menu.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
