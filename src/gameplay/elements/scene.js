@@ -159,7 +159,7 @@ export class Scene{
         SIZE = { x:460 / 1.5, y: 250 / 1.5 };
         POS = { x:0.0, y: 0.0 };
         const CENTER = {x:POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
-        const FONTSIZE = 20;
+        const FONTSIZE = 30;
         const LINESPACE = 20;
         this.coupon = {
             texture: assets.getAsset('coupon'),
@@ -250,7 +250,7 @@ export class Scene{
 
         if(this.language === Language.ENGLISH)
         {
-            this.coupon.discount = 0.50; this.coupon.line1 = "Half Off";
+            this.coupon.discount = 0.50; this.coupon.line1 = "50% Off";
             switch(getRandomInt(1,3)){
                 case 1: this.coupon.line2 = "Healthy Items"; break;
                 case 2: this.coupon.line2 = "Sweet Items"; break;
@@ -258,7 +258,7 @@ export class Scene{
             }
         } else if(this.language === Language.IRISH)
         {
-            this.coupon.discount = 0.50; this.coupon.line1 = "Leath As";
+            this.coupon.discount = 0.50; this.coupon.line1 = "Lascaine 50%";
             switch(getRandomInt(1,3)){
                 case 1: this.coupon.line2 = "Míreanna Sláintiúla"; break;
                 case 2: this.coupon.line2 = "Míreanna Milis"; break;
@@ -297,6 +297,7 @@ export class Scene{
         ctx.textBaseline = 'middle';
         ctx.font = `${this.coupon.fontSize}px ${'PoppinsBold'}`;
         ctx.fillText(this.coupon.line1, this.coupon.center.x, this.coupon.center.y - this.coupon.linespace);
+        ctx.font = `${this.coupon.fontSize * 2/3}px ${'PoppinsBold'}`;
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
 
