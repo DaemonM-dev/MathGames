@@ -302,6 +302,8 @@ export class AssetHandler{
     createAssetEntries(){
         this.addMenuAsset('startMenu_english',  this.assetUrl('english/startMenu_english.png'));
         this.addMenuAsset('startMenu_irish',    this.assetUrl('irish/startMenu_irish.png'));
+        this.addMenuAsset('cloud1',             this.assetUrl('cloud1.png'));
+        this.addMenuAsset('cloud2',             this.assetUrl('cloud2.png'));
 
         this.addEnglishAsset('background_english',  this.assetUrl('english/background_english.png'));
         this.addEnglishAsset('gameover_english',    this.assetUrl('english/gameover_english.png'));

@@ -36,7 +36,6 @@ export const Game = {
     gamestate:      GameState.LOADING_MENU,
     language:       Language.NONE,
 
-    // Add audio context here
     audioContext:   null,
 
     transition: {
@@ -115,7 +114,7 @@ function update(deltaTime)
             if(!Game.transition.playing){
 
                 Game.activeCommand = Game.inputHandler.getActiveCommand();
-                Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos);
+                Game.mainMenu.update(Game.activeCommand, Game.inputHandler.mousePos, deltaTime);
 
                 if(!Game.mainMenu.languageSelected)
                 {

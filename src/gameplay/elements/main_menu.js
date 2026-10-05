@@ -1,5 +1,6 @@
 import { Language } from '../../enums/language.js'
 import { Button } from './button.js'
+import { GAME_SIZE}  from '../../globals.js'
 
 export class MainMenu{
     constructor(){
@@ -13,6 +14,9 @@ export class MainMenu{
 
         this.languageSelected = false;
         this.language = Language.NONE;
+
+        this.cloud1 = {texture: null, speed: 30, pos: {x:100, y:-60}, size: {x:607, y:271}, cached: {pos: {x:100, y:-60}, size: {x:607, y:271}}};
+        this.cloud2 = {texture: null, speed: 30, pos: {x:1100, y:-60}, size: {x:607, y:271}, cached: {pos: {x:1100, y:-60}, size: {x:607, y:271}}};
     }
 
     changeScale(scale){
@@ -22,11 +26,26 @@ export class MainMenu{
         if(this.hardButton){this.hardButton.changeScale(this.scale);}
         if(this.inEnglish){this.inEnglish.changeScale(this.scale);}
         if(this.inIrish){this.inIrish.changeScale(this.scale);}
+
+        if(this.cloud1)
+        {
+            this.cloud1.pos = {x: this.cloud1.cached.pos.x * this.scale, y: this.cloud1.cached.pos.y * this.scale};
+            this.cloud1.size = {x: this.cloud1.cached.size.x * this.scale, y: this.cloud1.cached.size.y * this.scale};
+        }
+
+        if(this.cloud2)
+        {
+            this.cloud2.pos = {x: this.cloud2.cached.pos.x * this.scale, y: this.cloud2.cached.pos.y * this.scale};
+            this.cloud2.size = {x: this.cloud2.cached.size.x * this.scale, y: this.cloud2.cached.size.y * this.scale};
+        }
     }
 
     init(assets){
         this.bg_english = assets.getMenuAsset('startMenu_english');
         this.bg_irish   = assets.getMenuAsset('startMenu_irish');
+
+        this.cloud1.texture = assets.getMenuAsset('cloud1');
+        this.cloud2.texture = assets.getMenuAsset('cloud2');
 
         this.easyButton = new Button(assets);
         this.hardButton = new Button(assets);
@@ -69,7 +88,7 @@ export class MainMenu{
         this.inIrish.setColors(DEF, HOVER, PRESS, FONT);
     }
 
-    update(command, mousePos){
+    update(command, mousePos, deltaTime){
         if(!this.languageSelected){
             this.inEnglish.update(command, mousePos);
             this.inIrish.update(command, mousePos);
@@ -77,10 +96,30 @@ export class MainMenu{
             this.easyButton.update(command, mousePos);
             this.hardButton.update(command, mousePos);
         }
+
+
+        
+        this.cloud1.cached.pos.x -= this.cloud1.speed * deltaTime;
+        this.cloud1.pos.x -= this.cloud1.speed * deltaTime;
+        if(this.cloud1.cached.pos.x <= -this.cloud1.size.x)
+        {
+            this.cloud1.cached.pos.x = GAME_SIZE.x - 10;
+            this.cloud1.pos.x = (GAME_SIZE.x - 10) * this.scale;
+        }
+
+        this.cloud2.cached.pos.x -= this.cloud2.speed * deltaTime;
+        this.cloud2.pos.x -= this.cloud2.speed * deltaTime;
+        if(this.cloud2.cached.pos.x <= -this.cloud2.size.x)
+        {
+            this.cloud2.cached.pos.x = GAME_SIZE.x - 60;
+            this.cloud2.pos.x = (GAME_SIZE.x - 60) * this.scale;
+        }
+            
     }
 
     draw(ctx)
     {
+
         switch(this.language)
         {
             case Language.NONE:
@@ -91,6 +130,9 @@ export class MainMenu{
                 ctx.drawImage(this.bg_irish, 0, 0, ctx.canvas.width, ctx.canvas.height);
             break;
         }
+
+        ctx.drawImage(this.cloud1.texture, this.cloud1.pos.x, this.cloud1.pos.y, this.cloud1.size.x, this.cloud1.size.y);
+        ctx.drawImage(this.cloud2.texture, this.cloud2.pos.x, this.cloud2.pos.y, this.cloud2.size.x, this.cloud2.size.y);
 
         if(this.languageSelected){
             if(this.easyButton)
