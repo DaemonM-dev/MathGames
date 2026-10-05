@@ -1,6 +1,6 @@
-import { Game, changeState }                     from '../game.js'
+import { Game, changeState }        from '../game.js'
 
-import { GameState }                  from '../enums/game_states.js'
+import { GameState }                from '../enums/game_states.js'
 import { Command }                  from '../enums/commands.js'
 import { InputType }                from '../enums/input_types.js'
 import { Difficulty }               from '../enums/difficulty.js'
@@ -27,7 +27,7 @@ export class Gameplay {
         this.difficulty = Difficulty.NONE;
         this.language = Language.NONE;
 
-        this.level          = 1;
+        this.level          = 5;
         this.prevLevel      = 0;
         this.question       = 1;
         this.prevQuestion   = 1;
@@ -340,11 +340,23 @@ export class Gameplay {
                     console.log("Incorrect Result: COUNT");
                 }
 
-                if(correctSum && correctTypes && correctCount){
-                    this.answerCorrect = true;
-                    this.notifyAnswer(this.level, this.question);
-                } else {
-                    this.answerCorrect = false;
+                if(this.difficulty === Difficulty.REGULAR)
+                { // If regular difficulty, only compare food sum and count
+                    if(correctSum && correctCount){
+                        this.answerCorrect = true;
+                        this.notifyAnswer(this.level, this.question);
+                    } else {
+                        this.answerCorrect = false;
+                    }
+                }
+                else if(this.difficulty === Difficulty.CHALLENGE)
+                { // If challenge difficulty, compare sum, type, and count
+                    if(correctSum && correctTypes && correctCount){
+                        this.answerCorrect = true;
+                        this.notifyAnswer(this.level, this.question);
+                    } else {
+                        this.answerCorrect = false;
+                    }
                 }
 
             break;

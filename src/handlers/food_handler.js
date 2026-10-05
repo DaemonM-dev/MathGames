@@ -189,10 +189,12 @@ export class FoodHandler{
             const VALUE = this.prices[i];
             const POS = this.shelfPoints[i].pos;
 
-            if(Game.gameplay.difficulty === Difficulty.REGULAR){
+            if(Game.gameplay.difficulty === Difficulty.REGULAR)
+            {
                 this.foodItems[i].setDynamic(VALUE, POS);
                 this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
-            } else if (Game.gameplay.difficulty === Difficulty.CHALLENGE){
+            } 
+            else if (Game.gameplay.difficulty === Difficulty.CHALLENGE && Game.gameplay.level !== 5){
                 
                 let inc = 0;
                 const n = getRandomInt(1,4);
@@ -205,6 +207,11 @@ export class FoodHandler{
                 }
                 this.foodItems[i].setDynamic(VALUE + inc, POS);
                 this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE + inc);
+            }
+            else
+            {
+                this.foodItems[i].setDynamic(VALUE, POS);
+                this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE);
             }
 
             this.foodItems[i].changeScale(this.scale);

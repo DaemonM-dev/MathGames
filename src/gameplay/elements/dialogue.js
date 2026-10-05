@@ -1,5 +1,7 @@
 import { getRandomInt } from '../../globals.js'
 import { Language }     from '../../enums/language.js'
+import { Difficulty }   from '../../enums/difficulty.js'
+import { Game }         from '../../game.js'
 
 export class Dialogue{
     constructor(bounds, language){
@@ -489,6 +491,10 @@ export class Dialogue{
             {
                 zero = "0";
             }
+            else if(sumAfterDiscount - Math.floor(sumAfterDiscount) === 0)
+            {
+                zero = ".00";
+            }
 
             this.activeText = "We have " + this.START_KURO + zero + " KURO. There is a " + DISCOUNT_STR + " discount on " + TYPE_STR + ". ";
             switch (this.FOOD_TYPES.healthy){
@@ -501,16 +507,33 @@ export class Dialogue{
                 case 2: sweetCountString = "TWO";   break;
                 case 3: sweetCountString = "THREE"; break;
             }
-            if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0){
-                this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
-                this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
-                this.activeText += " can I purchase and have no change left over?";
-            } else if (this.FOOD_TYPES.healthy > 0){
-                this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
-                this.activeText += " can I purchase and have no change left over?";
-            } else if (this.FOOD_TYPES.sweet > 0){
-                this.activeText += "What " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
-                this.activeText += " can I purchase and have no change left over?";
+
+            if(Game.gameplay.difficulty === Difficulty.REGULAR)
+            {
+                let count_str = "";
+                if(this.FOOD_COUNT === 2)
+                {
+                    count_str = "TWO";
+                }
+                else if(this.FOOD_COUNT === 3)
+                {
+                    count_str = "THREE";
+                }
+                this.activeText += "What " + count_str + " foods can I purchase and have no change left over?";
+            }
+            else if(Game.gameplay.difficulty === Difficulty.CHALLENGE)
+            {
+                if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0){
+                    this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
+                    this.activeText += " and what " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
+                    this.activeText += " can I purchase and have no change left over?";
+                } else if (this.FOOD_TYPES.healthy > 0){
+                    this.activeText += "What " + healthyCountString + " HEALTHY food"; if(this.FOOD_TYPES.healthy > 1){this.activeText += "s";}
+                    this.activeText += " can I purchase and have no change left over?";
+                } else if (this.FOOD_TYPES.sweet > 0){
+                    this.activeText += "What " + sweetCountString + " SWEET food"; if(this.FOOD_TYPES.sweet > 1){this.activeText += "s";}
+                    this.activeText += " can I purchase and have no change left over?";
+                }
             }
         }
         else if (this.language === Language.IRISH)
@@ -568,36 +591,57 @@ export class Dialogue{
             {
                 zero = "0";
             }
+            else if(sumAfterDiscount - Math.floor(sumAfterDiscount) === 0)
+            {
+                zero = ".00";
+            }
 
             this.activeText = "Tá " + this.START_KURO + zero + " KURO againn. Tá lascaine " + DISCOUNT_STR + " ar bhia " + TYPE_STR + ". ";
 
             switch (this.FOOD_TYPES.healthy){
-                case 1: healthyCountString = "aon";     break;
-                case 2: healthyCountString = "dó";      break;
-                case 3: healthyCountString = "trí";     break;
+                case 1: healthyCountString = "AON";     break;
+                case 2: healthyCountString = "DÓ";      break;
+                case 3: healthyCountString = "TRÍ";     break;
             }
 
             switch (this.FOOD_TYPES.sweet){
-                case 1: sweetCountString = "aon";   break;
-                case 2: sweetCountString = "dó";    break;
-                case 3: sweetCountString = "trí";   break;
+                case 1: sweetCountString = "AON";   break;
+                case 2: sweetCountString = "DÓ";    break;
+                case 3: sweetCountString = "TRÍ";   break;
             }
 
-            if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0)
+
+            if(Game.gameplay.difficulty === Difficulty.REGULAR)
             {
-                this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
-                this.activeText += " agus cad é an " + sweetCountString + " bhia milis";
-                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
-            } 
-            else if (this.FOOD_TYPES.healthy > 0)
+                let count_str = "";
+                if(this.FOOD_COUNT === 2)
+                {
+                    count_str = "DÓ ";
+                }
+                else if(this.FOOD_COUNT === 3)
+                {
+                    count_str = "TRÍ";
+                }
+                this.activeText += "Cad é an " + count_str + " bhia is féidir liom a cheannach agus nach bhfuil aon athrú fágtha?";
+            }
+            else if(Game.gameplay.difficulty === Difficulty.CHALLENGE)
             {
-                this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
-                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
-            } 
-            else if (this.FOOD_TYPES.sweet > 0)
-            {
-                this.activeText += "Cad é an " + sweetCountString + " bhia milis";
-                this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+                if(this.FOOD_TYPES.healthy > 0 && this.FOOD_TYPES.sweet > 0)
+                {
+                    this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
+                    this.activeText += " agus cad é an " + sweetCountString + " bhia milis";
+                    this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+                } 
+                else if (this.FOOD_TYPES.healthy > 0)
+                {
+                    this.activeText += "Cad é an " + healthyCountString + " bhia sláintiúil";
+                    this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+                } 
+                else if (this.FOOD_TYPES.sweet > 0)
+                {
+                    this.activeText += "Cad é an " + sweetCountString + " bhia milis";
+                    this.activeText += " is féidir liom a cheannach ionas nach mbeidh aon sóinseáil agam?";
+                }
             }
         }
 
