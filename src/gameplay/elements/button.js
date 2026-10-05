@@ -1,9 +1,10 @@
 import { pointIntersects }  from '../../globals.js'
 import { ButtonState }      from '../../enums/button_states.js'
 import { Command }          from '../../enums/commands.js'
+import {playSound }   from '../../game.js'
 
 export class Button{
-    constructor(){
+    constructor(assets){
         this.scale      = 1.0;
         this.size       = null;
         this.pos        = null;
@@ -20,6 +21,9 @@ export class Button{
         this.hoverColor = {infill:'white', outline: 'white'};
         this.pressColor = {infill:'white', outline: 'white'};
         this.fontColor  = 'white';
+
+        this.clickSound = assets.getSound('click');
+        this.popSound   = assets.getSound('pop');
     }
 
     changeScale(scale){
@@ -70,6 +74,7 @@ export class Button{
                 } else if (command === Command.MOUSE_DOWN){
                     this.color = this.pressColor;
                     this.pressed = true;
+                    playSound(this.clickSound, 1.0);
                     this.state = ButtonState.PRESSED;
                 }
             break;

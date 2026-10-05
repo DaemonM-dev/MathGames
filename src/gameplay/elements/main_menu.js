@@ -28,11 +28,11 @@ export class MainMenu{
         this.bg_english = assets.getMenuAsset('startMenu_english');
         this.bg_irish   = assets.getMenuAsset('startMenu_irish');
 
-        this.easyButton = new Button();
-        this.hardButton = new Button();
+        this.easyButton = new Button(assets);
+        this.hardButton = new Button(assets);
 
-        this.inEnglish  = new Button();
-        this.inIrish    = new Button();
+        this.inEnglish  = new Button(assets);
+        this.inIrish    = new Button(assets);
 
         // Shape
         let SIZE = {x:435, y: 120};
@@ -67,7 +67,6 @@ export class MainMenu{
         TEXT = "as Gaeilge";
         this.inIrish.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.inIrish.setColors(DEF, HOVER, PRESS, FONT);
-
     }
 
     update(command, mousePos){

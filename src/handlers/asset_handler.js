@@ -5,6 +5,8 @@ export class AssetHandler{
         this.englishAssets  = new Map();
         this.irishAssets    = new Map();
 
+        this.sounds         = new Map();
+
         this.loadingCount   = 0;
         this.loadedCount    = 0;
         this.isLoading      = false;
@@ -41,7 +43,16 @@ export class AssetHandler{
         this.loadingCount++;
     }
     addIrishAsset(name, filepath){
-            this.irishAssets.set(name, {
+        this.irishAssets.set(name, {
+            filepath: filepath,
+            loaded: false,
+            data: null
+        });
+        this.loadingCount++;
+    }
+
+    addSound(name, filepath){
+        this.sounds.set(name, {
             filepath: filepath,
             loaded: false,
             data: null
@@ -57,6 +68,18 @@ export class AssetHandler{
         this.loadEnglishAssets();
         this.loadIrishAssets();
         this.loadAssets();
+        this.loadSounds();
+    }
+
+    loadSounds(){
+        console.log("Loading sounds...");
+        const assetEntries = Array.from(this.sounds.entries());
+        for(let i = 0; i < assetEntries.length; i++)
+        {
+            const entryName = assetEntries[i][0];
+            console.log(`Loading sound: ${entryName} from ${assetEntries[i][1].filepath}`);
+            this.loadSoundFromMap(entryName, this.sounds);
+        }
     }
 
     loadMenuAssets(){
@@ -126,6 +149,38 @@ export class AssetHandler{
         img.src = asset.filepath;
     }
 
+
+    loadSoundFromMap(name, assetMap){
+        const asset = assetMap.get(name);
+        if(!asset || asset.loaded){ 
+            console.log(`Skipping load for ${name}`);
+            return;
+        }
+
+        const audio = new Audio();
+        audio.preload = 'auto';
+
+        audio.addEventListener('canplaythrough', () => {
+            if(asset.loaded) return;
+
+            asset.data = audio;
+            asset.loaded = true;
+            this.loadedCount++;
+            audio.muted = false;
+            console.log(`Successfully loaded sound: ${name}`);
+        }, { once: true });
+
+        audio.addEventListener('error', (error) => {
+            console.error(`Failed to load sound: ${name}`, error);
+            console.error(`File path attempted: ${asset.filepath}`);
+        }, { once: true });
+
+        audio.src = asset.filepath;
+    }
+
+    
+
+
     getAsset(name){
         const asset = this.assets.get(name);
         if (!asset) {
@@ -162,8 +217,30 @@ export class AssetHandler{
         return asset.data || null;
     }
 
+    getSound(name){
+        const asset = this.sounds.get(name);
+        if (!asset) {
+            console.error(`Sound not found: ${name}`);
+            return null;
+        }
+        return asset.data || null;
+    }
+
     areAllAssetsLoaded(){
         return this.loadedCount === this.loadingCount && this.loadingCount > 0;
+    }
+
+    areAllSoundsLoaded(){
+        let loadedCount = 0;
+        let totalCount = 0;
+        
+        for(const [name, asset] of this.sounds.entries()) {
+            totalCount++;
+            if(asset.loaded) {
+                loadedCount++;
+            }
+        }
+        return loadedCount === totalCount && totalCount > 0;
     }
 
     areMenuAssetsLoaded(){
@@ -259,5 +336,12 @@ export class AssetHandler{
         this.addAsset('coupon', this.assetUrl('coupon.png'));
         this.addAsset('dialogueleft', this.assetUrl('dialogueleft.png'));
         this.addAsset('dialogueright', this.assetUrl('dialogueright.png'));
+
+        this.addSound('click', this.assetUrl('audio/click.mp3'));
+        this.addSound('correct', this.assetUrl('audio/correct.mp3'));
+        this.addSound('incorrect', this.assetUrl('audio/incorrect.mp3'));
+        this.addSound('levelComplete', this.assetUrl('audio/levelComplete.mp3'));
+        this.addSound('pop', this.assetUrl('audio/pop.mp3'));
+        this.addSound('welcome', this.assetUrl('audio/welcome.mp3'));
     }
 }

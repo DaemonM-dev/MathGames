@@ -27,7 +27,7 @@ export class Gameplay {
         this.difficulty = Difficulty.NONE;
         this.language = Language.NONE;
 
-        this.level          = 5;
+        this.level          = 1;
         this.prevLevel      = 0;
         this.question       = 1;
         this.prevQuestion   = 1;
@@ -73,7 +73,7 @@ export class Gameplay {
         this.dropzone           = new Dropzone();
         this.speechBubble       = new SpeechBubble();
         this.inputWindow        = new InputWindow(this.language);
-        this.buttonHandler      = new ButtonHandler(this.language);
+        this.buttonHandler      = new ButtonHandler(this.language, assets);
         this.foodHandler        = new FoodHandler(this.language);
         this.dialogue           = new Dialogue(this.speechBubble.textBounds, this.language);
         this.levelSting         = new LevelSting(this.language);

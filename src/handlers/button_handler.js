@@ -3,16 +3,16 @@ import { Button } from '../gameplay/elements/button.js'
 import {Language } from '../enums/language.js'
 
 export class ButtonHandler{
-    constructor(language){
+    constructor(language, assets){
         this.language = language;
         this.scale = 1.0;
 
-        this.submit     = new Button();
-        this.next       = new Button();
-        this.prev       = new Button();
-        this.menu       = new Button();
-        this.menuReturn = new Button();
-        this.restart    = new Button();
+        this.submit     = new Button(assets);
+        this.next       = new Button(assets);
+        this.prev       = new Button(assets);
+        this.menu       = new Button(assets);
+        this.menuReturn = new Button(assets);
+        this.restart    = new Button(assets);
 
         this.buttonArray = [
             this.submit,

@@ -7,7 +7,6 @@ import { Language }             from './enums/language.js'
 
 import { AssetHandler }         from './handlers/asset_handler.js'
 import { InputHandler }         from './handlers/input_handler.js'
-import { ButtonHandler }        from './handlers/button_handler.js'
 
 import { Gameplay }             from './gameplay/gameplay.js'
 import { MainMenu }             from './gameplay/elements/main_menu.js'
@@ -29,9 +28,16 @@ export const Game = {
     gameplay:       new Gameplay(),
     mainMenu:       new MainMenu(),
 
+    welcomeSound:   null,
+    clickSound:     null,
+    popSound:       null,
+
     activeCommand:  Command.NONE,
     gamestate:      GameState.LOADING_MENU,
     language:       Language.NONE,
+
+    // Add audio context here
+    audioContext:   null,
 
     transition: {
         playing: false,
@@ -50,6 +56,7 @@ export function init(options = {}){
     Game.initial_score = options.score ?? {level:1, score:0};
     Game.ctx = Game.canvas.getContext('2d');
     Game.assetHandler.loadMenuAssets();
+    Game.assetHandler.loadSounds();
     Game.running = true;
     Game.lastTime = 0;
     resizeCanvas();
@@ -84,7 +91,7 @@ function update(deltaTime)
     switch(Game.gamestate)
     {
         case GameState.LOADING_MENU:
-            if(Game.assetHandler.areMenuAssetsLoaded()){
+            if(Game.assetHandler.areMenuAssetsLoaded() && Game.assetHandler.areAllSoundsLoaded()){
                 Game.gamestate = GameState.INIT_MENU;
             }
         break;
@@ -93,8 +100,16 @@ function update(deltaTime)
             Game.mainMenu.init(Game.assetHandler);
             Game.inputHandler.initInputs();
             resizeCanvas();
+            
+            initAudio();
+
+            Game.welcomeSound = Game.assetHandler.getSound('welcome');
+            Game.clickSound = Game.assetHandler.getSound('click');
+            Game.popSound = Game.assetHandler.getSound('pop');
+
+            // playSound(Game.welcomeSound, 0.25);
             Game.gamestate = GameState.MAIN_MENU;
-        break;
+            break;
 
         case GameState.MAIN_MENU:
             if(!Game.transition.playing){
@@ -157,6 +172,7 @@ function update(deltaTime)
                 Game.gameplay.init(Game.assetHandler, Game.language);
                 resizeCanvas();
                 Game.mainMenu.languageSelected = false;
+                playSound(Game.welcomeSound, 0.15);
                 Game.gamestate = GameState.GAMEPLAY;
             }
             break;
@@ -197,6 +213,28 @@ function draw(){
             break;
     }
 }
+
+function initAudio() {
+    if (!Game.audioContext && typeof AudioContext !== 'undefined') {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        Game.audioContext = new AudioContextConstructor();
+    }
+}
+
+export function playSound(sound, volume = 1.0) {
+    if (!sound || !Game.audioContext) return;
+
+    try {
+        const instance = sound.cloneNode();
+        instance.volume = volume;
+        instance.play().catch(error => {
+            console.log("Sound play failed:", error.message);
+        });
+    } catch (error) {
+        console.log("Error playing sound:", error.message);
+    }
+}
+
 
 export function resizeCanvas(){
     if(!Game.canvas){return;}
