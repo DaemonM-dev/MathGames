@@ -60,12 +60,13 @@ export class ButtonHandler{
         this.submit.setShape(SIZE, POS, RADIUS, LINEWIDTH, FONTSIZE, TEXT);
         this.submit.setColors(DEFCOLOR, HOVERCOLOR, PRESSCOLOR, FONTCOLOR);
 
-        SIZE        = {x:50, y: 50};
-        POS         = {x:900 ,y: 800};
+        // SIZE        = {x:50, y: 50};
+        SIZE        = {x:60, y: 60};
+        POS         = {x:900 ,y: 775};
         RADIUS      = 22;
         LINEWIDTH   = 5;
         FONTSIZE    = 50;
-        TEXT        = ">";
+        TEXT        = "?";
         DEFCOLOR    = {infill: '#88a8d877', outline: '#88a8d8'};
         HOVERCOLOR  = {infill: '#88a8d8ce', outline: '#88a8d8'};
         PRESSCOLOR  = {infill: '#88a8d877', outline: '#88a8d800'};
@@ -142,7 +143,7 @@ export class ButtonHandler{
 
             this.submit.update(command, mousePos);
             this.next.update(command, mousePos);
-            this.prev.update(command, mousePos);
+            // this.prev.update(command, mousePos);
             this.menu.update(command, mousePos);
 
             if(this.submit.isPressed()){this.pressedButton = this.submit;}
@@ -159,7 +160,7 @@ export class ButtonHandler{
     draw(ctx){
         this.submit.draw(ctx);
         this.next.draw(ctx);
-        this.prev.draw(ctx);
+        // this.prev.draw(ctx);
         this.menu.draw(ctx);
     }
 
