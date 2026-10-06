@@ -27,9 +27,9 @@ export class Gameplay {
         this.difficulty = Difficulty.NONE;
         this.language = Language.NONE;
 
-        this.level          = 1;
+        this.level          = 4;
         this.prevLevel      = 0;
-        this.question       = 1;
+        this.question       = 5;
         this.prevQuestion   = 1;
 
         this.score = {questions: 0};
@@ -149,7 +149,7 @@ export class Gameplay {
             this.foodHandler.update(this.level, command, mousePos, this.dropzone);
             this.dialogue.update(Game.ctx);
             this.handleButtonPresses();
-            if(this.level === 5)
+            if(this.level === 5 && !this.viewingSting && !this.viewingFeedback)
             {
                 this.scene.animateCoupon(deltaTime);
             }
@@ -166,7 +166,7 @@ export class Gameplay {
         this.buttonHandler.draw(ctx);
         // if(this.level === 4){ this.dialogue.drawMathProblem(ctx); }
         this.dialogue.draw(ctx);
-        if(this.level === 5){ this.scene.drawCoupon(ctx); }
+        if(this.level === 5 && !this.viewingSting){ this.scene.drawCoupon(ctx); }
         this.foodHandler.draw(this.level, ctx);
         if(this.buttonHandler.viewingMenu){
             this.scene.drawMenu(ctx);

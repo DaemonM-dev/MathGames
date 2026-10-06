@@ -201,7 +201,7 @@ export class Scene{
             initial: { size: {...CHAR_SIZE}, pos: {...POS} }
         }
         SIZE = { x:460 / 1.5, y: 250 / 1.5 };
-        POS = { x:0.0, y: 0.0 };
+        POS = { x:-SIZE.x, y: 0.0 };
         const CENTER = {x:POS.x + (SIZE.x / 2), y: POS.y + (SIZE.y / 2)};
         const FONTSIZE = 30;
         const LINESPACE = 20;
@@ -360,7 +360,6 @@ export class Scene{
                     }
                 break;
             }
-
         }
 
         this.coupon.initial.pos.x = -this.coupon.size.x;
