@@ -106,7 +106,6 @@ function update(deltaTime)
             Game.clickSound = Game.assetHandler.getSound('click');
             Game.popSound = Game.assetHandler.getSound('pop');
 
-            // playSound(Game.welcomeSound, 0.25);
             Game.gamestate = GameState.MAIN_MENU;
             break;
 
@@ -170,6 +169,7 @@ function update(deltaTime)
             {
                 Game.gameplay.init(Game.assetHandler, Game.language);
                 resizeCanvas();
+                Game.mainMenu.language = Language.NONE;
                 Game.mainMenu.languageSelected = false;
                 playSound(Game.welcomeSound, 0.5);
                 Game.gamestate = GameState.GAMEPLAY;

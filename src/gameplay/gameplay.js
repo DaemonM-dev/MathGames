@@ -54,6 +54,8 @@ export class Gameplay {
 
         this.correctSound       = null;
         this.incorrectSound     = null;
+        this.levelUpSound       = null;
+        this.welcomeSound       = null;
     }
     changeScale(scale){
         if(this.scene)          {this.scene.changeScale(scale);}
@@ -90,6 +92,7 @@ export class Gameplay {
         this.correctSound   = assets.getSound('correct');
         this.incorrectSound = assets.getSound('incorrect');
         this.levelUpSound   = assets.getSound('levelComplete');
+        this.welcomeSound   = assets.getSound('welcome');
     }
 
     initScore(score){
@@ -206,6 +209,7 @@ export class Gameplay {
                 this.level = 1;
                 this.score.questions++;
                 this.question = 1;
+                playSound(this.welcomeSound, 0.5);
             }
         }
         this.foodHandler.clearDropzoneFood();

@@ -96,8 +96,6 @@ export class MainMenu{
             this.easyButton.update(command, mousePos);
             this.hardButton.update(command, mousePos);
         }
-
-
         
         this.cloud1.cached.pos.x -= this.cloud1.speed * deltaTime;
         this.cloud1.pos.x -= this.cloud1.speed * deltaTime;
@@ -119,7 +117,6 @@ export class MainMenu{
 
     draw(ctx)
     {
-
         switch(this.language)
         {
             case Language.NONE:
