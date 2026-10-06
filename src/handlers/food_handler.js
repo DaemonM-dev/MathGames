@@ -1,4 +1,4 @@
-import { Game }                                     from '../game.js'
+import { Game, playSound }                                     from '../game.js'
 import { getRandomInt, shuffle, pointIntersects }   from '../globals.js'
 
 import { Command }                                  from '../enums/commands.js'
@@ -73,6 +73,8 @@ export class FoodHandler{
 
         this.itemSelected = false;
         this.selectionIndex = 0;
+
+        this.popSound = null;
     }
 
     changeScale(scale){
@@ -120,6 +122,7 @@ export class FoodHandler{
                 this.priceTags[i] = new Pricetag({x:POS.x + 25, y:POS.y + 150}, VALUE + inc);
             }
         }
+        this.popSound = assets.getSound('pop');
         this.randomiseDynamic();
     }
 
@@ -150,6 +153,7 @@ export class FoodHandler{
                             }
                             this.foodItems[this.selectionIndex].reset();
                         }
+                        playSound(this.popSound, 0.75);
                     }
                     this.foodItems[this.selectionIndex].deselect();
                     this.selectionIndex = 0;
