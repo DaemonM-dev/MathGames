@@ -164,7 +164,7 @@ export class Gameplay {
         this.speechBubble.draw(ctx);
         this.inputWindow.draw(this.level, ctx);
         this.buttonHandler.draw(ctx);
-        if(this.level === 4){ this.dialogue.drawMathProblem(ctx); }
+        if(this.level === 4){ // this.dialogue.drawMathProblem(ctx); }
         this.dialogue.draw(ctx);
         if(this.level === 5){ this.scene.drawCoupon(ctx); }
         this.foodHandler.draw(this.level, ctx);
