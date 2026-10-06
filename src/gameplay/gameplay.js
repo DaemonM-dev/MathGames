@@ -1,4 +1,4 @@
-import { Game, changeState }        from '../game.js'
+import { Game, changeState, playSound }        from '../game.js'
 
 import { GameState }                from '../enums/game_states.js'
 import { Command }                  from '../enums/commands.js'
@@ -27,9 +27,9 @@ export class Gameplay {
         this.difficulty = Difficulty.NONE;
         this.language = Language.NONE;
 
-        this.level          = 4;
+        this.level          = 1;
         this.prevLevel      = 0;
-        this.question       = 5;
+        this.question       = 1;
         this.prevQuestion   = 1;
 
         this.score = {questions: 0};
@@ -51,6 +51,9 @@ export class Gameplay {
         this.viewingSting       = false;
         this.viewingGameover    = false;
         this.answerCorrect      = false;
+
+        this.correctSound       = null;
+        this.incorrectSound     = null;
     }
     changeScale(scale){
         if(this.scene)          {this.scene.changeScale(scale);}
@@ -83,6 +86,10 @@ export class Gameplay {
         this.inputWindow.init(assets);
         this.foodHandler.init(assets);
         this.levelSting.init(assets);
+
+        this.correctSound   = assets.getSound('correct');
+        this.incorrectSound = assets.getSound('incorrect');
+        this.levelUpSound   = assets.getSound('levelComplete');
     }
 
     initScore(score){
@@ -190,8 +197,9 @@ export class Gameplay {
                 this.question = 1;
                 this.score.questions++;
                 this.level++;
-                this.food
+                this.foodHandler.clearDropzoneFood();
                 this.levelSting.play();
+                playSound(this.levelUpSound, 0.5);
                 this.viewingSting = true;
             } else {
                 this.viewingGameover = true;
@@ -274,10 +282,14 @@ export class Gameplay {
         switch(this.level){
             case 1:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
-                this.answerCorrect = true;
-                this.notifyAnswer(this.level, this.question);
+                    this.answerCorrect = true;
+                    this.notifyAnswer(this.level, this.question);
+                    if(this.question !== 5){
+                        playSound(this.correctSound, 0.25);
+                    }
                 } else {
-                this.answerCorrect = false;
+                    this.answerCorrect = false;
+                    playSound(this.incorrectSound, 0.25);
                 }
                 break;
             case 2:
@@ -286,24 +298,30 @@ export class Gameplay {
                 if(SUM === this.dialogue.getFoodSum() && COUNT === this.dialogue.getFoodCount()){
                     this.answerCorrect = true;
                     this.notifyAnswer(this.level, this.question);
+                    playSound(this.correctSound, 0.25);
                 } else {
                     this.answerCorrect = false;
+                    playSound(this.incorrectSound, 0.25);
                 }
                 break;
             case 3:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getAnswer()){
                     this.answerCorrect = true;
                     this.notifyAnswer(this.level, this.question);
+                    playSound(this.correctSound, 0.25);
                 } else {
                     this.answerCorrect = false;
+                    playSound(this.incorrectSound, 0.25);
                 }
                 break;
             case 4:
                 if(parseFloat(this.inputWindow.input) === this.dialogue.getFoodSum()){
                     this.answerCorrect = true;
                     this.notifyAnswer(this.level, this.question);
+                    playSound(this.correctSound, 0.25);
                 } else {
                     this.answerCorrect = false;
+                    playSound(this.incorrectSound, 0.25);
                 }
                 break;
             case 5:
@@ -345,8 +363,10 @@ export class Gameplay {
                     if(correctSum && correctCount){
                         this.answerCorrect = true;
                         this.notifyAnswer(this.level, this.question);
+                        playSound(this.correctSound, 0.25);
                     } else {
                         this.answerCorrect = false;
+                        playSound(this.incorrectSound, 0.25);
                     }
                 }
                 else if(this.difficulty === Difficulty.CHALLENGE)
@@ -354,8 +374,10 @@ export class Gameplay {
                     if(correctSum && correctTypes && correctCount){
                         this.answerCorrect = true;
                         this.notifyAnswer(this.level, this.question);
+                        playSound(this.correctSound, 0.25);
                     } else {
                         this.answerCorrect = false;
+                        playSound(this.incorrectSound, 0.25);
                     }
                 }
 

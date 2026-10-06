@@ -171,7 +171,7 @@ function update(deltaTime)
                 Game.gameplay.init(Game.assetHandler, Game.language);
                 resizeCanvas();
                 Game.mainMenu.languageSelected = false;
-                playSound(Game.welcomeSound, 0.15);
+                playSound(Game.welcomeSound, 0.5);
                 Game.gamestate = GameState.GAMEPLAY;
             }
             break;

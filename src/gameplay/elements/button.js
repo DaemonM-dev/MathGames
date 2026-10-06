@@ -1,7 +1,7 @@
 import { pointIntersects }  from '../../globals.js'
 import { ButtonState }      from '../../enums/button_states.js'
 import { Command }          from '../../enums/commands.js'
-import {playSound }   from '../../game.js'
+import { playSound }        from '../../game.js'
 
 export class Button{
     constructor(assets){
