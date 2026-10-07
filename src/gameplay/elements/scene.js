@@ -74,7 +74,7 @@ export class Scene{
         if(this.coupon){
             this.coupon.size = {x: this.coupon.initial.size.x * this.scale, y: this.coupon.initial.size.y * this.scale};
             this.coupon.pos = {x: this.coupon.initial.pos.x * this.scale, y: this.coupon.initial.pos.y * this.scale};
-            this.coupon.center = {x: this.coupon.initial.center.x * this.scale, y: this.coupon.initial.center.y * this.scale};
+            this.coupon.center = {x: this.coupon.pos.x + this.coupon.size.x / 2, y: this.coupon.pos.y + this.coupon.size.y / 2};
             this.coupon.fontSize = this.coupon.initial.fontSize * this.scale;
             this.coupon.linespace = this.coupon.initial.linespace * this.scale;
         }
@@ -395,7 +395,7 @@ export class Scene{
 
         if(this.language === Language.IRISH)
         {
-            ctx.font = `${this.coupon.fontSize * 2/3}px ${'PoppinsBold'}`;
+            ctx.font = `${this.coupon.fontSize * 5/6}px ${'PoppinsBold'}`;
         }
         ctx.fillText(this.coupon.line2, this.coupon.center.x, this.coupon.center.y + this.coupon.linespace);
     }
