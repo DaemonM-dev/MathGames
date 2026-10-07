@@ -219,6 +219,18 @@ export class Dialogue{
             }
         }
 
+        let zero = "";
+        if(this.FOOD_SUM % 1 === 0.50)
+        {
+            zero = "0";
+        } 
+        else if(this.FOOD_SUM % 1 === 0.00)
+        {
+            zero = ".00";
+        } 
+
+
+
         if(copies[0] && copies[1])
         {
             switch(this.language)
@@ -226,21 +238,21 @@ export class Dialogue{
                 case Language.ENGLISH:
                     if(!copies[2])
                     {
-                        this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
+                        this.activeText = "I have " + this.FOOD_SUM + zero + " KURO to buy food. What TWO items can I get with ZERO KURO left over?";
                     }
                     else
                     {
-                        this.activeText = "I have " + this.FOOD_SUM + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
+                        this.activeText = "I have " + this.FOOD_SUM + zero + " KURO to buy food. What THREE items can I get with ZERO KURO left over?";
                     }
                     break;
                 case Language.IRISH:
                     if(!copies[2])
                     {
-                        this.activeText = "Tá " + this.FOOD_SUM + " KURO agam chun bia a cheannach. Cén DÁ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
+                        this.activeText = "Tá " + this.FOOD_SUM + zero + " KURO agam chun bia a cheannach. Cén DÁ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
                     }
                     else
                     {
-                        this.activeText = "Tá " + this.FOOD_SUM + " KURO agam chun bia a cheannach. Cé na TRÍ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
+                        this.activeText = "Tá " + this.FOOD_SUM + zero + " KURO agam chun bia a cheannach. Cé na TRÍ rud is féidir liom a cheannach gan KURO ar bith a bheith fágtha agam?";
                     }
                     break;
             }
@@ -299,6 +311,10 @@ export class Dialogue{
         if(this.START_KURO % 1 === 0.50)
         {
             zero = "0";
+        }
+        else if(this.START_KURO % 1 === 0.00)
+        {
+            zero = ".00";
         }
 
         switch(this.language)
