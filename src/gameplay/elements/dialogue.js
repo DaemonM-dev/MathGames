@@ -296,7 +296,7 @@ export class Dialogue{
         this.ANSWER = this.START_KURO - this.FOOD_SUM;
 
         let zero = "";
-        if(inc === 0.50)
+        if(this.START_KURO % 1 === 0.50)
         {
             zero = "0";
         }
