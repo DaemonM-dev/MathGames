@@ -75,8 +75,7 @@ export class AssetHandler{
         this.loadingCount++;
     }
     addMenuAsset(name, filepath){
-        console.log(`Adding menu asset: ${name} from ${filepath}`);
-            this.menuAssets.set(name, {
+        this.menuAssets.set(name, {
             filepath: filepath,
             loaded: false,
             data: null
