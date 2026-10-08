@@ -1,3 +1,47 @@
+const assetUrls = {
+    'cloud1.png': new URL('../assets/cloud1.png', import.meta.url).href,
+    'cloud2.png': new URL('../assets/cloud2.png', import.meta.url).href,
+    'boy.png': new URL('../assets/boy.png', import.meta.url).href,
+    'girl.png': new URL('../assets/girl.png', import.meta.url).href,
+    'chocolatecake.png': new URL('../assets/chocolatecake.png', import.meta.url).href,
+    'cupcakes.png': new URL('../assets/cupcakes.png', import.meta.url).href,
+    'fruitbowl.png': new URL('../assets/fruitbowl.png', import.meta.url).href,
+    'fruitcake.png': new URL('../assets/fruitcake.png', import.meta.url).href,
+    'mintcake.png': new URL('../assets/mintcake.png', import.meta.url).href,
+    'onigiri.png': new URL('../assets/onigiri.png', import.meta.url).href,
+    'salad.png': new URL('../assets/salad.png', import.meta.url).href,
+    'tofu.png': new URL('../assets/tofu.png', import.meta.url).href,
+    'kuro.png': new URL('../assets/kuro.png', import.meta.url).href,
+    'sign.png': new URL('../assets/sign.png', import.meta.url).href,
+    'coupon.png': new URL('../assets/coupon.png', import.meta.url).href,
+    'dialogueleft.png': new URL('../assets/dialogueleft.png', import.meta.url).href,
+    'dialogueright.png': new URL('../assets/dialogueright.png', import.meta.url).href,
+    'english/background_english.png': new URL('../assets/english/background_english.png', import.meta.url).href,
+    'english/gameover_english.png': new URL('../assets/english/gameover_english.png', import.meta.url).href,
+    'english/goodjob1_english.png': new URL('../assets/english/goodjob1_english.png', import.meta.url).href,
+    'english/goodjob2_english.png': new URL('../assets/english/goodjob2_english.png', import.meta.url).href,
+    'english/goodjob3_english.png': new URL('../assets/english/goodjob3_english.png', import.meta.url).href,
+    'english/levelSting_english.png': new URL('../assets/english/levelSting_english.png', import.meta.url).href,
+    'english/menuboard_english.png': new URL('../assets/english/menuboard_english.png', import.meta.url).href,
+    'english/startMenu_english.png': new URL('../assets/english/startMenu_english.png', import.meta.url).href,
+    'english/tryAgain1_english.png': new URL('../assets/english/tryAgain1_english.png', import.meta.url).href,
+    'irish/background_irish.png': new URL('../assets/irish/background_irish.png', import.meta.url).href,
+    'irish/gameover_irish.png': new URL('../assets/irish/gameover_irish.png', import.meta.url).href,
+    'irish/goodjob1_irish.png': new URL('../assets/irish/goodjob1_irish.png', import.meta.url).href,
+    'irish/goodjob2_irish.png': new URL('../assets/irish/goodjob2_irish.png', import.meta.url).href,
+    'irish/goodjob3_irish.png': new URL('../assets/irish/goodjob3_irish.png', import.meta.url).href,
+    'irish/levelSting_irish.png': new URL('../assets/irish/levelSting_irish.png', import.meta.url).href,
+    'irish/menuboard_irish.png': new URL('../assets/irish/menuboard_irish.png', import.meta.url).href,
+    'irish/startMenu_irish.png': new URL('../assets/irish/startMenu_irish.png', import.meta.url).href,
+    'irish/tryAgain1_irish.png': new URL('../assets/irish/tryAgain1_irish.png', import.meta.url).href,
+    'audio/click.mp3': new URL('../assets/audio/click.mp3', import.meta.url).href,
+    'audio/correct.mp3': new URL('../assets/audio/correct.mp3', import.meta.url).href,
+    'audio/incorrect.mp3': new URL('../assets/audio/incorrect.mp3', import.meta.url).href,
+    'audio/levelComplete.mp3': new URL('../assets/audio/levelComplete.mp3', import.meta.url).href,
+    'audio/pop.mp3': new URL('../assets/audio/pop.mp3', import.meta.url).href,
+    'audio/welcome.mp3': new URL('../assets/audio/welcome.mp3', import.meta.url).href,
+};
+
 export class AssetHandler{
     constructor(){
         this.menuAssets     = new Map();
@@ -15,7 +59,11 @@ export class AssetHandler{
     }
 
     assetUrl(fileName){
-        return new URL(`../assets/${fileName}`, import.meta.url).href;
+        const url = assetUrls[fileName];
+        if (!url) {
+            console.error(`Missing asset: ${fileName}`);
+        }
+        return url;
     }
 
     addAsset(name, filepath){
@@ -27,7 +75,7 @@ export class AssetHandler{
         this.loadingCount++;
     }
     addMenuAsset(name, filepath){
-            this.menuAssets.set(name, {
+        this.menuAssets.set(name, {
             filepath: filepath,
             loaded: false,
             data: null
